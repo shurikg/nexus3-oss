@@ -1,0 +1,108 @@
+---
+- name: Get rest API endpoint (v < 3.8.0)
+  set_fact:
+    nexus_rest_api_endpoint: "service/siesta/rest/v1/script"
+  when: nexus_version is version_compare('3.8.0', '<')
+
+- name: Get rest API endpoint (v >= 3.8.0)
+  set_fact:
+    nexus_rest_api_endpoint: "service/rest/v1/script"
+  when: nexus_version is version_compare('3.8.0', '>=')
+
+- name: Access scripts API endpoint with defined admin password
+  uri:
+    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+      {{ nexus_api_context_path }}{{ nexus_rest_api_endpoint }}"
+    method: 'HEAD'
+    user: 'admin'
+    password: "{{ nexus_admin_password }}"
+    force_basic_auth: yes
+    status_code: 200, 401
+    validate_certs: "{{ nexus_api_validate_certs }}"
+  register: nexus_api_head_with_defined_password
+  check_mode: no
+
+- name: Register defined admin password for next operations
+  set_fact:
+    current_nexus_admin_password: "{{ nexus_admin_password }}"
+  when: nexus_api_head_with_defined_password.status == 200
+  no_log: true
+- name: Force (re-)registration of groovy scripts (purge reference dir)
+  file:
+    path: "{{ nexus_data_dir }}/groovy-raw-scripts"
+    state: absent
+  when: nexus_force_groovy_scripts_registration | default(false)
+
+- name: Create directories to hold current groovy scripts for reference
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
+    - "{{ nexus_data_dir }}/groovy-raw-scripts/new"
+
+- name: Archive scripts
+  become: no
+  archive:
+    path: "{{ role_path }}/files/groovy/*"
+    dest: "/tmp/nexus-upload-groovy-scripts.tar.gz"
+    mode: 0644
+  run_once: true
+  delegate_to: localhost
+
+- name: Upload new scripts
+  unarchive:
+    src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
+    dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
+    mode: 0644
+
+- block:
+    - name: Sync new scripts to old and get differences
+      shell: >
+        set -o pipefail &&
+        rsync -ric {{ nexus_data_dir }}/groovy-raw-scripts/new/ {{ nexus_data_dir }}/groovy-raw-scripts/current/
+        | cut -d" " -f 2 | sed "s/\.groovy//g"
+      register: nexus_groovy_files_changed
+      check_mode: no
+      changed_when: false
+      # simple check on changed files kept on host
+      # skip ansible lint (we don't want to use synchronize module for this)
+      args:
+        warn: false
+        executable: /bin/bash
+  rescue:
+    - name: Fail with information on rsync error
+      fail:
+        msg: >-
+          A task involving running rsync on the host just failed, most probably because rsync is not installed.
+          Please make sure rsync is installed on your host or double check the above error and try again.
+
+- name: Declare new or changed groovy scripts in nexus
+  include_tasks: declare_script_each.yml
+  with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
+
+- name: define cac_changes
+  set_fact:
+    cac_changes: []
+
+- name: CasC users
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: setup_users_from_list_cac
+    args: "{{ nexus_local_users }}"
+  when: nexus_local_users | length > 0
+
+- name: create final cac report
+  set_fact:
+    __final_cac_report:
+      git:
+      git_branch:
+      runtime:
+      git_commit_id:
+      changes: "{{ cac_changes.action_details }}"
+
+- name: save the cac report
+  copy: content="{{ __final_cac_report }}" dest="{{ nexus_cac_report_file }}"
