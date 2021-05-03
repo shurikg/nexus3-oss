@@ -15,42 +15,60 @@ authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAUL
 def updateUser(userDef, currentResult) {
     User user = security.securitySystem.getUser(userDef.username)
 
-    def gitChangeMessage = ""
-    def runtimeChangeMessage = ""
+    def gitChangeMessage = []
+    def runtimeChangeMessage = []
 
     if (user.getFirstName() != userDef.first_name) {
-        gitChangeMessage += "First name = ${userDef.first_name}"
-        runtimeChangeMessage += "First name = ${user.getFirstName()}"
+        gitChangeMessage.add("First name = ${userDef.first_name}")
+        runtimeChangeMessage.add("First name = ${user.getFirstName()}")
     }
     if (user.getLastName() != userDef.last_name) {
-        gitChangeMessage += "Last name = ${userDef.last_name}"
-        runtimeChangeMessage += "Last name = ${user.getLastName()}"
+        gitChangeMessage.add("Last name = ${userDef.last_name}")
+        runtimeChangeMessage.add("Last name = ${user.getLastName()}")
     }
     if (user.getEmailAddress() != userDef.email) {
-        gitChangeMessage += "email = ${userDef.email}"
-        runtimeChangeMessage += "email = ${user.getEmailAddress()}"
+        gitChangeMessage.add("email = ${userDef.email}")
+        runtimeChangeMessage.add("email = ${user.getEmailAddress()}")
+    }
+
+    def isRoleDefined
+    Set<RoleIdentifier> existingRoles = user.getRoles()
+    userDef.roles.each { roleDef ->
+        isRoleDefined = false
+        existingRoles.any { currentRole ->
+            if (currentRole.getRoleId() == roleDef) {
+                isRoleDefined = true
+                return true
+            }
+        }
+        if (! isRoleDefined) {
+            gitChangeMessage.add("Add role: ${roleDef}")
+            runtimeChangeMessage.add("N/A")
+        }
+    }
+
+    existingRoles.each { currentRole ->
+        isRoleDefined = false
+        userDef.roles.any { gitRole ->
+            if (currentRole.getRoleId() == gitRole) {
+                isRoleDefined = true
+                return true
+            }
+        }
+        if (! isRoleDefined) {
+            gitChangeMessage.add("N/A")
+            runtimeChangeMessage.add("Delete role: ${currentRole.getRoleId()}")
+        }
     }
 
     if (gitChangeMessage) {
-        currentResult.put('change_in_git', gitChangeMessage)
-        currentResult.put('change_in_runtime', runtimeChangeMessage)
+        currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+        currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
         currentResult.put('change_type', 'change')
         currentResult.put('description', "the ${userDef.username} user will be update")
         currentResult.put('action', '')
         currentResult.put('downtime', false)
     }
-
-//     Set<RoleIdentifier> existingRoles = user.getRoles()
-//     Set<RoleIdentifier> definedRoles = []
-//     userDef.roles.each { roleDef ->
-//         RoleIdentifier role = new RoleIdentifier("default", authManager.getRole(roleDef).roleId);
-//         definedRoles.add(role)
-//     }
-//     if (! existingRoles.equals(definedRoles)) {
-//         security.securitySystem.setUsersRoles(user.getUserId(), "default", definedRoles)
-//         currentResult.put('status', 'updated')
-//         scriptResults['changed'] = true
-//     }
 
 //     try {
 //         security.securitySystem.changePassword(userDef.username, userDef.password, userDef.password)
@@ -129,7 +147,9 @@ parsed_args.each { userDef ->
             addUser(userDef, currentResult)
         }
     }
-    scriptResults['action_details'].add(currentResult)
+    if (currentResult['change_type']) {
+        scriptResults['action_details'].add(currentResult)
+    }
 }
 
 // Runtime -> GIT
