@@ -91,16 +91,9 @@
 - name: CasC users
   include_tasks: call_cac_script.yml
   vars:
-    script_name: setup_users_from_list_cac
-    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_local_users } ) }}"
+    script_name: migrate_local_users
+    args: "{{ nexus_local_users }}"
   when: nexus_local_users | length > 0
-
-- name: CasC roles
-  include_tasks: call_cac_script.yml
-  vars:
-    script_name: setup_roles_from_list_cac
-    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_roles } ) }}"
-  when: nexus_roles | length > 0
 
 - name: create final cac report
   set_fact:
@@ -109,8 +102,7 @@
       git_branch:
       runtime:
       git_commit_id:
-      changes: "{{ cac_changes }}"
-      # changes: "{{ cac_changes.action_details }}"
+      changes: "{{ cac_changes.action_details }}"
 
 - name: save the cac report
   copy: content="{{ __final_cac_report }}" dest="{{ nexus_cac_report_file }}"

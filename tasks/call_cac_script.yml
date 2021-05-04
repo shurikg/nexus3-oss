@@ -15,14 +15,19 @@
       register: script_run
       failed_when: script_run | nexus_groovy_error | bool
       changed_when: script_run | nexus_groovy_changed | bool
+      check_mode: no
 
     - name: append changes
       set_fact:
-        cac_changes: "{{cac_changes | combine( script_run.json.result,  list_merge='append') }}"
+        cac_changes: "{{cac_changes | combine( script_run.json.result | from_json,  list_merge='append') }}"
 
     - name: Details about runned script if verbose mode is on
       debug:
-        msg: "{{ script_run.json }}"
+        msg: "{{ script_run.json.result| from_json| type_debug}}"
+
+    - name: Details about cac script if verbose mode is on
+      debug:
+        msg: "{{ script_run }}"
 
     - name: Details about runned script if verbose mode is on
       debug:

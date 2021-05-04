@@ -131,7 +131,7 @@ def deleteUser(userDef, currentResult) {
 parsed_args = new JsonSlurper().parseText(args)
 
 // GIT -> Runtime
-parsed_args.each { userDef ->
+parsed_args.details.each { userDef ->
 
     state = userDef.get('state', 'present')
 
@@ -159,7 +159,7 @@ security.securitySystem.listUsers().each { rtUser ->
     if (! (rtUser.getUserId() in excludeUsers) ) {
         Map<String, String> currentResult = [:]
         def needToDelete = true
-        parsed_args.any { userDef ->
+        parsed_args.details.any { userDef ->
             if (rtUser.getUserId() == userDef.username) {
                 needToDelete = false
                 return true
