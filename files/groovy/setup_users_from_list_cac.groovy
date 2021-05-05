@@ -66,7 +66,7 @@ def updateUser(userDef, currentResult) {
         currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
         currentResult.put('change_type', 'change')
         currentResult.put('description', "the ${userDef.username} user will be update")
-        currentResult.put('action', '')
+        currentResult.put('resource', 'user')
         currentResult.put('downtime', false)
     }
 
@@ -85,7 +85,7 @@ def addUser(userDef, currentResult) {
     currentResult.put('change_in_runtime', 'N/A')
     currentResult.put('change_type', 'add')
     currentResult.put('description', "the ${userDef.username} user will be added")
-    currentResult.put('action', '')
+    currentResult.put('resource', 'user')
     currentResult.put('downtime', false)
 }
 
@@ -97,7 +97,7 @@ def deleteUser(userDef, currentResult) {
         currentResult.put('change_in_runtime', 'N/A')
         currentResult.put('change_type', 'delete')
         currentResult.put('description', "the ${userDef.username} user will be deleted")
-        currentResult.put('action', 'the user file was updated with state: false')
+        currentResult.put('resource', 'user')
         currentResult.put('downtime', false)
     } catch (UserNotFoundException ignored) {
         log.info("Delete user: user {} does not exist", userDef.username)
@@ -170,7 +170,7 @@ security.securitySystem.listUsers().each { rtUser ->
             currentResult.put('change_in_runtime', "${rtUser.getUserId()} user exist")
             currentResult.put('change_type', 'delete')
             currentResult.put('description', "the ${rtUser.getUserId()} user will be deleted")
-            currentResult.put('action', '')
+            currentResult.put('resource', 'user')
             currentResult.put('downtime', false)
 
             scriptResults['action_details'].add(currentResult)

@@ -17,33 +17,59 @@ parsed_args.details.each { roleDef ->
 
     Map<String, String> currentResult = [:]
 
-    // def privileges = (roleDef.privileges == null ? new HashSet() : roleDef.privileges.toSet())
-    // roles = (roleDef.roles == null ? new HashSet() : roleDef.roles.toSet())
+    privileges = (roleDef.privileges == null ? new HashSet() : roleDef.privileges.toSet())
+    roles = (roleDef.roles == null ? new HashSet() : roleDef.roles.toSet())
     def gitChangeMessage = []
     def runtimeChangeMessage = []
 
     try {
-        Role newRole = authManager.getRole(roleDef.id)
-        // newRole.setName(roleDef.name)
-        // newRole.setDescription(roleDef.description)
-        // newRole.setPrivileges(privileges)
-        // newRole.setRoles(roles)
-        // Role currentRole = authManager.getRole(roleDef.id)
-        if (newRole.getName() != roleDef.name) {
-            gitChangeMessage.add("name = ${newRole.getName()}")
+        Role existingRole = authManager.getRole(roleDef.id)
+
+        if (existingRole.getName() != roleDef.name) {
+            gitChangeMessage.add("name = ${existingRole.getName()}")
             runtimeChangeMessage.add("name = ${roleDef.name}")
         }
-        if (newRole.getDescription() != roleDef.description) {
-            gitChangeMessage.add("description = ${newRole.getDescription()}")
+        if (existingRole.getDescription() != roleDef.description) {
+            gitChangeMessage.add("description = ${existingRole.getDescription()}")
             runtimeChangeMessage.add("description = ${roleDef.description}")
         }
 
+        def existingPrivileges = existingRole.getPrivileges()
+        privileges.each { privilage ->
+            if (! (privilage in existingPrivileges) ) {
+                gitChangeMessage.add("add ${privilage} privilage to role")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+
+        existingPrivileges.each { privilage ->
+            if (! (privilage in privileges) ) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete ${privilage} privilage from role")
+            }
+        }
+
+        def existingRolesInRole = existingRole.getRoles()
+        roles.each { role ->
+            if (! (role in existingRolesInRole) ) {
+                gitChangeMessage.add("add ${role} role to role")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+
+        existingRolesInRole.each { role ->
+            if (! (role in roles) ) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete ${role} role from role")
+            }
+        }
+
         if (gitChangeMessage) {
-            currentResult.put('change_in_git', gitChangeMessage.join(' -- '))
-            currentResult.put('change_in_runtime', runtimeChangeMessage.join(' -- '))
+            currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+            currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
             currentResult.put('change_type', 'change')
             currentResult.put('description', "the ${roleDef.id} role will be update")
-            currentResult.put('action', '')
+            currentResult.put('resource', 'role')
             currentResult.put('downtime', false)
         }
     } catch (NoSuchRoleException ignored) {
@@ -51,7 +77,7 @@ parsed_args.details.each { roleDef ->
             currentResult.put('change_in_runtime', 'N/A')
             currentResult.put('change_type', 'add')
             currentResult.put('description', "the ${roleDef.id} role will be added")
-            currentResult.put('action', '')
+            currentResult.put('resource', 'role')
             currentResult.put('downtime', false)
     }
     scriptResults['action_details'].add(currentResult)
@@ -72,7 +98,7 @@ authManager.listRoles().each { rtRole ->
         currentResult.put('change_in_runtime', "${rtRole.getRoleId()} role exist")
         currentResult.put('change_type', 'delete')
         currentResult.put('description', "the ${rtRole.getRoleId()} role will be deleted")
-        currentResult.put('action', '')
+        currentResult.put('resource', 'role')
         currentResult.put('downtime', false)
 
         scriptResults['action_details'].add(currentResult)
@@ -80,4 +106,3 @@ authManager.listRoles().each { rtRole ->
 }
 
 return JsonOutput.toJson(scriptResults)
-// return scriptResults
