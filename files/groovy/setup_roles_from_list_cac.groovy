@@ -83,25 +83,33 @@ parsed_args.details.each { roleDef ->
     scriptResults['action_details'].add(currentResult)
 }
 
+def excludeRoles = ['nx-admin', 'nx-anonymous']
+
 authManager.listRoles().each { rtRole ->
-    def needToDelete = true
-    Map<String, String> currentResult = [:]
+    if (! (rtRole.getRoleId() in excludeRoles) ) {
+        def needToDelete = true
+        Map<String, String> currentResult = [:]
 
-    parsed_args.details.any { roleDef ->
-        if (rtRole.getRoleId() == roleDef.id) {
-            needToDelete = false
-            return true
+        parsed_args.details.any { roleDef ->
+            if (rtRole.getRoleId() == roleDef.id) {
+                needToDelete = false
+                return true
+            }
         }
-    }
-    if (needToDelete){
-        currentResult.put('change_in_git', 'N/A')
-        currentResult.put('change_in_runtime', "${rtRole.getRoleId()} role exist")
-        currentResult.put('change_type', 'delete')
-        currentResult.put('description', "the ${rtRole.getRoleId()} role will be deleted")
-        currentResult.put('resource', 'role')
-        currentResult.put('downtime', false)
+        if (needToDelete){
+            currentResult.put('change_in_git', 'N/A')
+            currentResult.put('change_in_runtime', "${rtRole.getRoleId()} role exist")
+            currentResult.put('change_type', 'delete')
+            currentResult.put('description', "the ${rtRole.getRoleId()} role will be deleted")
+            currentResult.put('resource', 'role')
+            currentResult.put('downtime', false)
 
-        scriptResults['action_details'].add(currentResult)
+            scriptResults['action_details'].add(currentResult)
+        }
+
+        if (! parsed_args.dry_run) {
+            authManager.deleteRole(rtRole.getRoleId())
+        }
     }
 }
 
