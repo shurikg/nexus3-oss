@@ -82,7 +82,7 @@ compareNexusVersion(currentDetails['nexus-status']['version'], parsed_args['requ
 compareNexusPort(currentDetails['nexus-properties']['application-port'], parsed_args['require']['nexus_default_port'])
 compareContextPath(currentDetails['nexus-properties']['nexus-context-path'], parsed_args['require']['nexus_default_context_path'])
 compareTimezone(currentDetails['nexus-properties']['user.timezone'], parsed_args['require']['nexus_timezone'])
-compareInstallationDir(currentDetails['nexus-configuration']['installDirectory'], parsed_args['require']['nexus_installation_dir'])
+compareInstallationDir(currentDetails['nexus-configuration']['installDirectory'], parsed_args['require']['nexus_installation_dir']+'/nexus-'+parsed_args['require']['nexus_version'])
 compareTempDir(currentDetails['nexus-configuration']['temporaryDirectory'], parsed_args['require']['nexus_tmp_dir'])
 compareUserName(currentDetails['nexus-properties']['user.name'], parsed_args['require']['nexus_os_user'])
 compareUserHome(currentDetails['nexus-properties']['user.home'], parsed_args['require']['nexus_os_user_home_dir'])
