@@ -19,15 +19,11 @@
 
     - name: append changes
       set_fact:
-        cac_changes: "{{cac_changes | combine( script_run.json.result | from_json,  list_merge='append') }}"
-
-    - name: Details about runned script if verbose mode is on
-      debug:
-        msg: "{{ script_run.json.result| from_json| type_debug}}"
+        cac_changes: "{{cac_changes | combine( script_run.json.result | from_json,  list_merge='append', recursive=True) }}"
 
     - name: Details about cac script if verbose mode is on
       debug:
-        msg: "{{ script_run }}"
+        msg: "{{ cac_changes }}"
 
     - name: Details about runned script if verbose mode is on
       debug:
@@ -35,6 +31,10 @@
         verbosity: 1
       when: not ansible_check_mode
   rescue:
+
+    - name: Debug script result for global fail
+      debug:
+        var: script_run
 
     - when: script_run | nexus_groovy_details == 'Global script failure'
       block:

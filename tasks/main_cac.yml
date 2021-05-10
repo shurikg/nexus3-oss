@@ -89,19 +89,79 @@
     cac_changes: []
   check_mode: no
 
-- name: CasC users
-  include_tasks: call_cac_script.yml
-  vars:
-    script_name: setup_users_from_list_cac
-    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_local_users } ) }}"
-  when: nexus_local_users | length > 0
+# - name: CasC users
+#   include_tasks: call_cac_script.yml
+#   vars:
+#     script_name: cac_users
+#     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_local_users } ) }}"
+#   when: nexus_local_users | length > 0
 
-- name: CasC roles
+# - name: CasC roles
+#   include_tasks: call_cac_script.yml
+#   vars:
+#     script_name: cac_roles
+#     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_roles } ) }}"
+#   when: nexus_roles | length > 0
+
+# - name: CasC blobstore
+#   include_tasks: call_cac_script.yml
+#   vars:
+#     script_name: cac_blobstores
+#     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
+#     when: nexus_blobstores | length > 0
+
+# - name: CasC general
+#   include_tasks: call_cac_script.yml
+#   vars:
+#     script_name: cac_general_configurations
+#     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
+
+# - name: Calling Groovy script {{ script_name }}
+#   uri:
+#     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
+#       {{ nexus_api_context_path }}service/rest/atlas/system-information"
+#     user: 'admin'
+#     password: "{{ current_nexus_admin_password }}"
+#     headers:
+#       Content-Type: "text/plain"
+#     method: GET
+#     force_basic_auth: yes
+#     validate_certs: "{{ nexus_api_validate_certs }}"
+#   register: script_run
+#   check_mode: no
+
+- set_fact:
+    generic_configuration:
+      require:
+        nexus_download_url: "{{ nexus_download_url }}"
+        # nexus_package: "{{ nexus_package }}"
+        nexus_download_dir: "{{ nexus_download_dir }}"
+        nexus_installation_dir: "{{ nexus_installation_dir }}"
+        nexus_version: "{{ nexus_version }}"
+        nexus_os_user: "{{ nexus_os_user }}"
+        nexus_os_group: "{{ nexus_os_group }}"
+        nexus_data_dir: "{{ nexus_data_dir }}"
+        nexus_timezone: "{{ nexus_timezone }}"
+        nexus_min_heap_size: "{{ nexus_min_heap_size }}"
+        nexus_max_heap_size: "{{ nexus_max_heap_size }}"
+        nexus_max_direct_memory: "{{ nexus_max_direct_memory }}"
+        nexus_tmp_dir: "{{ nexus_tmp_dir }}"
+        nexus_os_user_home_dir: "{{ nexus_os_user_home_dir }}"
+        # nexus_default_settings_file: "{{ nexus_default_settings_file }}"
+        nexus_default_port: "{{ nexus_default_port }}"
+        nexus_default_context_path: "{{ nexus_default_context_path }}"
+        nexus_application_host: "{{ nexus_application_host }}"
+        nexus_os_max_filedescriptors: "{{ nexus_os_max_filedescriptors }}"
+  check_mode: no
+
+- name: CasC general
   include_tasks: call_cac_script.yml
   vars:
-    script_name: setup_roles_from_list_cac
-    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_roles } ) }}"
-  when: nexus_roles | length > 0
+    script_name: cac_general_configurations
+    args: "{{ generic_configuration }}"
+
+- debug:
+    msg: "{{ script_run }}"
 
 - name: create final cac report
   set_fact:
@@ -110,7 +170,6 @@
       git_branch:
       runtime:
       git_commit_id:
-      # changes: "{{ cac_changes }}"
       changes: "{{ cac_changes.action_details }}"
   check_mode: no
 

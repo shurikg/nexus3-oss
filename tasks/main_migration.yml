@@ -88,21 +88,30 @@
   set_fact:
     cac_changes: []
 
-- name: CasC users
+- name: migrate roles
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_roles
+    args: "{}"
+
+- name: migrate users
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_local_users
-    args: "{{ nexus_local_users }}"
-  when: nexus_local_users | length > 0
+    args: "{}"
 
-- name: create final cac report
-  set_fact:
-    __final_cac_report:
-      git:
-      git_branch:
-      runtime:
-      git_commit_id:
-      changes: "{{ cac_changes.action_details }}"
+- name: migrate generic content
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_general_configurations
+    args: "{}"
 
-- name: save the cac report
-  copy: content="{{ __final_cac_report }}" dest="{{ nexus_cac_report_file }}"
+- name: Creates directory
+  file:
+    path: "{{ playbook_dir }}/migration_output/group_vars/nexus/chi"
+    state: directory
+
+- name: Add several users
+  copy: content="{{ item.value | to_nice_yaml}}" dest="{{ playbook_dir }}/migration_output/group_vars/nexus/{{ item.key }}"
+  loop: "{{ cac_changes.action_details | dict2items }}"
+

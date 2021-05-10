@@ -1,70 +1,43 @@
 import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
 import org.sonatype.nexus.security.authz.AuthorizationManager
 import org.sonatype.nexus.security.role.Role
 import org.sonatype.nexus.security.user.UserManager
-import org.sonatype.nexus.security.role.NoSuchRoleException
 
-List<Map<String, String>> actionDetails = []
-Map scriptResults = [changed: false, error: false]
-scriptResults.put('action_details', actionDetails)
+def fileName = "roles.yml"
+def migrationRoles = ['nexus_roles': []]
 
-parsed_args = new JsonSlurper().parseText(args)
+Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
 AuthorizationManager authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
 
-parsed_args.each { roleDef ->
+def excludeRoles = ['nx-admin', 'nx-anonymous']
 
-    Map<String, String> currentResult = [id: roleDef.id, name: roleDef.name, status: 'no change']
+authManager.listRoles().each { rtRole ->
+    if (! (rtRole.getRoleId() in excludeRoles) ) {
+        Map<String, String> currentResult = [:]
 
-    privileges = (roleDef.privileges == null ? new HashSet() : roleDef.privileges.toSet())
-    roles = (roleDef.roles == null ? new HashSet() : roleDef.roles.toSet())
+        def privilageToAdd = []
+        def roleToAdd = []
+        currentResult.put('id', rtRole.getRoleId())
+        currentResult.put('name', rtRole.getName())
+        currentResult.put('description', rtRole.getDescription())
 
-    try {
-        Role newRole = authManager.getRole(roleDef.id)
-        newRole.setName(roleDef.name)
-        newRole.setDescription(roleDef.description)
-        newRole.setPrivileges(privileges)
-        newRole.setRoles(roles)
-        Role currentRole = authManager.getRole(roleDef.id)
-        if (
-                // Role comparison does not include roles and priviliges
-                newRole != currentRole
-                || newRole.getRoles() != currentRole.getRoles()
-                || newRole.getPrivileges() != currentRole.getPrivileges()
-        ) {
-            try {
-                authManager.updateRole(newRole)
-                log.info("Role {} updated", roleDef.name)
-                currentResult.status = 'updated'
-                scriptResults.changed = true
-            } catch (Exception e) {
-                log.error("Role {} could not be updated", )
-                currentResult.status = 'error'
-                currentResult.put('error_msg', e.toString())
-                scriptResults.error = true
-            }
+        def existingPrivileges = rtRole.getPrivileges()
+        existingPrivileges.each { privilage ->
+            privilageToAdd.add(privilage)
         }
-    } catch (NoSuchRoleException ignored) {
-        try {
-            security.addRole(roleDef.id, roleDef.name, roleDef.description, privileges.toList(), roles.toList())
-            log.info("Role {} created", roleDef.name)
-            currentResult.status = 'created'
-            scriptResults.changed = true
-        } catch (Exception e) {
-            log.error("Role {} could not be created", roleDef.name)
-            currentResult.status = 'error'
-            currentResult.put('error_msg', e.toString())
-            scriptResults.error = true
+
+        def existingRolesInRole = rtRole.getRoles()
+        existingRolesInRole.each { role ->
+            roleToAdd.add(role.getRoleId())
         }
-    } catch (Exception e) {
-        log.error(e.stackTrace.toString())
-        currentResult.status = 'error'
-        currentResult.put('error_msg', e.toString())
-        scriptResults.error = true
+
+        currentResult.put('privileges', privilageToAdd)
+        currentResult.put('roles', roleToAdd)
+
+        migrationRoles['nexus_roles'].add(currentResult)
     }
-
-    scriptResults['action_details'].add(currentResult)
 }
+scriptResults['action_details'].put(fileName, migrationRoles)
 
 return JsonOutput.toJson(scriptResults)

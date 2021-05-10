@@ -1,20 +1,13 @@
 import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-import groovy.transform.Field
 import org.sonatype.nexus.security.role.RoleIdentifier
-import org.sonatype.nexus.security.user.InvalidCredentialsException
 import org.sonatype.nexus.security.user.UserManager
-import org.sonatype.nexus.security.user.UserNotFoundException
 import org.sonatype.nexus.security.user.User
 
-List<Map<String, String>> actionDetails = []
-@Field Map scriptResults = [changed: false, error: false]
-scriptResults.put('action_details', actionDetails)
-authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
-
-parsed_args = new JsonSlurper().parseText(args)
-
+def fileName = "users.yml"
 def migrationUsers = ['nexus_local_users': []]
+Map scriptResults = [changed: false, error: false, 'action_details': [:]]
+
+authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
 
 def excludeUsers = ['admin']
 
@@ -41,5 +34,6 @@ security.securitySystem.listUsers().each { rtUser ->
 
     }
 }
-scriptResults['action_details'].add(migrationUsers)
+scriptResults['action_details'].put(fileName, migrationUsers)
+
 return JsonOutput.toJson(scriptResults)
