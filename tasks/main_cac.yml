@@ -110,26 +110,6 @@
     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
     when: nexus_blobstores | length > 0
 
-- name: CasC general
-  include_tasks: call_cac_script.yml
-  vars:
-    script_name: cac_general_configurations
-    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
-
-- name: Calling Groovy script {{ script_name }}
-  uri:
-    url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
-      {{ nexus_api_context_path }}service/rest/atlas/system-information"
-    user: 'admin'
-    password: "{{ current_nexus_admin_password }}"
-    headers:
-      Content-Type: "text/plain"
-    method: GET
-    force_basic_auth: yes
-    validate_certs: "{{ nexus_api_validate_certs }}"
-  register: script_run
-  check_mode: no
-
 - set_fact:
     generic_configuration:
       require:
