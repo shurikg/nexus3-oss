@@ -77,6 +77,34 @@ def compareUserHome(currentUserHome, requireUserHome) {
         addChange(requireUserHome, currentUserHome, "nexus user home will be change")
     }
 }
+
+def compareMinHeapSize(currentSize, requireSize) {
+    if (currentSize != requireSize) {
+        addChange(requireSize, currentSize, "nexus min memory heap size will be change")
+    }
+}
+
+def compareMaxHeapSize(currentSize, requireSize) {
+    if (currentSize != requireSize) {
+        addChange(requireSize, currentSize, "nexus max memory heap size will be change")
+    }
+}
+
+def compareMaxDirectSize(currentSize, requireSize) {
+    if (currentSize != requireSize) {
+        addChange(requireSize, currentSize, "nexus max direct memory size will be change")
+    }
+}
+
+// def compareAnonymousAccess(requireAccess) {
+
+//     security.setAnonymousAccess(Boolean.valueOf(parsed_args.anonymous_access))
+
+//     if (currentSize != requireSize) {
+//         addChange(requireSize, currentSize, "nexus max direct memory size will be change")
+//     }
+// }
+
 //  ----- M A I N -------
 compareNexusVersion(currentDetails['nexus-status']['version'], parsed_args['require']['nexus_version'])
 compareNexusPort(currentDetails['nexus-properties']['application-port'], parsed_args['require']['nexus_default_port'])
@@ -86,7 +114,9 @@ compareInstallationDir(currentDetails['nexus-configuration']['installDirectory']
 compareTempDir(currentDetails['nexus-configuration']['temporaryDirectory'], parsed_args['require']['nexus_tmp_dir'])
 compareUserName(currentDetails['nexus-properties']['user.name'], parsed_args['require']['nexus_os_user'])
 compareUserHome(currentDetails['nexus-properties']['user.home'], parsed_args['require']['nexus_os_user_home_dir'])
-
+compareMinHeapSize(parsed_args['current']['nexus_min_heap_size'],parsed_args['require']['nexus_min_heap_size'])
+compareMaxHeapSize(parsed_args['current']['nexus_max_heap_size'],parsed_args['require']['nexus_max_heap_size'])
+compareMaxDirectSize(parsed_args['current']['nexus_max_direct_memory'],parsed_args['require']['nexus_max_direct_memory'])
 
 return JsonOutput.toJson(scriptResults)
 
@@ -121,9 +151,19 @@ return JsonOutput.toJson(scriptResults)
 // nexus_download_dir
 // nexus_os_group
 // nexus_data_dir
-// nexus_min_heap_size  2703M
-// nexus_max_heap_size
-// nexus_max_direct_memory
 // nexus_default_settings_file
 // nexus_application_host
 // nexus_os_max_filedescriptors
+
+
+// - include_tasks: call_script.yml
+//   vars:
+//     script_name: setup_anonymous_access
+//     args:
+//       anonymous_access: "{{ nexus_anonymous_access }}"
+
+// - include_tasks: call_script.yml
+//   vars:
+//     script_name: setup_base_url
+//     args:
+//       base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"
