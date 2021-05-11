@@ -109,7 +109,7 @@
 - name: migrate realm
   include_tasks: call_cac_script.yml
   vars:
-    script_name: migrate_realm
+    script_name: migrate_realms
     args: "{}"
 
 - name: migrate generic content
@@ -122,6 +122,12 @@
   file:
     path: "{{ playbook_dir }}/migration_output/group_vars/nexus/chi"
     state: directory
+
+- debug:
+    msg: "{{ cac_changes }}"
+
+- debug:
+    msg: "{{ cac_changes.action_details | dict2items }}"
 
 - name: Add several users
   copy: content="{{ item.value | to_nice_yaml}}" dest="{{ playbook_dir }}/migration_output/group_vars/nexus/{{ item.key }}"

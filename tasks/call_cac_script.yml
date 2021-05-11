@@ -1,5 +1,8 @@
 ---
 - block:
+    - debug:
+        msg: "{{ args | to_json }}"
+
     - name: Calling Groovy script {{ script_name }}
       uri:
         url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
@@ -16,6 +19,9 @@
       failed_when: script_run | nexus_groovy_error | bool
       changed_when: script_run | nexus_groovy_changed | bool
       check_mode: no
+
+    - debug:
+        msg: "{{ script_run }}"
 
     - name: append changes
       set_fact:

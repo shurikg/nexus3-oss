@@ -4,6 +4,8 @@ import org.sonatype.nexus.email.EmailManager
 
 parsed_args = new JsonSlurper().parseText(args)
 
+def emailMgr = container.lookup(EmailManager.class.getName())
+
 List<Map<String, String>> actionDetails = []
 Map scriptResults = [changed: false, error: false, runner: 'email']
 scriptResults.put('action_details', actionDetails)

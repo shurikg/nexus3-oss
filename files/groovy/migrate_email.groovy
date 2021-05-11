@@ -1,6 +1,7 @@
-import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 import org.sonatype.nexus.email.EmailManager
+
+def emailMgr = container.lookup(EmailManager.class.getName())
 
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
@@ -8,7 +9,7 @@ def content = [:]
 def config = emailMgr.getConfiguration()
 
 content.put('nexus_email_server_enabled', config.isEnabled())
-content.put('nexus_email_server_host', config.getPort())
+content.put('nexus_email_server_host', config.getHost())
 content.put('nexus_email_server_port', config.getPort())
 content.put('nexus_email_server_username', config.getUsername())
 content.put('nexus_email_server_password', config.getPassword())
