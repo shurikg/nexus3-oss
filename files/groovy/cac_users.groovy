@@ -102,28 +102,6 @@ def deleteUser(userDef, currentResult) {
     } catch (UserNotFoundException ignored) {
         log.info("Delete user: user {} does not exist", userDef.username)
     }
-
-//     user.setFirstName(userDef.first_name)
-//     user.setLastName(userDef.last_name)
-//     user.setEmailAddress(userDef.email)
-
-//     if (user != security.securitySystem.getUser(userDef.username)) {
-//         security.securitySystem.updateUser(user)
-//         currentResult.put('status', 'updated')
-//         scriptResults['changed'] = true
-//     }
-//     try {
-//         security.securitySystem.deleteUser(userDef.username, UserManager.DEFAULT_SOURCE)
-//         log.info("Deleted user {}", userDef.username)
-//         currentResult.put('status', 'deleted')
-//         scriptResults['changed'] = true
-//     } catch (UserNotFoundException ignored) {
-//         log.info("Delete user: user {} does not exist", userDef.username)
-//     } catch (Exception e) {
-//         currentResult.put('status', 'error')
-//         currentResult.put('error_msg', e.toString())
-//         scriptResults['error'] = true
-//     }
 }
 
 /* Main */
@@ -174,6 +152,18 @@ security.securitySystem.listUsers().each { rtUser ->
             currentResult.put('downtime', false)
 
             scriptResults['action_details'].add(currentResult)
+
+            if (! parsed_args.dry_run) {
+                try {
+                    security.securitySystem.deleteUser(rtUser.getUserId(), UserManager.DEFAULT_SOURCE)
+                    log.info("Deleted user {}", rtUser.getUserId())
+                    scriptResults['changed'] = true
+                } catch (UserNotFoundException ignored) {
+                    log.info("Delete user: user {} does not exist", rtUser.getUserId())
+                } catch (Exception e) {
+                    scriptResults['error'] = true
+                }
+            }
         }
     }
 }

@@ -100,6 +100,18 @@
     script_name: migrate_local_users
     args: "{}"
 
+- name: migrate email
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_email
+    args: "{}"
+
+- name: migrate realm
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_realm
+    args: "{}"
+
 - name: migrate generic content
   include_tasks: call_cac_script.yml
   vars:

@@ -71,6 +71,7 @@ parsed_args.details.each { roleDef ->
             currentResult.put('description', "the ${roleDef.id} role will be update")
             currentResult.put('resource', 'role')
             currentResult.put('downtime', false)
+            scriptResults['action_details'].add(currentResult)
         }
     } catch (NoSuchRoleException ignored) {
             currentResult.put('change_in_git', "definition of new ${roleDef.id} role")
@@ -79,8 +80,8 @@ parsed_args.details.each { roleDef ->
             currentResult.put('description', "the ${roleDef.id} role will be added")
             currentResult.put('resource', 'role')
             currentResult.put('downtime', false)
+            scriptResults['action_details'].add(currentResult)
     }
-    scriptResults['action_details'].add(currentResult)
 }
 
 def excludeRoles = ['nx-admin', 'nx-anonymous']
