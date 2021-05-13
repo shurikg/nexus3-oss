@@ -112,11 +112,28 @@
     script_name: migrate_realms
     args: "{}"
 
+- name: migrate anonymous access
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_anonymous_access
+    args: "{}"
+
+- name: migrate http proxy
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_http_proxy
+    args: "{}"
+
 - name: migrate generic content
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_general_configurations
     args: "{}"
+
+- name: Clean migration directory
+  file:
+    path: "{{ playbook_dir }}/migration_output"
+    state: absent
 
 - name: Creates directory
   file:

@@ -77,6 +77,8 @@ if (config.isNexusTrustStoreEnabled() != parsed_args.email_trust_store_enabled) 
 }
 
 if (gitChangeMessage) {
+        Map<String, String> currentResult = [:]
+
         currentResult.put('change_in_git', gitChangeMessage.join('\n'))
         currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
         currentResult.put('change_type', 'change')
