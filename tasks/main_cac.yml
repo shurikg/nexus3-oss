@@ -89,55 +89,55 @@
     cac_changes: []
   check_mode: no
 
-# - name: CasC users
-#   include_tasks: call_cac_script.yml
-#   vars:
-#     script_name: cac_users
-#     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_local_users } ) }}"
-#   when: nexus_local_users | length > 0
+- name: CasC users
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_users
+    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_local_users } ) }}"
+  when: nexus_local_users | length > 0
 
-# - name: CasC roles
-#   include_tasks: call_cac_script.yml
-#   vars:
-#     script_name: cac_roles
-#     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_roles } ) }}"
-#   when: nexus_roles | length > 0
+- name: CasC roles
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_roles
+    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_roles } ) }}"
+  when: nexus_roles | length > 0
 
-# - name: CasC email
-#   include_tasks: call_cac_script.yml
-#   vars:
-#     script_name: cac_email
-#     args:
-#       email_server_enabled: "{{ nexus_email_server_enabled }}"
-#       email_server_host: "{{ nexus_email_server_host }}"
-#       email_server_port: "{{ nexus_email_server_port }}"
-#       email_server_username: "{{ nexus_email_server_username }}"
-#       email_server_password: "{{ nexus_email_server_password }}"
-#       email_from_address: "{{ nexus_email_from_address }}"
-#       email_subject_prefix: "{{ nexus_email_subject_prefix }}"
-#       email_tls_enabled: "{{ nexus_email_tls_enabled }}"
-#       email_tls_required: "{{ nexus_email_tls_required }}"
-#       email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
-#       email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
-#       email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
+- name: CasC email
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_email
+    args:
+      email_server_enabled: "{{ nexus_email_server_enabled }}"
+      email_server_host: "{{ nexus_email_server_host }}"
+      email_server_port: "{{ nexus_email_server_port }}"
+      email_server_username: "{{ nexus_email_server_username }}"
+      email_server_password: "{{ nexus_email_server_password }}"
+      email_from_address: "{{ nexus_email_from_address }}"
+      email_subject_prefix: "{{ nexus_email_subject_prefix }}"
+      email_tls_enabled: "{{ nexus_email_tls_enabled }}"
+      email_tls_required: "{{ nexus_email_tls_required }}"
+      email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
+      email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
+      email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
 
-# - name: CasC realm
-#   include_tasks: call_cac_script.yml
-#   vars:
-#     script_name: cac_realms
-#     args:
-#       nuget_api_key_realm: "{{ nexus_nuget_api_key_realm }}"
-#       npm_bearer_token_realm: "{{ nexus_npm_bearer_token_realm }}"
-#       rut_auth_realm: "{{ nexus_rut_auth_realm }}"
-#       ldap_realm: "{{ nexus_ldap_realm }}"
-#       docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
+- name: CasC realm
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_realms
+    args:
+      nuget_api_key_realm: "{{ nexus_nuget_api_key_realm }}"
+      npm_bearer_token_realm: "{{ nexus_npm_bearer_token_realm }}"
+      rut_auth_realm: "{{ nexus_rut_auth_realm }}"
+      ldap_realm: "{{ nexus_ldap_realm }}"
+      docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
 
-# - name: CasC anonymous access
-#   include_tasks: call_cac_script.yml
-#   vars:
-#     script_name: cac_anonymous_access
-#     args:
-#       anonymous_access: "{{ nexus_anonymous_access }}"
+- name: CasC anonymous access
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_anonymous_access
+    args:
+      anonymous_access: "{{ nexus_anonymous_access }}"
 
 # - name: apply defaults to privileges
 #   # @todo: fix with easier syntax once the flip filter is released
@@ -179,63 +179,63 @@
       https_proxy_password: "{{ nexus_https_proxy_password }}"
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
 
-# - name: CasC blobstore
-#   include_tasks: call_cac_script.yml
-#   vars:
-#     script_name: cac_blobstores
-#     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
-#     when: nexus_blobstores | length > 0
+- name: CasC blobstore
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_blobstores
+    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
+    when: nexus_blobstores | length > 0
 
 
-# - name: get max memory definition
-#   shell: grep "^-Xms" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
-#   register: max_memory
-#   check_mode: no
+- name: get max memory definition
+  shell: grep "^-Xms" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
+  register: max_memory
+  check_mode: no
 
-# - name: get min memory definition
-#   shell: grep "^-Xmx" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
-#   register: min_memory
-#   check_mode: no
+- name: get min memory definition
+  shell: grep "^-Xmx" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
+  register: min_memory
+  check_mode: no
 
-# - name: get max_direct memory definition
-#   shell: grep "^-XX:MaxDirectMemorySize=" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -d= -f2
-#   register: max_direct_memory
-#   check_mode: no
+- name: get max_direct memory definition
+  shell: grep "^-XX:MaxDirectMemorySize=" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -d= -f2
+  register: max_direct_memory
+  check_mode: no
 
-# - set_fact:
-#     generic_configuration:
-#       require:
-#         nexus_download_url: "{{ nexus_download_url }}"
-#         # nexus_package: "{{ nexus_package }}"
-#         nexus_download_dir: "{{ nexus_download_dir }}"
-#         nexus_installation_dir: "{{ nexus_installation_dir }}"
-#         nexus_version: "{{ nexus_version }}"
-#         nexus_os_user: "{{ nexus_os_user }}"
-#         nexus_os_group: "{{ nexus_os_group }}"
-#         nexus_data_dir: "{{ nexus_data_dir }}"
-#         nexus_timezone: "{{ nexus_timezone }}"
-#         nexus_min_heap_size: "{{ nexus_min_heap_size }}"
-#         nexus_max_heap_size: "{{ nexus_max_heap_size }}"
-#         nexus_max_direct_memory: "{{ nexus_max_direct_memory }}"
-#         nexus_tmp_dir: "{{ nexus_tmp_dir }}"
-#         nexus_os_user_home_dir: "{{ nexus_os_user_home_dir }}"
-#         # nexus_default_settings_file: "{{ nexus_default_settings_file }}"
-#         nexus_default_port: "{{ nexus_default_port }}"
-#         nexus_default_context_path: "{{ nexus_default_context_path }}"
-#         nexus_application_host: "{{ nexus_application_host }}"
-#         nexus_os_max_filedescriptors: "{{ nexus_os_max_filedescriptors }}"
-#         anonymous_access: "{{ nexus_anonymous_access }}"
-#       current:
-#         nexus_min_heap_size: "{{ min_memory.stdout }}"
-#         nexus_max_heap_size: "{{ max_memory.stdout }}"
-#         nexus_max_direct_memory: "{{ max_direct_memory.stdout }}"
-#   check_mode: no
+- set_fact:
+    generic_configuration:
+      require:
+        nexus_download_url: "{{ nexus_download_url }}"
+        # nexus_package: "{{ nexus_package }}"
+        nexus_download_dir: "{{ nexus_download_dir }}"
+        nexus_installation_dir: "{{ nexus_installation_dir }}"
+        nexus_version: "{{ nexus_version }}"
+        nexus_os_user: "{{ nexus_os_user }}"
+        nexus_os_group: "{{ nexus_os_group }}"
+        nexus_data_dir: "{{ nexus_data_dir }}"
+        nexus_timezone: "{{ nexus_timezone }}"
+        nexus_min_heap_size: "{{ nexus_min_heap_size }}"
+        nexus_max_heap_size: "{{ nexus_max_heap_size }}"
+        nexus_max_direct_memory: "{{ nexus_max_direct_memory }}"
+        nexus_tmp_dir: "{{ nexus_tmp_dir }}"
+        nexus_os_user_home_dir: "{{ nexus_os_user_home_dir }}"
+        # nexus_default_settings_file: "{{ nexus_default_settings_file }}"
+        nexus_default_port: "{{ nexus_default_port }}"
+        nexus_default_context_path: "{{ nexus_default_context_path }}"
+        nexus_application_host: "{{ nexus_application_host }}"
+        nexus_os_max_filedescriptors: "{{ nexus_os_max_filedescriptors }}"
+        anonymous_access: "{{ nexus_anonymous_access }}"
+      current:
+        nexus_min_heap_size: "{{ min_memory.stdout }}"
+        nexus_max_heap_size: "{{ max_memory.stdout }}"
+        nexus_max_direct_memory: "{{ max_direct_memory.stdout }}"
+  check_mode: no
 
-# - name: CasC general
-#   include_tasks: call_cac_script.yml
-#   vars:
-#     script_name: cac_general_configurations
-#     args: "{{ generic_configuration }}"
+- name: CasC general
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_general_configurations
+    args: "{{ generic_configuration }}"
 
 - debug:
     msg: "{{ cac_changes }}"

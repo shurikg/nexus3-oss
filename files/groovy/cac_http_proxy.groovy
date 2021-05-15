@@ -12,7 +12,7 @@ scriptResults.put('action_details', [])
 def httpClientManager = container.lookup(HttpClientManagerImpl.class.getName())
 def httpConfiguration = httpClientManager.getConfiguration()
 ProxyConfiguration proxyConfiguration = httpConfiguration.getProxy()
-ProxyServerConfiguration rtHttpProxy = proxyConfiguration.getHttp()
+ProxyServerConfiguration rtHttpProxy = proxyConfiguration?.getHttp()
 
 def gitChangeMessage = []
 def runtimeChangeMessage = []
@@ -38,7 +38,7 @@ if (parsed_args.nexus_http_proxy_password != rtHttpProxy?.getAuthentication()?.g
     runtimeChangeMessage.add("http proxy password = ${rtHttpProxy?.getAuthentication()?.getPassword()}")
 }
 
-def rtHttpsProxy = proxyConfiguration.getHttps()
+def rtHttpsProxy = proxyConfiguration?.getHttps()
 if (parsed_args.with_https_prox != rtHttpsProxy?.isEnabled()) {
     gitChangeMessage.add("https proxy = ${parsed_args.with_https_prox}")
     runtimeChangeMessage.add("https proxy = ${rtHttpsProxy?.isEnabled()}")
@@ -59,9 +59,9 @@ if (parsed_args.nexus_https_proxy_password != rtHttpsProxy?.getAuthentication()?
     gitChangeMessage.add("https proxy password = ${parsed_args.nexus_https_proxy_password}")
     runtimeChangeMessage.add("https proxy password = ${rtHttpsProxy?.getAuthentication()?.getPassword()}")
 }
-if (parsed_args.nexus_proxy_exclude_hosts != proxyConfiguration.getNonProxyHosts()) {
+if (parsed_args.nexus_proxy_exclude_hosts != proxyConfiguration?.getNonProxyHosts()) {
     gitChangeMessage.add("no proxy = ${parsed_args.nexus_https_proxy_password}")
-    runtimeChangeMessage.add("no proxy = ${proxyConfiguration.getNonProxyHosts()}")
+    runtimeChangeMessage.add("no proxy = ${proxyConfiguration?.getNonProxyHosts()}")
 }
 
 if (gitChangeMessage) {
@@ -83,7 +83,7 @@ if (! parsed_args.dry_run && ! parsed_args.with_http_proxy && ! parsed_args.with
     if (rtHttpsProxy?.isEnabled()) {
         core.removeHTTPSProxy()
     }
-    if (proxyConfiguration.getNonProxyHosts()) {
+    if (proxyConfiguration?.getNonProxyHosts()) {
         core.nonProxyHosts()
     }
 }
