@@ -26,26 +26,26 @@ parsed_args.details.each { roleDef ->
         Role existingRole = authManager.getRole(roleDef.id)
 
         if (existingRole.getName() != roleDef.name) {
-            gitChangeMessage.add("name = ${existingRole.getName()}")
-            runtimeChangeMessage.add("name = ${roleDef.name}")
+            gitChangeMessage.add("name = ${roleDef.name}")
+            runtimeChangeMessage.add("name = ${existingRole.getName()}")
         }
         if (existingRole.getDescription() != roleDef.description) {
-            gitChangeMessage.add("description = ${existingRole.getDescription()}")
-            runtimeChangeMessage.add("description = ${roleDef.description}")
+            gitChangeMessage.add("description = ${roleDef.description}")
+            runtimeChangeMessage.add("description = ${existingRole.getDescription()}")
         }
 
         def existingPrivileges = existingRole.getPrivileges()
-        privileges.each { privilage ->
-            if (! (privilage in existingPrivileges) ) {
-                gitChangeMessage.add("add ${privilage} privilage to role")
+        privileges.each { privilege ->
+            if (! (privilege in existingPrivileges) ) {
+                gitChangeMessage.add("add ${privilege} privilege to role")
                 runtimeChangeMessage.add("N/A")
             }
         }
 
-        existingPrivileges.each { privilage ->
-            if (! (privilage in privileges) ) {
+        existingPrivileges.each { privilege ->
+            if (! (privilege in privileges) ) {
                 gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete ${privilage} privilage from role")
+                runtimeChangeMessage.add("delete ${privilege} privilege from role")
             }
         }
 
