@@ -106,10 +106,10 @@ authManager.listRoles().each { rtRole ->
             currentResult.put('downtime', false)
 
             scriptResults['action_details'].add(currentResult)
-        }
 
-        if (! parsed_args.dry_run) {
-            authManager.deleteRole(rtRole.getRoleId())
+            if (! parsed_args.dry_run) {
+                authManager.deleteRole(rtRole.getRoleId())
+            }
         }
     }
 }
