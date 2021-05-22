@@ -18,11 +18,10 @@ if (Boolean.valueOf(parsed_args.anonymous_access) != anonymousManager.isEnabled(
     currentResult.put('change_in_git', "anonymous access = ${parsed_args.anonymous_access}")
     currentResult.put('change_in_runtime', "anonymous access = ${anonymousManager.isEnabled()}")
     currentResult.put('change_type', 'change')
-    currentResult.put('description', "the anonymous access will be change")
+    currentResult.put('description', 'the anonymous access will be change')
     currentResult.put('resource', 'anonymous access')
     currentResult.put('downtime', false)
     scriptResults['action_details'].add(currentResult)
 }
 
 return JsonOutput.toJson(scriptResults)
-

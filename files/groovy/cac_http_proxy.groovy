@@ -5,6 +5,13 @@ import org.sonatype.nexus.httpclient.config.HttpClientConfiguration
 import org.sonatype.nexus.httpclient.config.ProxyConfiguration
 import org.sonatype.nexus.httpclient.config.ProxyServerConfiguration
 
+def getBooleanValue(value) {
+    if (value == null) {
+        return false
+    }
+    return value
+}
+
 parsed_args = new JsonSlurper().parseText(args)
 Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', [])
@@ -12,53 +19,58 @@ scriptResults.put('action_details', [])
 def httpClientManager = container.lookup(HttpClientManagerImpl.class.getName())
 def httpConfiguration = httpClientManager.getConfiguration()
 ProxyConfiguration proxyConfiguration = httpConfiguration.getProxy()
-ProxyServerConfiguration rtHttpProxy = proxyConfiguration?.getHttp()
 
 def gitChangeMessage = []
 def runtimeChangeMessage = []
 
-if (parsed_args.with_http_proxy != rtHttpProxy?.isEnabled()) {
-    gitChangeMessage.add("http proxy = ${parsed_args.with_http_prox}")
-    runtimeChangeMessage.add("http proxy = ${rtHttpProxy?.isEnabled()}")
-}
-if (parsed_args.http_proxy_host != rtHttpProxy?.getHost()) {
-    gitChangeMessage.add("http host = ${parsed_args.http_proxy_host}")
-    runtimeChangeMessage.add("http host = ${rtHttpProxy?.getHost()}")
-}
-if (parsed_args.http_proxy_port != rtHttpProxy?.getPort()) {
-    gitChangeMessage.add("http port = ${parsed_args.http_proxy_port}")
-    runtimeChangeMessage.add("http port = ${rtHttpProxy?.getPort()}")
-}
-if (parsed_args.nexus_http_proxy_username != rtHttpProxy?.getAuthentication()?.getUsername()) {
-    gitChangeMessage.add("http proxy username = ${parsed_args.nexus_http_proxy_username}")
-    runtimeChangeMessage.add("http proxy username = ${rtHttpProxy?.getAuthentication()?.getUsername()}")
-}
-if (parsed_args.nexus_http_proxy_password != rtHttpProxy?.getAuthentication()?.getPassword()) {
-    gitChangeMessage.add("http proxy password = ${parsed_args.nexus_http_proxy_password}")
-    runtimeChangeMessage.add("http proxy password = ${rtHttpProxy?.getAuthentication()?.getPassword()}")
+ProxyServerConfiguration rtHttpProxy = proxyConfiguration?.getHttp()
+if (parsed_args.with_http_proxy != false || getBooleanValue(rtHttpProxy?.isEnabled()) != false) {
+    if (parsed_args.with_http_proxy != getBooleanValue(rtHttpProxy?.isEnabled())) {
+        gitChangeMessage.add("http proxy = ${parsed_args.with_http_proxy}")
+        runtimeChangeMessage.add("http proxy = ${rtHttpProxy?.isEnabled()}")
+    }
+    if (parsed_args.http_proxy_host != rtHttpProxy?.getHost()) {
+        gitChangeMessage.add("http host = ${parsed_args.http_proxy_host}")
+        runtimeChangeMessage.add("http host = ${rtHttpProxy?.getHost()}")
+    }
+    if (parsed_args.http_proxy_port != rtHttpProxy?.getPort()) {
+        gitChangeMessage.add("http port = ${parsed_args.http_proxy_port}")
+        runtimeChangeMessage.add("http port = ${rtHttpProxy?.getPort()}")
+    }
+    if (parsed_args.nexus_http_proxy_username != rtHttpProxy?.getAuthentication()?.getUsername()) {
+        gitChangeMessage.add("http proxy username = ${parsed_args.nexus_http_proxy_username}")
+        runtimeChangeMessage.add("http proxy username = ${rtHttpProxy?.getAuthentication()?.getUsername()}")
+    }
+    if (parsed_args.nexus_http_proxy_password != rtHttpProxy?.getAuthentication()?.getPassword()) {
+        gitChangeMessage.add("http proxy password = ${parsed_args.nexus_http_proxy_password}")
+        runtimeChangeMessage.add("http proxy password = ${rtHttpProxy?.getAuthentication()?.getPassword()}")
+    }
 }
 
-def rtHttpsProxy = proxyConfiguration?.getHttps()
-if (parsed_args.with_https_prox != rtHttpsProxy?.isEnabled()) {
-    gitChangeMessage.add("https proxy = ${parsed_args.with_https_prox}")
-    runtimeChangeMessage.add("https proxy = ${rtHttpsProxy?.isEnabled()}")
+ProxyServerConfiguration rtHttpsProxy = proxyConfiguration?.getHttps()
+if (parsed_args.with_https_prox != false || getBooleanValue(rtHttpsProxy?.isEnabled()) != false) {
+    if (parsed_args.with_https_prox != rtHttpsProxy?.isEnabled()) {
+        gitChangeMessage.add("https proxy = ${parsed_args.with_https_prox}")
+        runtimeChangeMessage.add("https proxy = ${rtHttpsProxy?.isEnabled()}")
+    }
+    if (parsed_args.https_proxy_host != rtHttpsProxy?.getHost()) {
+        gitChangeMessage.add("https host = ${parsed_args.https_proxy_host}")
+        runtimeChangeMessage.add("https host = ${rtHttpsProxy?.getHost()}")
+    }
+    if (parsed_args.https_proxy_port != rtHttpsProxy?.getPort()) {
+        gitChangeMessage.add("https port = ${parsed_args.https_proxy_port}")
+        runtimeChangeMessage.add("https port = ${rtHttpsProxy?.getPort()}")
+    }
+    if (parsed_args.nexus_https_proxy_username != rtHttpsProxy?.getAuthentication()?.getUsername()) {
+        gitChangeMessage.add("https proxy username = ${parsed_args.nexus_https_proxy_username}")
+        runtimeChangeMessage.add("https proxy username = ${rtHttpsProxy?.getAuthentication()?.getUsername()}")
+    }
+    if (parsed_args.nexus_https_proxy_password != rtHttpsProxy?.getAuthentication()?.getPassword()) {
+        gitChangeMessage.add("https proxy password = ${parsed_args.nexus_https_proxy_password}")
+        runtimeChangeMessage.add("https proxy password = ${rtHttpsProxy?.getAuthentication()?.getPassword()}")
+    }
 }
-if (parsed_args.https_proxy_host != rtHttpsProxy?.getHost()) {
-    gitChangeMessage.add("https host = ${parsed_args.https_proxy_host}")
-    runtimeChangeMessage.add("https host = ${rtHttpsProxy?.getHost()}")
-}
-if (parsed_args.https_proxy_port != rtHttpsProxy?.getPort()) {
-    gitChangeMessage.add("https port = ${parsed_args.https_proxy_port}")
-    runtimeChangeMessage.add("https port = ${rtHttpsProxy?.getPort()}")
-}
-if (parsed_args.nexus_https_proxy_username != rtHttpsProxy?.getAuthentication()?.getUsername()) {
-    gitChangeMessage.add("https proxy username = ${parsed_args.nexus_https_proxy_username}")
-    runtimeChangeMessage.add("https proxy username = ${rtHttpsProxy?.getAuthentication()?.getUsername()}")
-}
-if (parsed_args.nexus_https_proxy_password != rtHttpsProxy?.getAuthentication()?.getPassword()) {
-    gitChangeMessage.add("https proxy password = ${parsed_args.nexus_https_proxy_password}")
-    runtimeChangeMessage.add("https proxy password = ${rtHttpsProxy?.getAuthentication()?.getPassword()}")
-}
+
 if (parsed_args.nexus_proxy_exclude_hosts != proxyConfiguration?.getNonProxyHosts()) {
     gitChangeMessage.add("no proxy = ${parsed_args.nexus_https_proxy_password}")
     runtimeChangeMessage.add("no proxy = ${proxyConfiguration?.getNonProxyHosts()}")
