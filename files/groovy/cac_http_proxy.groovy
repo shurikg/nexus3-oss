@@ -27,7 +27,7 @@ ProxyServerConfiguration rtHttpProxy = proxyConfiguration?.getHttp()
 if (parsed_args.with_http_proxy != false || getBooleanValue(rtHttpProxy?.isEnabled()) != false) {
     if (parsed_args.with_http_proxy != getBooleanValue(rtHttpProxy?.isEnabled())) {
         gitChangeMessage.add("http proxy = ${parsed_args.with_http_proxy}")
-        runtimeChangeMessage.add("http proxy = ${rtHttpProxy?.isEnabled()}")
+        runtimeChangeMessage.add("http proxy = ${getBooleanValue(rtHttpProxy?.isEnabled())}")
     }
     if (parsed_args.http_proxy_host != rtHttpProxy?.getHost()) {
         gitChangeMessage.add("http host = ${parsed_args.http_proxy_host}")
@@ -49,9 +49,9 @@ if (parsed_args.with_http_proxy != false || getBooleanValue(rtHttpProxy?.isEnabl
 
 ProxyServerConfiguration rtHttpsProxy = proxyConfiguration?.getHttps()
 if (parsed_args.with_https_prox != false || getBooleanValue(rtHttpsProxy?.isEnabled()) != false) {
-    if (parsed_args.with_https_prox != rtHttpsProxy?.isEnabled()) {
+    if (parsed_args.with_https_prox != getBooleanValue(rtHttpsProxy?.isEnabled())) {
         gitChangeMessage.add("https proxy = ${parsed_args.with_https_prox}")
-        runtimeChangeMessage.add("https proxy = ${rtHttpsProxy?.isEnabled()}")
+        runtimeChangeMessage.add("https proxy = ${getBooleanValue(rtHttpsProxy?.isEnabled())}")
     }
     if (parsed_args.https_proxy_host != rtHttpsProxy?.getHost()) {
         gitChangeMessage.add("https host = ${parsed_args.https_proxy_host}")
