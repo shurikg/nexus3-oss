@@ -124,6 +124,12 @@
     script_name: migrate_http_proxy
     args: "{}"
 
+- name: migrate privileges
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_privileges
+    args: "{}"
+
 - name: migrate generic content
   include_tasks: call_cac_script.yml
   vars:

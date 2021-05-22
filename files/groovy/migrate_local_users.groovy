@@ -31,7 +31,6 @@ security.securitySystem.listUsers().each { rtUser ->
         currentUser.put('roles', curentUserRoles)
 
         migrationUsers['nexus_local_users'].add(currentUser)
-
     }
 }
 scriptResults['action_details'].put(fileName, migrationUsers)
