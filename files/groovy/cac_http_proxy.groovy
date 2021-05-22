@@ -50,7 +50,7 @@ if (parsed_args.with_http_proxy != false || getBooleanValue(rtHttpProxy?.isEnabl
 ProxyServerConfiguration rtHttpsProxy = proxyConfiguration?.getHttps()
 if (parsed_args.with_https_prox != false || getBooleanValue(rtHttpsProxy?.isEnabled()) != false) {
     if (parsed_args.with_https_prox != getBooleanValue(rtHttpsProxy?.isEnabled())) {
-        gitChangeMessage.add("https proxy = ${parsed_args.with_https_prox}")
+        gitChangeMessage.add("https proxy = ${parsed_args.with_https_proxy}")
         runtimeChangeMessage.add("https proxy = ${getBooleanValue(rtHttpsProxy?.isEnabled())}")
     }
     if (parsed_args.https_proxy_host != rtHttpsProxy?.getHost()) {
