@@ -12,13 +12,6 @@ def getBooleanValue(value) {
     return value
 }
 
-def getRealValueOrNA(value, flag) {
-    if (flag) {
-        return value
-    }
-    return 'N/A'
-}
-
 parsed_args = new JsonSlurper().parseText(args)
 Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', [])
@@ -32,56 +25,51 @@ def gitChangeMessage = []
 def runtimeChangeMessage = []
 
 ProxyServerConfiguration rtHttpProxy = proxyConfiguration?.getHttp()
-def isRtHttp = getBooleanValue(rtHttpProxy?.isEnabled())
-
-if (parsed_args.with_http_proxy != false || isRtHttp != false) {
+if (parsed_args.with_http_proxy != false || getBooleanValue(rtHttpProxy?.isEnabled()) != false) {
     if (parsed_args.with_http_proxy != getBooleanValue(rtHttpProxy?.isEnabled())) {
         gitChangeMessage.add("http proxy = ${parsed_args.with_http_proxy}")
-        runtimeChangeMessage.add("http proxy = ${isRtHttp}")
+        runtimeChangeMessage.add("http proxy = ${getBooleanValue(rtHttpProxy?.isEnabled())}")
     }
     if (parsed_args.http_proxy_host != rtHttpProxy?.getHost()) {
-        gitChangeMessage.add("http host = ${getRealValueOrNA(parsed_args.http_proxy_host, parsed_args.with_http_proxy)}")
-        runtimeChangeMessage.add("http host = ${getRealValueOrNA(rtHttpProxy?.getHost(),isRtHttp)}")
+        gitChangeMessage.add("http host = ${parsed_args.http_proxy_host}")
+        runtimeChangeMessage.add("http host = ${rtHttpProxy?.getHost()}")
     }
     if (parsed_args.http_proxy_port != rtHttpProxy?.getPort()) {
-        gitChangeMessage.add("http port = ${getRealValueOrNA(parsed_args.http_proxy_port, parsed_args.with_http_proxy)}")
-        runtimeChangeMessage.add("http port = ${getRealValueOrNA(rtHttpProxy?.getPort(),isRtHttp)}")
+        gitChangeMessage.add("http port = ${parsed_args.http_proxy_port}")
+        runtimeChangeMessage.add("http port = ${rtHttpProxy?.getPort()}")
     }
     if (parsed_args.nexus_http_proxy_username != rtHttpProxy?.getAuthentication()?.getUsername()) {
-        gitChangeMessage.add("http proxy username = ${getRealValueOrNA(parsed_args.nexus_http_proxy_username, parsed_args.with_http_proxy)}")
-        runtimeChangeMessage.add("http proxy username = ${getRealValueOrNA(rtHttpProxy?.getAuthentication()?.getUsername(),isRtHttp)}")
+        gitChangeMessage.add("http proxy username = ${parsed_args.nexus_http_proxy_username}")
+        runtimeChangeMessage.add("http proxy username = ${rtHttpProxy?.getAuthentication()?.getUsername()}")
     }
     if (parsed_args.nexus_http_proxy_password != rtHttpProxy?.getAuthentication()?.getPassword()) {
-        gitChangeMessage.add("http proxy password = ${getRealValueOrNA(parsed_args.nexus_http_proxy_password, parsed_args.with_http_proxy)}")
-        runtimeChangeMessage.add("http proxy password = ${getRealValueOrNA(rtHttpProxy?.getAuthentication()?.getPassword(),isRtHttp)}")
+        gitChangeMessage.add("http proxy password = ${parsed_args.nexus_http_proxy_password}")
+        runtimeChangeMessage.add("http proxy password = ${rtHttpProxy?.getAuthentication()?.getPassword()}")
     }
-
     needCheckNoProxy = true
 }
 
 ProxyServerConfiguration rtHttpsProxy = proxyConfiguration?.getHttps()
-def isRtHttps = getBooleanValue(rtHttpsProxy?.isEnabled())
-
-if (parsed_args.with_https_proxy != false || isRtHttps != false) {
+if (parsed_args.with_https_proxy != false || getBooleanValue(rtHttpsProxy?.isEnabled()) != false) {
     if (parsed_args.with_https_proxy != getBooleanValue(rtHttpsProxy?.isEnabled())) {
         gitChangeMessage.add("https proxy = ${parsed_args.with_https_proxy}")
-        runtimeChangeMessage.add("https proxy = ${isRtHttps}")
+        runtimeChangeMessage.add("https proxy = ${getBooleanValue(rtHttpsProxy?.isEnabled())}")
     }
     if (parsed_args.https_proxy_host != rtHttpsProxy?.getHost()) {
-        gitChangeMessage.add("https host = ${getRealValueOrNA(parsed_args.https_proxy_host, parsed_args.with_https_proxy)}")
-        runtimeChangeMessage.add("https host = ${getRealValueOrNA(rtHttpsProxy?.getHost(), isRtHttps)}")
+        gitChangeMessage.add("https host = ${parsed_args.https_proxy_host}")
+        runtimeChangeMessage.add("https host = ${rtHttpsProxy?.getHost()}")
     }
     if (parsed_args.https_proxy_port != rtHttpsProxy?.getPort()) {
-        gitChangeMessage.add("https port = ${getRealValueOrNA(parsed_args.https_proxy_port, parsed_args.with_https_proxy)}")
-        runtimeChangeMessage.add("https port = ${getRealValueOrNA(rtHttpsProxy?.getPort(), isRtHttps)}")
+        gitChangeMessage.add("https port = ${parsed_args.https_proxy_port}")
+        runtimeChangeMessage.add("https port = ${rtHttpsProxy?.getPort()}")
     }
     if (parsed_args.nexus_https_proxy_username != rtHttpsProxy?.getAuthentication()?.getUsername()) {
-        gitChangeMessage.add("https proxy username = ${getRealValueOrNA(parsed_args.nexus_https_proxy_username, parsed_args.with_https_proxy)}")
-        runtimeChangeMessage.add("https proxy username = ${getRealValueOrNA(rtHttpsProxy?.getAuthentication()?.getUsername(), isRtHttps)}")
+        gitChangeMessage.add("https proxy username = ${parsed_args.nexus_https_proxy_username}")
+        runtimeChangeMessage.add("https proxy username = ${rtHttpsProxy?.getAuthentication()?.getUsername()}")
     }
     if (parsed_args.nexus_https_proxy_password != rtHttpsProxy?.getAuthentication()?.getPassword()) {
-        gitChangeMessage.add("https proxy password = ${getRealValueOrNA(parsed_args.nexus_https_proxy_password, parsed_args.with_https_proxy)}")
-        runtimeChangeMessage.add("https proxy password = ${getRealValueOrNA(rtHttpsProxy?.getAuthentication()?.getPassword(), isRtHttps)}")
+        gitChangeMessage.add("https proxy password = ${parsed_args.nexus_https_proxy_password}")
+        runtimeChangeMessage.add("https proxy password = ${rtHttpsProxy?.getAuthentication()?.getPassword()}")
     }
     needCheckNoProxy = true
 }
