@@ -20,6 +20,7 @@ def httpClientManager = container.lookup(HttpClientManagerImpl.class.getName())
 def httpConfiguration = httpClientManager.getConfiguration()
 ProxyConfiguration proxyConfiguration = httpConfiguration.getProxy()
 
+def needCheckNoProxy = false
 def gitChangeMessage = []
 def runtimeChangeMessage = []
 
@@ -45,11 +46,12 @@ if (parsed_args.with_http_proxy != false || getBooleanValue(rtHttpProxy?.isEnabl
         gitChangeMessage.add("http proxy password = ${parsed_args.nexus_http_proxy_password}")
         runtimeChangeMessage.add("http proxy password = ${rtHttpProxy?.getAuthentication()?.getPassword()}")
     }
+    needCheckNoProxy = true
 }
 
 ProxyServerConfiguration rtHttpsProxy = proxyConfiguration?.getHttps()
-if (parsed_args.with_https_prox != false || getBooleanValue(rtHttpsProxy?.isEnabled()) != false) {
-    if (parsed_args.with_https_prox != getBooleanValue(rtHttpsProxy?.isEnabled())) {
+if (parsed_args.with_https_proxy != false || getBooleanValue(rtHttpsProxy?.isEnabled()) != false) {
+    if (parsed_args.with_https_proxy != getBooleanValue(rtHttpsProxy?.isEnabled())) {
         gitChangeMessage.add("https proxy = ${parsed_args.with_https_proxy}")
         runtimeChangeMessage.add("https proxy = ${getBooleanValue(rtHttpsProxy?.isEnabled())}")
     }
@@ -69,11 +71,14 @@ if (parsed_args.with_https_prox != false || getBooleanValue(rtHttpsProxy?.isEnab
         gitChangeMessage.add("https proxy password = ${parsed_args.nexus_https_proxy_password}")
         runtimeChangeMessage.add("https proxy password = ${rtHttpsProxy?.getAuthentication()?.getPassword()}")
     }
+    needCheckNoProxy = true
 }
 
-if (parsed_args.nexus_proxy_exclude_hosts != proxyConfiguration?.getNonProxyHosts()) {
-    gitChangeMessage.add("no proxy = ${parsed_args.nexus_https_proxy_password}")
-    runtimeChangeMessage.add("no proxy = ${proxyConfiguration?.getNonProxyHosts()}")
+if (needCheckNoProxy) {
+    if (parsed_args.nexus_proxy_exclude_hosts != proxyConfiguration?.getNonProxyHosts()) {
+        gitChangeMessage.add("no proxy = ${parsed_args.nexus_https_proxy_password}")
+        runtimeChangeMessage.add("no proxy = ${proxyConfiguration?.getNonProxyHosts()}")
+    }
 }
 
 if (gitChangeMessage) {
