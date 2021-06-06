@@ -8,8 +8,9 @@ Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', actionDetails)
 
 parsed_args.details.each { blobstoreDef ->
-
     Map<String, String> currentResult = [:]
+    def gitChangeMessage = []
+    def runtimeChangeMessage = []
 
     existingBlobStore = blobStore.getBlobStoreManager().get(blobstoreDef.name)
     if (existingBlobStore == null) {
@@ -20,29 +21,29 @@ parsed_args.details.each { blobstoreDef ->
         currentResult.put('resource', 'blobstore')
         currentResult.put('downtime', false)
         scriptResults['action_details'].add(currentResult)
-    // }
-        // try {
-        //     if (blobstoreDef.type == "S3") {
-        //         blobStore.createS3BlobStore(blobstoreDef.name, blobstoreDef.config)
-        //         msg = "S3 blobstore {} created"
-        //     } else {
-        //         blobStore.createFileBlobStore(blobstoreDef.name, blobstoreDef.path)
-        //         msg = "File blobstore {} created"
-        //     }
-        //     log.info(msg, blobstoreDef.name)
-        //     currentResult.put('status', 'created')
-        //     scriptResults['changed'] = true
-        // } catch (Exception e) {
-        //     log.error('Could not create blobstore {}: {}', blobstoreDef.name, e.toString())
-        //     currentResult.put('status', 'error')
-        //     scriptResults['error'] = true
-        //     currentResult.put('error_msg', e.toString())
-        // }
     } else {
-        log.info("Blobstore {} already exists. Left untouched", blobstoreDef.name)
-        currentResult.put('status', 'exists')
-    }
+        if (blobstoreDef.type != existingBlobStore.getBlobStoreConfiguration().getType()) {
+            gitChangeMessage.add("type = ${blobstoreDef.type}")
+            runtimeChangeMessage.add("type = ${existingBlobStore.getBlobStoreConfiguration().getType()}")
+        }
+        if (blobstoreDef.type == existingBlobStore.getBlobStoreConfiguration().getType() && blobstoreDef.type == 'File') {
+            def blobAttributes = existingBlobStore.getBlobStoreConfiguration().getAttributes()
 
+            if (blobstoreDef.path != blobAttributes['file']['path']) {
+                gitChangeMessage.add("path = ${blobstoreDef.path}")
+                runtimeChangeMessage.add("type = ${blobAttributes['file']['path']}")
+            }
+        }
+        if (gitChangeMessage) {
+            currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+            currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
+            currentResult.put('change_type', 'change')
+            currentResult.put('description', "the blob changes - NOT SUPPORTED")
+            currentResult.put('resource', 'blob')
+            currentResult.put('downtime', false)
+            scriptResults['action_details'].add(currentResult)
+        }
+    }
 }
 
 blobStore.getBlobStoreManager().browse().each { rtBlob ->
@@ -66,6 +67,10 @@ blobStore.getBlobStoreManager().browse().each { rtBlob ->
         currentResult.put('downtime', false)
 
         scriptResults['action_details'].add(currentResult)
+
+        if (! parsed_args.dry_run) {
+            rtBlob.remove()
+        }
     }
 }
 

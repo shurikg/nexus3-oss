@@ -155,13 +155,6 @@ return JsonOutput.toJson(scriptResults)
 // nexus_application_host
 // nexus_os_max_filedescriptors
 
-
-// - include_tasks: call_script.yml
-//   vars:
-//     script_name: setup_anonymous_access
-//     args:
-//       anonymous_access: "{{ nexus_anonymous_access }}"
-
 // - include_tasks: call_script.yml
 //   vars:
 //     script_name: setup_base_url

@@ -1,7 +1,8 @@
 ---
-- include_tasks: call_script.yml
+- name: cac ldap for specific configuration
+  include_tasks: call_cac_script.yml
   vars:
-    script_name: setup_ldap
+    script_name: cac_ldap
     args:
       name: "{{ item.ldap_name }}"
       protocol: "{{ item.ldap_protocol }}"

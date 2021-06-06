@@ -136,6 +136,18 @@
     script_name: migrate_general_configurations
     args: "{}"
 
+- name: migrate repositories
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_repositories
+    args: "{}"
+
+- name: migrate blobs
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_blobstores
+    args: "{}"
+
 - name: Clean migration directory
   file:
     path: "{{ playbook_dir }}/migration_output"
@@ -143,8 +155,11 @@
 
 - name: Creates directory
   file:
-    path: "{{ playbook_dir }}/migration_output/group_vars/nexus/chi"
+    path: "{{ playbook_dir }}/migration_output/group_vars/nexus/{{ item }}"
     state: directory
+  loop:
+    - chi
+    - repositories
 
 - debug:
     msg: "{{ cac_changes }}"
