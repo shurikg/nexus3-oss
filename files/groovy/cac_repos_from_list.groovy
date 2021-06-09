@@ -221,7 +221,7 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
         compareValue('username', repoAttributes?.httpclient?.authentication?.type, "remote type (Not available for update)", gitChangeMessage, runtimeChangeMessage )
     }
 
-    scriptResults['action_details'].add(repoAttributes)
+    // scriptResults['action_details'].add(repoAttributes)
     if (requireRepository.type == 'group') {
         requireRepository.member_repos.each { currentMember ->
             if ( ! (currentMember in repoAttributes['group']['memberNames'])) {
