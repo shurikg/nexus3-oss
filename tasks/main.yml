@@ -135,6 +135,9 @@
     - name: Apply defaults to repositories configurations and process a single list
       include_tasks: process_repos_list.yml
 
+    - debug:
+        msg: "{{ _nexus_repos_global_list }}"
+
     - name: Create configured repositories
       include_tasks: call_script.yml
       vars:
