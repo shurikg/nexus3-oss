@@ -244,6 +244,12 @@
   include_tasks: cac_ldap_each.yml
   with_items: "{{ ldap_connections }}"
 
+- name: CasC Ldap Delete
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_ldap_delete
+    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': ldap_connections } ) }}"
+
 - name: Apply defaults to repositories configurations and process a single list
   include_tasks: process_repos_list.yml
 
