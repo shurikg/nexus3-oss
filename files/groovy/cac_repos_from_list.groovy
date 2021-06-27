@@ -78,6 +78,7 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
     Map<String, String> currentResult = [:]
     def gitChangeMessage = []
     def runtimeChangeMessage = []
+    def authType = null
 
     compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
     compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
@@ -98,7 +99,10 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
-        compareValue('username', repoAttributes?.httpclient?.authentication?.type, "remote type (Not available for update)", gitChangeMessage, runtimeChangeMessage )
+        if (requireRepository.remote_username != null) {
+            authType = "username"
+        }
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "remote type (Not available for update)", gitChangeMessage, runtimeChangeMessage )
     }
 
     if (requireRepository.type == 'group') {
