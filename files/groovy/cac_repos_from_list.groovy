@@ -303,9 +303,9 @@ repositoryManager.browse().each { rtRepo ->
 
         scriptResults['action_details'].add(currentResult)
 
-        // if (! parsed_args.dry_run) {
-        //     repositoryManager.delete(rtRepo.getName())
-        // }
+        if (! parsed_args.dry_run) {
+            repositoryManager.delete(rtRepo.getName())
+        }
     }
 }
 return JsonOutput.toJson(scriptResults)
