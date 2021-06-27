@@ -23,8 +23,8 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
     def gitChangeMessage = []
     def runtimeChangeMessage = []
 
-    compareValue(requireRepository.format, rtRepository.getFormat(), "format", gitChangeMessage, runtimeChangeMessage )
-    compareValue(requireRepository.type, rtRepository.getType(), "type", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
 
     repoAttributes = rtRepository.getConfiguration().getAttributes()
 
@@ -33,7 +33,7 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
                 "strict content type validation", gitChangeMessage, runtimeChangeMessage )
 
     if (requireRepository.type == 'hosted') {
-        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
     }
 
     if (requireRepository.type == 'proxy') {
@@ -79,15 +79,15 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
     def gitChangeMessage = []
     def runtimeChangeMessage = []
 
-    compareValue(requireRepository.format, rtRepository.getFormat(), "format", gitChangeMessage, runtimeChangeMessage )
-    compareValue(requireRepository.type, rtRepository.getType(), "type", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
 
     repoAttributes = rtRepository.getConfiguration().getAttributes()
     compareValue(requireRepository.blob_store, repoAttributes['storage']['blobStoreName'], "blob store", gitChangeMessage, runtimeChangeMessage )
     compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'], "strict content type validation", gitChangeMessage, runtimeChangeMessage )
 
     if (requireRepository.type == 'hosted') {
-        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
     }
 
     if (requireRepository.type == 'proxy') {
@@ -132,8 +132,8 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
     def gitChangeMessage = []
     def runtimeChangeMessage = []
 
-    compareValue(requireRepository.format, rtRepository.getFormat(), "format", gitChangeMessage, runtimeChangeMessage )
-    compareValue(requireRepository.type, rtRepository.getType(), "type", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
 
     repoAttributes = rtRepository.getConfiguration().getAttributes()
     compareValue(requireRepository.blob_store, repoAttributes['storage']['blobStoreName'], "blob store", gitChangeMessage, runtimeChangeMessage )
@@ -144,7 +144,7 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
     compareValue(requireRepository.force_basic_auth, repoAttributes['docker']['forceBasicAuth'], "force basic auth", gitChangeMessage, runtimeChangeMessage )
 
     if (requireRepository.type == 'hosted') {
-        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
     }
 
     if (requireRepository.type == 'proxy') {
@@ -192,9 +192,10 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
     Map<String, String> currentResult = [:]
     def gitChangeMessage = []
     def runtimeChangeMessage = []
+    def authType = null
 
-    compareValue(requireRepository.format, rtRepository.getFormat(), "format", gitChangeMessage, runtimeChangeMessage )
-    compareValue(requireRepository.type, rtRepository.getType(), "type", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
 
     repoAttributes = rtRepository.getConfiguration().getAttributes()
 
@@ -203,9 +204,9 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
                 "strict content type validation", gitChangeMessage, runtimeChangeMessage )
 
     if (requireRepository.type == 'hosted') {
-        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['maven']['layoutPolicy'], "layout policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.version_policy.toUpperCase(), repoAttributes['maven']['versionPolicy'], "version policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['maven']['layoutPolicy'].toUpperCase(), "layout policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.version_policy.toUpperCase(), repoAttributes['maven']['versionPolicy'].toUpperCase(), "version policy", gitChangeMessage, runtimeChangeMessage )
     }
 
     if (requireRepository.type == 'proxy') {
@@ -214,11 +215,14 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.maximum_metadata_age, repoAttributes['proxy']['metadataMaxAge'], "maximum metadata age", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.negative_cache_enabled, repoAttributes['negativeCache']['enabled'], "negative cache enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['maven']['layoutPolicy'], "layout policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.version_policy.toUpperCase(), repoAttributes['maven']['versionPolicy'], "version policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['maven']['layoutPolicy'].toUpperCase(), "layout policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.version_policy.toUpperCase(), repoAttributes['maven']['versionPolicy'].toUpperCase(), "version policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
-        compareValue('username', repoAttributes?.httpclient?.authentication?.type, "remote type (Not available for update)", gitChangeMessage, runtimeChangeMessage )
+        if (requireRepository.remote_username != null) {
+            authType = "username"
+        }
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
     }
 
     if (requireRepository.type == 'group') {
