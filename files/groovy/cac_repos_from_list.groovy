@@ -48,7 +48,7 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
         if (requireRepository.remote_username != null) {
             authType = "username"
         }
-        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "remote type (Not available for update)", gitChangeMessage, runtimeChangeMessage )
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
     }
 
             // "cleanup": {
@@ -172,7 +172,7 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
         if (requireRepository.remote_username != null) {
             authType = "username"
         }
-        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "remote type (Not available for update)", gitChangeMessage, runtimeChangeMessage )
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
     }
     if (requireRepository.type == 'group') {
         requireRepository.member_repos.each { currentMember ->
