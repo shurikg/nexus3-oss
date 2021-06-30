@@ -31,7 +31,7 @@ parsed_args.details.each { blobstoreDef ->
 
             if (blobstoreDef.path != blobAttributes['file']['path']) {
                 gitChangeMessage.add("path = ${blobstoreDef.path}")
-                runtimeChangeMessage.add("type = ${blobAttributes['file']['path']}")
+                runtimeChangeMessage.add("path = ${blobAttributes['file']['path']}")
             }
         }
         if (gitChangeMessage) {
@@ -62,7 +62,7 @@ blobStore.getBlobStoreManager().browse().each { rtBlob ->
         currentResult.put('change_in_git', "N/A")
         currentResult.put('change_in_runtime', "${rtBlobName}")
         currentResult.put('change_type', 'delete')
-        currentResult.put('description', "the ${rtBlobName} blobstore will be deleted ${atr}")
+        currentResult.put('description', "the ${rtBlobName} blobstore will be deleted")
         currentResult.put('resource', 'blobstore')
         currentResult.put('downtime', false)
 
