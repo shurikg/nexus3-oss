@@ -12,6 +12,12 @@ def getBooleanValue(value) {
     return value
 }
 
+def isNeedAddToReport(gitValue, runtimeValue) {
+    if ( (gitValue == null || gitValue == '' ) &&  (runtimeValue == null || runtimeValue == '')) {
+        return false
+    }
+    return true
+}
 parsed_args = new JsonSlurper().parseText(args)
 Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', [])
@@ -38,13 +44,17 @@ if (parsed_args.with_http_proxy != false || getBooleanValue(rtHttpProxy?.isEnabl
         gitChangeMessage.add("http port = ${parsed_args.http_proxy_port}")
         runtimeChangeMessage.add("http port = ${rtHttpProxy?.getPort()}")
     }
-    if (parsed_args.http_proxy_username != rtHttpProxy?.getAuthentication()?.getUsername()) {
-        gitChangeMessage.add("http proxy username = ${parsed_args.http_proxy_username}")
-        runtimeChangeMessage.add("http proxy username = ${rtHttpProxy?.getAuthentication()?.getUsername()}")
+    if (isNeedAddToReport(parsed_args.http_proxy_username, rtHttpProxy?.getAuthentication()?.getUsername())) {
+        if (parsed_args.http_proxy_username != rtHttpProxy?.getAuthentication()?.getUsername()) {
+            gitChangeMessage.add("http proxy username = ${parsed_args.http_proxy_username}")
+            runtimeChangeMessage.add("http proxy username = ${rtHttpProxy?.getAuthentication()?.getUsername()}")
+        }
     }
-    if (parsed_args.http_proxy_password != rtHttpProxy?.getAuthentication()?.getPassword()) {
-        gitChangeMessage.add("http proxy password = ${parsed_args.http_proxy_password}")
-        runtimeChangeMessage.add("http proxy password = ${rtHttpProxy?.getAuthentication()?.getPassword()}")
+    if (isNeedAddToReport(parsed_args.http_proxy_password, rtHttpProxy?.getAuthentication()?.getPassword())) {
+        if (parsed_args.http_proxy_password != rtHttpProxy?.getAuthentication()?.getPassword()) {
+            gitChangeMessage.add("http proxy password = ${parsed_args.http_proxy_password}")
+            runtimeChangeMessage.add("http proxy password = ${rtHttpProxy?.getAuthentication()?.getPassword()}")
+        }
     }
     needCheckNoProxy = true
 }
@@ -63,21 +73,27 @@ if (parsed_args.with_https_proxy != false || getBooleanValue(rtHttpsProxy?.isEna
         gitChangeMessage.add("https port = ${parsed_args.https_proxy_port}")
         runtimeChangeMessage.add("https port = ${rtHttpsProxy?.getPort()}")
     }
-    if (parsed_args.https_proxy_username != rtHttpsProxy?.getAuthentication()?.getUsername()) {
-        gitChangeMessage.add("https proxy username = ${parsed_args.https_proxy_username}")
-        runtimeChangeMessage.add("https proxy username = ${rtHttpsProxy?.getAuthentication()?.getUsername()}")
+    if (isNeedAddToReport(parsed_args.https_proxy_username, rtHttpsProxy?.getAuthentication()?.getUsername())) {
+        if (parsed_args.https_proxy_username != rtHttpsProxy?.getAuthentication()?.getUsername()) {
+            gitChangeMessage.add("https proxy username = ${parsed_args.https_proxy_username}")
+            runtimeChangeMessage.add("https proxy username = ${rtHttpsProxy?.getAuthentication()?.getUsername()}")
+        }
     }
-    if (parsed_args.https_proxy_password != rtHttpsProxy?.getAuthentication()?.getPassword()) {
-        gitChangeMessage.add("https proxy password = ${parsed_args.https_proxy_password}")
-        runtimeChangeMessage.add("https proxy password = ${rtHttpsProxy?.getAuthentication()?.getPassword()}")
+    if (isNeedAddToReport(parsed_args.https_proxy_password, rtHttpsProxy?.getAuthentication()?.getPassword())) {
+        if (parsed_args.https_proxy_password != rtHttpsProxy?.getAuthentication()?.getPassword()) {
+            gitChangeMessage.add("https proxy password = ${parsed_args.https_proxy_password}")
+            runtimeChangeMessage.add("https proxy password = ${rtHttpsProxy?.getAuthentication()?.getPassword()}")
+        }
     }
     needCheckNoProxy = true
 }
 
 if (needCheckNoProxy) {
-    if (parsed_args.proxy_exclude_hosts != proxyConfiguration?.getNonProxyHosts()) {
-        gitChangeMessage.add("no proxy = ${parsed_args.https_proxy_password}")
-        runtimeChangeMessage.add("no proxy = ${proxyConfiguration?.getNonProxyHosts()}")
+    if (isNeedAddToReport(arsed_args.proxy_exclude_hosts, proxyConfiguration?.getNonProxyHosts())) {
+        if (parsed_args.proxy_exclude_hosts != proxyConfiguration?.getNonProxyHosts()) {
+            gitChangeMessage.add("no proxy = ${parsed_args.https_proxy_password}")
+            runtimeChangeMessage.add("no proxy = ${proxyConfiguration?.getNonProxyHosts()}")
+        }
     }
 }
 
