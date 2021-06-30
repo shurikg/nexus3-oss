@@ -94,7 +94,10 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
     if (repoAttributes['docker']['httpsPort'] != null) {
         currentRepository.put('https_port', repoAttributes['docker']['httpsPort'])
     }
-    currentRepository.put('v1_enabled', repoAttributes['docker']['v1Enabled'])
+    if (repoAttributes['docker']['v1Enabled'] != null )
+    {
+        currentRepository.put('v1_enabled', repoAttributes['docker']['v1Enabled'])
+    }
     currentRepository.put('force_basic_auth', repoAttributes['docker']['forceBasicAuth'])
 
     if (rtRepository.getType() == 'hosted') {
