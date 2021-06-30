@@ -11,6 +11,7 @@ parsed_args.details.each { blobstoreDef ->
     Map<String, String> currentResult = [:]
     def gitChangeMessage = []
     def runtimeChangeMessage = []
+    def blobDefType = 'File'
 
     existingBlobStore = blobStore.getBlobStoreManager().get(blobstoreDef.name)
     if (existingBlobStore == null) {
@@ -22,11 +23,15 @@ parsed_args.details.each { blobstoreDef ->
         currentResult.put('downtime', false)
         scriptResults['action_details'].add(currentResult)
     } else {
-        if (blobstoreDef.type != existingBlobStore.getBlobStoreConfiguration().getType()) {
-            gitChangeMessage.add("type = ${blobstoreDef.type}")
+        if (blobstoreDef.type == 'S3')
+        {
+            blobDefType = 'S3'
+        }
+        if (blobDefType != existingBlobStore.getBlobStoreConfiguration().getType()) {
+            gitChangeMessage.add("type = ${blobDefType}")
             runtimeChangeMessage.add("type = ${existingBlobStore.getBlobStoreConfiguration().getType()}")
         }
-        if (blobstoreDef.type == existingBlobStore.getBlobStoreConfiguration().getType() && blobstoreDef.type == 'File') {
+        if (blobDefType == existingBlobStore.getBlobStoreConfiguration().getType() && blobDefType == 'File') {
             def blobAttributes = existingBlobStore.getBlobStoreConfiguration().getAttributes()
 
             if (blobstoreDef.path != blobAttributes['file']['path']) {
