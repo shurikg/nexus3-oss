@@ -44,7 +44,7 @@ parsed_args.details.each { blobstoreDef ->
             currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
             currentResult.put('change_type', 'change')
             currentResult.put('description', "the blob changes - NOT SUPPORTED")
-            currentResult.put('resource', 'blob')
+            currentResult.put('resource', 'blobstore')
             currentResult.put('downtime', false)
             scriptResults['action_details'].add(currentResult)
         }
