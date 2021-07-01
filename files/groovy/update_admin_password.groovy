@@ -2,9 +2,8 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 List<Map<String, String>> actionDetails = []
-Map scriptResults = [changed: false, error: false]
-scriptResults.put('action_details', actionDetails)
-Map<String, String> currentResult = []
+Map scriptResults = [changed: false, error: false, 'action_details': actionDetails]
+Map<String, String> currentResult = [username: 'admin']
 
 parsed_args = new JsonSlurper().parseText(args)
 
