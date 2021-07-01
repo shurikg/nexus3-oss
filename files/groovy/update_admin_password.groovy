@@ -2,7 +2,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 List<Map<String, String>> actionDetails = []
-@Field Map scriptResults = [changed: false, error: false]
+Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', actionDetails)
 Map<String, String> currentResult = []
 
