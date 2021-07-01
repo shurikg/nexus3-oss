@@ -89,7 +89,7 @@ if (parsed_args.with_https_proxy != false || getBooleanValue(rtHttpsProxy?.isEna
 }
 
 if (needCheckNoProxy) {
-    if (isNeedAddToReport(arsed_args.proxy_exclude_hosts, proxyConfiguration?.getNonProxyHosts())) {
+    if (isNeedAddToReport(parsed_args.proxy_exclude_hosts, proxyConfiguration?.getNonProxyHosts())) {
         if (parsed_args.proxy_exclude_hosts != proxyConfiguration?.getNonProxyHosts()) {
             gitChangeMessage.add("no proxy = ${parsed_args.https_proxy_password}")
             runtimeChangeMessage.add("no proxy = ${proxyConfiguration?.getNonProxyHosts()}")
