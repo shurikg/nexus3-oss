@@ -5,6 +5,7 @@ import org.sonatype.nexus.repository.Repository
 
 def migrationRepositories = ['nexus_repos_docker_hosted': [], 'nexus_repos_docker_proxy': [], 'nexus_repos_docker_group': [],
                              'nexus_repos_raw_proxy': [], 'nexus_repos_raw_hosted': [], 'nexus_repos_raw_group': [],
+                             'nexus_repos_maven_proxy': [], 'nexus_repos_maven_hosted': [], 'nexus_repos_maven_group': [],
                              'nexus_repos_helm_hosted': [], 'nexus_repos_helm_proxy': []]
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
@@ -28,8 +29,10 @@ def migrateHelmRepository(rtRepository, migrationRepositories) {
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
         currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
-        currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
-        currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
     }
 
     switch(rtRepository.getType().getValue()) {
@@ -60,8 +63,10 @@ def migrateRawRepository(rtRepository, migrationRepositories) {
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
         currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
-        currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
-        currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -114,8 +119,10 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
         currentRepository.put('use_nexus_certificates_to_access_index', repoAttributes['dockerProxy']['useTrustStoreForIndexAccess'])
         currentRepository.put('foreign_layer_url_whitelist', repoAttributes['dockerProxy']['foreignLayerUrlWhitelist'])
         currentRepository.put('cache_foreign_layers', repoAttributes['dockerProxy']['cacheForeignLayers'])
-        currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
-        currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -135,6 +142,51 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
     }
 }
 
+def migrateMavenRepository(rtRepository, migrationRepositories) {
+    Map<String, String> currentRepository = [name: rtRepository.getName()]
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
+    currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+
+    if (rtRepository.getType().getValue() == 'hosted') {
+        currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+        currentRepository.put('layout_policy', repoAttributes['maven']['layoutPolicy'])
+        currentRepository.put('version_policy', repoAttributes['maven']['versionPolicy'])
+    }
+
+    if (rtRepository.getType().getValue() == 'proxy') {
+        currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
+        currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
+        currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
+        currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
+        currentRepository.put('layout_policy', repoAttributes['maven']['layoutPolicy'])
+        currentRepository.put('version_policy', repoAttributes['maven']['versionPolicy'])
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
+    }
+
+    if (rtRepository.getType().getValue() == 'group') {
+        currentRepository.put('member_repos', repoAttributes['group']['memberNames'])
+    }
+
+    switch(rtRepository.getType().getValue()) {
+        case 'hosted':
+            migrationRepositories['nexus_repos_maven_hosted'].add(currentRepository)
+            break
+        case 'proxy':
+            migrationRepositories['nexus_repos_maven_proxy'].add(currentRepository)
+            break
+        case 'group':
+            migrationRepositories['nexus_repos_maven_group'].add(currentRepository)
+            break
+    }
+}
+
 repositoryManager.browse().each { rtRepo ->
     switch(rtRepo.getFormat().getValue()) {
         case 'docker':
@@ -145,6 +197,9 @@ repositoryManager.browse().each { rtRepo ->
             break
         case 'helm':
             migrateHelmRepository(rtRepo, migrationRepositories)
+            break
+        case 'maven2':
+            migrateMavenRepository(rtRepo, migrationRepositories)
             break
     }
 }
@@ -175,6 +230,20 @@ if (migrationRepositories['nexus_repos_raw_proxy'].size() > 0 || migrationReposi
         result.put('nexus_repos_raw_group', migrationRepositories['nexus_repos_raw_group'])
     }
     scriptResults['action_details'].put('repositories/raw.yml', result)
+}
+
+if (migrationRepositories['nexus_repos_maven_proxy'].size() > 0 || migrationRepositories['nexus_repos_maven_hosted'].size() || migrationRepositories['nexus_repos_maven_group'].size()) {
+    result = ['nexus_config_maven': true]
+    if (migrationRepositories['nexus_repos_maven_proxy'].size() > 0) {
+        result.put('nexus_repos_maven_proxy', migrationRepositories['nexus_repos_maven_proxy'])
+    }
+    if (migrationRepositories['nexus_repos_maven_hosted'].size() > 0) {
+        result.put('nexus_repos_maven_hosted', migrationRepositories['nexus_repos_maven_hosted'])
+    }
+    if (migrationRepositories['nexus_repos_maven_group'].size() > 0) {
+        result.put('nexus_repos_maven_group', migrationRepositories['nexus_repos_maven_group'])
+    }
+    scriptResults['action_details'].put('repositories/maven.yml', result)
 }
 
 if (migrationRepositories['nexus_repos_helm_hosted'].size() > 0 || migrationRepositories['nexus_repos_helm_proxy'].size()) {
