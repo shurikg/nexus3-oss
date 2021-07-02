@@ -37,7 +37,7 @@ authManager.listPrivileges().each { rtPrivilege ->
             currentPrivilege.put('script_name', rtPrivilege.getPrivilegeProperty('name'))
         }
         if (rtPrivilege.getPrivilegeProperty('actions') != null) {
-            currentPrivilege.put('actions', rtPrivilege.getPrivilegeProperty('actions'))
+            currentPrivilege.put('actions', rtPrivilege.getPrivilegeProperty('actions')split(','))
         }
 
         migrationPrivileges['nexus_privileges'].add(currentPrivilege)
