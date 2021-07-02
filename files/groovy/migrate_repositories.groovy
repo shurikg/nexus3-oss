@@ -116,7 +116,9 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
         currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
         currentRepository.put('index_type', repoAttributes['dockerProxy']['indexType'])
-        currentRepository.put('use_nexus_certificates_to_access_index', repoAttributes['dockerProxy']['useTrustStoreForIndexAccess'])
+        if (repoAttributes['dockerProxy']['useTrustStoreForIndexAccess'] != null) {
+            currentRepository.put('use_nexus_certificates_to_access_index', repoAttributes['dockerProxy']['useTrustStoreForIndexAccess'])
+        }
         currentRepository.put('foreign_layer_url_whitelist', repoAttributes['dockerProxy']['foreignLayerUrlWhitelist'])
         currentRepository.put('cache_foreign_layers', repoAttributes['dockerProxy']['cacheForeignLayers'])
         if (repoAttributes?.httpclient?.authentication?.username != null) {
