@@ -18,11 +18,11 @@ def migrateHelmRepository(rtRepository, migrationRepositories) {
     currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
     currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
 
-    if (rtRepository.getType() == 'hosted') {
+    if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
     }
 
-    if (rtRepository.getType() == 'proxy') {
+    if (rtRepository.getType().getValue() == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
@@ -32,7 +32,7 @@ def migrateHelmRepository(rtRepository, migrationRepositories) {
         currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
     }
 
-    switch(rtRepository.getType()) {
+    switch(rtRepository.getType().getValue()) {
         case 'hosted':
             migrationRepositories['nexus_repos_helm_hosted'].add(currentRepository)
             break
@@ -50,11 +50,11 @@ def migrateRawRepository(rtRepository, migrationRepositories) {
     currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
     currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
 
-    if (rtRepository.getType() == 'hosted') {
+    if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
     }
 
-    if (rtRepository.getType() == 'proxy') {
+    if (rtRepository.getType().getValue() == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
@@ -64,11 +64,11 @@ def migrateRawRepository(rtRepository, migrationRepositories) {
         currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
     }
 
-    if (rtRepository.getType() == 'group') {
+    if (rtRepository.getType().getValue() == 'group') {
         currentRepository.put('member_repos', repoAttributes['group']['memberNames'])
     }
 
-    switch(rtRepository.getType()) {
+    switch(rtRepository.getType().getValue()) {
         case 'hosted':
             migrationRepositories['nexus_repos_raw_hosted'].add(currentRepository)
             break
@@ -100,11 +100,11 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
     }
     currentRepository.put('force_basic_auth', repoAttributes['docker']['forceBasicAuth'])
 
-    if (rtRepository.getType() == 'hosted') {
+    if (rtRepository.getType().getValue()  == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
     }
 
-    if (rtRepository.getType() == 'proxy') {
+    if (rtRepository.getType().getValue()  == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
@@ -118,11 +118,11 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
         currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
     }
 
-    if (rtRepository.getType() == 'group') {
+    if (rtRepository.getType().getValue() == 'group') {
         currentRepository.put('member_repos', repoAttributes['group']['memberNames'])
     }
 
-    switch(rtRepository.getType()) {
+    switch(rtRepository.getType().getValue()) {
         case 'hosted':
             migrationRepositories['nexus_repos_docker_hosted'].add(currentRepository)
             break
@@ -136,7 +136,7 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
 }
 
 repositoryManager.browse().each { rtRepo ->
-    switch(rtRepo.getFormat()) {
+    switch(rtRepo.getFormat().getValue()) {
         case 'docker':
             migrateDockerRepository(rtRepo, migrationRepositories)
             break
