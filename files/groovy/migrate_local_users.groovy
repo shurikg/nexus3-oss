@@ -9,7 +9,7 @@ Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
 authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
 
-def excludeUsers = ['admin']
+def excludeUsers = ['admin', 'anonymous']
 
 security.securitySystem.listUsers().each { rtUser ->
     if (! (rtUser.getUserId() in excludeUsers) ) {
