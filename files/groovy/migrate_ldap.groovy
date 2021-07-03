@@ -41,7 +41,7 @@ ldapConfigMgr.listLdapServerConfigurations().each { rtLdap ->
     currentLdap.put('ldap_user_subtree', ldapMapping.isUserSubtree())
     currentLdap.put('ldap_group_subtree', ldapMapping.isGroupSubtree())
 
-    migrationLdaps['ldap_connections'].add(currentUser)
+    migrationLdaps['ldap_connections'].add(currentLdap)
 }
 
 scriptResults['action_details'].put(fileName, migrationLdaps)
