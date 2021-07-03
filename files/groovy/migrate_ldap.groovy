@@ -44,6 +44,6 @@ ldapConfigMgr.listLdapServerConfigurations().each { rtLdap ->
     migrationLdaps['ldap_connections'].add(currentUser)
 }
 
-scriptResults['action_details'].put(fileName, migrationUsers)
+scriptResults['action_details'].put(fileName, migrationLdaps)
 
 return JsonOutput.toJson(scriptResults)
