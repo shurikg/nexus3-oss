@@ -23,7 +23,7 @@ ldapConfigMgr.listLdapServerConfigurations().each { rtLdap ->
     currentLdap.put('ldap_auth_password', ldapConnection.getSystemPassword())
     currentLdap.put('ldap_search_base', ldapConnection.getSearchBase())
 
-    def ldapMapping = ldapConfig.getMapping()
+    def ldapMapping = rtLdap.getMapping()
     currentLdap.put('ldap_user_base_dn', ldapMapping.getUserBaseDn())
     currentLdap.put('ldap_user_filter', ldapMapping.getLdapFilter())
     currentLdap.put('ldap_user_object_class', ldapMapping.getUserObjectClass())
