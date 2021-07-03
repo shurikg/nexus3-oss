@@ -142,6 +142,12 @@
     script_name: migrate_repositories
     args: "{}"
 
+- name: migrate ldaps
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_ldap
+    args: "{}"
+
 - name: migrate blobs
   include_tasks: call_cac_script.yml
   vars:
