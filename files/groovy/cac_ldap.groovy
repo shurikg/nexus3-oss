@@ -31,15 +31,15 @@ if (update) {
         gitChangeMessage.add("authentication method = ${parsed_args.auth}")
         runtimeChangeMessage.add("authentication method = ${ldapConnection.getAuthScheme()}")
     }
-    if ( ldapConnection.getHost().getProtocol() != parsed_args.protocol) {
+    if ( ldapConnection.getHost().getProtocol().name() != parsed_args.protocol) {
         gitChangeMessage.add("protocol = ${parsed_args.protocol}")
-        runtimeChangeMessage.add("protocol = ${ldapConnection.getHost().getProtocol()}")
+        runtimeChangeMessage.add("protocol = ${ldapConnection.getHost().getProtocol().name()}")
     }
     if ( ldapConnection.getHost().getHostName()  != parsed_args.hostname) {
         gitChangeMessage.add("hostname = ${parsed_args.hostname}")
         runtimeChangeMessage.add("hostname = ${ldapConnection.getHost().getHostName()}")
     }
-    if ( ldapConnection.getHost().getPort()  != parsed_args.port) {
+    if ( ldapConnection.getHost().getPort() != parsed_args.port) {
         gitChangeMessage.add("port = ${parsed_args.port}")
         runtimeChangeMessage.add("port = ${ldapConnection.getHost().getPort()}")
     }
@@ -59,20 +59,20 @@ if (update) {
         gitChangeMessage.add("search base = ${parsed_args.search_base}")
         runtimeChangeMessage.add("search base = ${ldapConnection.getSearchBase()}")
     }
-    // if ( ldapConnection.getConnectionTimeout() != 30) {
-    //     gitChangeMessage.add("connection timeout (hardcoded) = 30")
-    //     runtimeChangeMessage.add("connection timeout = ${ldapConnection.getConnectionTimeout()}")
-    // }
-    // if ( ldapConnection.getConnectionRetryDelay() != 300) {
-    //     gitChangeMessage.add('connection retry delay (hardcoded) = 300')
-    //     runtimeChangeMessage.add("connection retry delay = ${ldapConnection.getConnectionRetryDelay()}")
-    // }
-    // if ( ldapConnection.getMaxIncidentsCount() != 3) {
-    //     gitChangeMessage.add('max incidents count (hardcoded) = 3')
-    //     runtimeChangeMessage.add("max incidents count = ${ldapConnection.getMaxIncidentsCount()}")
-    // }
+    if ( ldapConnection.getConnectionTimeout() != 30) {
+        gitChangeMessage.add("connection timeout (hardcoded) = 30")
+        runtimeChangeMessage.add("connection timeout = ${ldapConnection.getConnectionTimeout()}")
+    }
+    if ( ldapConnection.getConnectionRetryDelay() != 300) {
+        gitChangeMessage.add('connection retry delay (hardcoded) = 300')
+        runtimeChangeMessage.add("connection retry delay = ${ldapConnection.getConnectionRetryDelay()}")
+    }
+    if ( ldapConnection.getMaxIncidentsCount() != 3) {
+        gitChangeMessage.add('max incidents count (hardcoded) = 3')
+        runtimeChangeMessage.add("max incidents count = ${ldapConnection.getMaxIncidentsCount()}")
+    }
 
-    // def ldapMapping = ldapConfig.getMapping()
+    def ldapMapping = ldapConfig.getMapping()
     // if ( ldapMapping.getUserBaseDn() != parsed_args.user_base_dn) {
     //     gitChangeMessage.add("user base dn = ${parsed_args.user_base_dn}")
     //     runtimeChangeMessage.add("user base dn = ${ldapMapping.getUserBaseDn()}")
