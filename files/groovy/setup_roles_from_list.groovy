@@ -32,6 +32,8 @@ parsed_args.each { roleDef ->
                 newRole != currentRole
                 || newRole.getRoles() != currentRole.getRoles()
                 || newRole.getPrivileges() != currentRole.getPrivileges()
+                || newRole.getDescription() != currentRole.getDescription()
+                || newRole.getName() != currentRole.getName()
         ) {
             try {
                 authManager.updateRole(newRole)

@@ -39,9 +39,9 @@ if (update) {
         gitChangeMessage.add("hostname = ${parsed_args.hostname}")
         runtimeChangeMessage.add("hostname = ${ldapConnection.getHost().getHostName()}")
     }
-    if ( ldapConnection.getHost().getPort() != parsed_args.port) {
-        gitChangeMessage.add("port = ${parsed_args.port} ${parsed_args.port.class}")
-        runtimeChangeMessage.add("port = ${ldapConnection.getHost().getPort()} ${ldapConnection.getHost().getPort().class}")
+    if ( ldapConnection.getHost().getPort() != parsed_args.port.toInteger()) {
+        gitChangeMessage.add("port = ${parsed_args.port.toInteger()}")
+        runtimeChangeMessage.add("port = ${ldapConnection.getHost().getPort()} ${ldapConnection.getHost().getPort()}")
     }
     if ( ldapConnection.getUseTrustStore() != parsed_args.use_trust_store) {
         gitChangeMessage.add("use trust store = ${parsed_args.use_trust_store}")
