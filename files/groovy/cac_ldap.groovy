@@ -111,31 +111,32 @@ if (update) {
         gitChangeMessage.add("map groups as roles = ${parsed_args.map_groups_as_roles}")
         runtimeChangeMessage.add("map groups as roles = ${ldapMapping.isLdapGroupsAsRoles()}")
     }
-    if ( ldapMapping.getUserMemberOfAttribute() != parsed_args.user_memberof_attribute) {
-        gitChangeMessage.add("user memberof attribute = ${parsed_args.user_memberof_attribute}")
-        runtimeChangeMessage.add("user memberof attribute = ${ldapMapping.getUserMemberOfAttribute()}")
+    if (parsed_args.map_groups_as_roles) {
+        if ( ldapMapping.getUserMemberOfAttribute() != parsed_args.user_memberof_attribute) {
+            gitChangeMessage.add("user memberof attribute = ${parsed_args.user_memberof_attribute}")
+            runtimeChangeMessage.add("user memberof attribute = ${ldapMapping.getUserMemberOfAttribute()}")
+        }
+        if ( ldapMapping.getGroupBaseDn() != parsed_args.group_base_dn) {
+            gitChangeMessage.add("group base dn = ${parsed_args.group_base_dn}")
+            runtimeChangeMessage.add("group base dn = ${ldapMapping.getGroupBaseDn()}")
+        }
+        if ( ldapMapping.getGroupObjectClass() != parsed_args.group_object_class) {
+            gitChangeMessage.add("group object class = ${parsed_args.group_object_class}")
+            runtimeChangeMessage.add("group object class = ${ldapMapping.getGroupObjectClass()}")
+        }
+        if ( ldapMapping.getGroupIdAttribute() != parsed_args.group_id_attribute) {
+            gitChangeMessage.add("group id attribute = ${parsed_args.group_id_attribute}")
+            runtimeChangeMessage.add("group id attribute = ${ldapMapping.getGroupIdAttribute()}")
+        }
+        if ( ldapMapping.getGroupMemberAttribute() != parsed_args.group_member_attribute) {
+            gitChangeMessage.add("group member attribute = ${parsed_args.group_member_attribute}")
+            runtimeChangeMessage.add("group member attribute = ${ldapMapping.getGroupMemberAttribute()}")
+        }
+        if ( ldapMapping.getGroupMemberFormat() != parsed_args.group_member_format) {
+            gitChangeMessage.add("group member format = ${parsed_args.group_member_format}")
+            runtimeChangeMessage.add("group member format = ${ldapMapping.getGroupMemberFormat()}")
+        }
     }
-    if ( ldapMapping.getGroupBaseDn() != parsed_args.group_base_dn) {
-        gitChangeMessage.add("group base dn = ${parsed_args.group_base_dn}")
-        runtimeChangeMessage.add("group base dn = ${ldapMapping.getGroupBaseDn()}")
-    }
-    if ( ldapMapping.getGroupObjectClass() != parsed_args.group_object_class) {
-        gitChangeMessage.add("group object class = ${parsed_args.group_object_class}")
-        runtimeChangeMessage.add("group object class = ${ldapMapping.getGroupObjectClass()}")
-    }
-    if ( ldapMapping.getGroupIdAttribute() != parsed_args.group_id_attribute) {
-        gitChangeMessage.add("group id attribute = ${parsed_args.group_id_attribute}")
-        runtimeChangeMessage.add("group id attribute = ${ldapMapping.getGroupIdAttribute()}")
-    }
-    if ( ldapMapping.getGroupMemberAttribute() != parsed_args.group_member_attribute) {
-        gitChangeMessage.add("group member attribute = ${parsed_args.group_member_attribute}")
-        runtimeChangeMessage.add("group member attribute = ${ldapMapping.getGroupMemberAttribute()}")
-    }
-    if ( ldapMapping.getGroupMemberFormat() != parsed_args.group_member_format) {
-        gitChangeMessage.add("group member format = ${parsed_args.group_member_format}")
-        runtimeChangeMessage.add("group member format = ${ldapMapping.getGroupMemberFormat()}")
-    }
-
     if (gitChangeMessage) {
         currentResult.put('change_in_git', gitChangeMessage.join('\n'))
         currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
