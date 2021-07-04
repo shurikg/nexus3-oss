@@ -41,19 +41,21 @@ if (update) {
     }
     if ( ldapConnection.getHost().getPort() != parsed_args.port.toInteger()) {
         gitChangeMessage.add("port = ${parsed_args.port.toInteger()}")
-        runtimeChangeMessage.add("port = ${ldapConnection.getHost().getPort()} ${ldapConnection.getHost().getPort()}")
+        runtimeChangeMessage.add("port = ${ldapConnection.getHost().getPort()}")
     }
     if ( ldapConnection.getUseTrustStore() != parsed_args.use_trust_store) {
         gitChangeMessage.add("use trust store = ${parsed_args.use_trust_store}")
         runtimeChangeMessage.add("use trust store = ${ldapConnection.getUseTrustStore()}")
     }
-    if ( ldapConnection.getSystemUsername() != parsed_args.username) {
-        gitChangeMessage.add("username = ${parsed_args.username}")
-        runtimeChangeMessage.add("username = ${ldapConnection.getSystemUsername()}")
-    }
-    if ( ldapConnection.getSystemPassword() != parsed_args.password) {
-        gitChangeMessage.add("password = ${parsed_args.password}")
-        runtimeChangeMessage.add("password = ${ldapConnection.getSystemPassword()}")
+    if (parsed_args.auth == "simple") {
+        if ( ldapConnection.getSystemUsername() != parsed_args.username) {
+            gitChangeMessage.add("username = ${parsed_args.username}")
+            runtimeChangeMessage.add("username = ${ldapConnection.getSystemUsername()}")
+        }
+        if ( ldapConnection.getSystemPassword() != parsed_args.password) {
+            gitChangeMessage.add("password = ${parsed_args.password}")
+            runtimeChangeMessage.add("password = ${ldapConnection.getSystemPassword()}")
+        }
     }
     if ( ldapConnection.getSearchBase() != parsed_args.search_base) {
         gitChangeMessage.add("search base = ${parsed_args.search_base}")
