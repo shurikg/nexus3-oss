@@ -16,7 +16,7 @@ def ldapConfigMgr = container.lookup(LdapConfigurationManager.class.getName())
 ldapConfigMgr.listLdapServerConfigurations().each { rtLdap ->
     boolean needToDelete = true
     parsed_args.details.any { ldapDef ->
-        if (rtLdap.name == ldapDef.name) {
+        if (rtLdap.name == ldapDef.ldap_name) {
             needToDelete = false
             return true
         }
