@@ -40,8 +40,8 @@ if (update) {
         runtimeChangeMessage.add("hostname = ${ldapConnection.getHost().getHostName()}")
     }
     if ( ldapConnection.getHost().getPort() != parsed_args.port) {
-        gitChangeMessage.add("port = ${parsed_args.port}")
-        runtimeChangeMessage.add("port = ${ldapConnection.getHost().getPort()}")
+        gitChangeMessage.add("port = ${parsed_args.port} ${parsed_args.port.class}")
+        runtimeChangeMessage.add("port = ${ldapConnection.getHost().getPort()} ${ldapConnection.getHost().getPort().class}")
     }
     if ( ldapConnection.getUseTrustStore() != parsed_args.use_trust_store) {
         gitChangeMessage.add("use trust store = ${parsed_args.use_trust_store}")
@@ -144,13 +144,15 @@ if (update) {
         scriptResults['action_details'].add(currentResult)
     }
 } else {
-    currentResult.put('change_in_git', "definition of new ${parsed_args.name} ldap")
-    currentResult.put('change_in_runtime', 'N/A')
-    currentResult.put('change_type', 'add')
-    currentResult.put('description', "the ${parsed_args.name} ldap will be added")
-    currentResult.put('resource', 'ldap')
-    currentResult.put('downtime', false)
-    scriptResults['action_details'].add(currentResult)
+    if (parsed_args.name != null) {
+        currentResult.put('change_in_git', "definition of new ${parsed_args.name} ldap")
+        currentResult.put('change_in_runtime', 'N/A')
+        currentResult.put('change_type', 'add')
+        currentResult.put('description', "the ${parsed_args.name} ldap will be added")
+        currentResult.put('resource', 'ldap')
+        currentResult.put('downtime', false)
+        scriptResults['action_details'].add(currentResult)
+    }
 }
 
 return JsonOutput.toJson(scriptResults)
