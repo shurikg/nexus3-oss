@@ -64,6 +64,7 @@ parsed_args.each { currentRepo ->
 
         // Configs common to all repos
         configuration.attributes['storage']['strictContentTypeValidation'] = Boolean.valueOf(currentRepo.strict_content_validation)
+        configuration.attributes['storage']['blobStoreName'] = currentRepo.blob_store
 
         // Configs for all group repos
         if (currentRepo.type == 'group') {
