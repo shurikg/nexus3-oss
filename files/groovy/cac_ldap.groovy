@@ -73,22 +73,22 @@ if (update) {
     }
 
     def ldapMapping = ldapConfig.getMapping()
-    // if ( ldapMapping.getUserBaseDn() != parsed_args.user_base_dn) {
-    //     gitChangeMessage.add("user base dn = ${parsed_args.user_base_dn}")
-    //     runtimeChangeMessage.add("user base dn = ${ldapMapping.getUserBaseDn()}")
-    // }
-    // if ( ldapMapping.getLdapFilter() != parsed_args.user_ldap_filter) {
-    //     gitChangeMessage.add("user ldap filter = ${parsed_args.user_ldap_filter}")
-    //     runtimeChangeMessage.add("user ldap filter = ${ldapMapping.getLdapFilter()}")
-    // }
-    // if ( ldapMapping.getUserObjectClass() != parsed_args.user_object_class) {
-    //     gitChangeMessage.add("user object class = ${parsed_args.user_object_class}")
-    //     runtimeChangeMessage.add("user object class = ${ldapMapping.getUserObjectClass()}")
-    // }
-    // if ( ldapMapping.getUserIdAttribute() != parsed_args.user_id_attribute) {
-    //     gitChangeMessage.add("user id attribute = ${parsed_args.user_id_attribute}")
-    //     runtimeChangeMessage.add("user id attribute = ${ldapMapping.getUserIdAttribute()}")
-    // }
+    if ( ldapMapping.getUserBaseDn() != parsed_args.user_base_dn) {
+        gitChangeMessage.add("user base dn = ${parsed_args.user_base_dn}")
+        runtimeChangeMessage.add("user base dn = ${ldapMapping.getUserBaseDn()}")
+    }
+    if ( ldapMapping.getLdapFilter() != parsed_args.user_ldap_filter) {
+        gitChangeMessage.add("user ldap filter = ${parsed_args.user_ldap_filter}")
+        runtimeChangeMessage.add("user ldap filter = ${ldapMapping.getLdapFilter()}")
+    }
+    if ( ldapMapping.getUserObjectClass() != parsed_args.user_object_class) {
+        gitChangeMessage.add("user object class = ${parsed_args.user_object_class}")
+        runtimeChangeMessage.add("user object class = ${ldapMapping.getUserObjectClass()}")
+    }
+    if ( ldapMapping.getUserIdAttribute() != parsed_args.user_id_attribute) {
+        gitChangeMessage.add("user id attribute = ${parsed_args.user_id_attribute}")
+        runtimeChangeMessage.add("user id attribute = ${ldapMapping.getUserIdAttribute()}")
+    }
     // if ( ldapMapping.getUserRealNameAttribute() != parsed_args.user_real_name_attribute) {
     //     gitChangeMessage.add("user real name attribute = ${parsed_args.user_real_name_attribute}")
     //     runtimeChangeMessage.add("user real name attribute = ${ldapMapping.getUserRealNameAttribute()}")

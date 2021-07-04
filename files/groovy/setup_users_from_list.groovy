@@ -15,11 +15,15 @@ authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAUL
 def updateUser(userDef, currentResult) {
     User user = security.securitySystem.getUser(userDef.username)
 
+    def isUserTheSame = true
+    if (userDef.first_name != user.getFirstName() || userDef.last_name != user.getLastName() || userDef.email != user.getEmailAddress()) {
+        isUserSubtree = false
+    }
     user.setFirstName(userDef.first_name)
     user.setLastName(userDef.last_name)
     user.setEmailAddress(userDef.email)
 
-    if (user != security.securitySystem.getUser(userDef.username)) {
+    if (user != security.securitySystem.getUser(userDef.username) || ! isUserTheSame ) {
         security.securitySystem.updateUser(user)
         currentResult.put('status', 'updated')
         scriptResults['changed'] = true
