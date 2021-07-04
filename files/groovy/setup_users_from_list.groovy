@@ -17,7 +17,7 @@ def updateUser(userDef, currentResult) {
 
     def isUserTheSame = true
     if (userDef.first_name != user.getFirstName() || userDef.last_name != user.getLastName() || userDef.email != user.getEmailAddress()) {
-        isUserSubtree = false
+        isUserTheSame = false
     }
     user.setFirstName(userDef.first_name)
     user.setLastName(userDef.last_name)
