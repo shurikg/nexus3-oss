@@ -27,10 +27,11 @@ def migrateGenericConfigurationFile(details) {
 
     content.put('nexus_default_context_path', details['nexus-properties']['nexus-context-path'])
     content.put('nexus_timezone', details['nexus-properties']['user.timezone'])
-    content.put('nexus_installation_dir', details['nexus-configuration']['installDirectory'])
+    content.put('nexus_installation_dir', details['nexus-configuration']['installDirectory'].split('/')[0..-2].join('/'))
+    content.put('nexus_data_dir', details['nexus-configuration']['workingDirectory'])
     content.put('nexus_tmp_dir', details['nexus-configuration']['temporaryDirectory'])
     content.put('nexus_os_user', details['nexus-properties']['user.name'])
-    content.put('nexus_os_user_home_dir', details['nexus-properties']['tuser.home'])
+    content.put('nexus_os_user_home_dir', details['nexus-properties']['user.home'])
 
     scriptResults['action_details'].put('generic_configuration.yml', content)
 // nexus_os_group: kube
