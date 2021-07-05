@@ -13,7 +13,7 @@ ldapConfigMgr.listLdapServerConfigurations().each { rtLdap ->
     def ldapConnection = rtLdap.getConnection()
     Map<String, String> currentLdap = [:]
 
-    currentLdap.put('name', rtLdap.name)
+    currentLdap.put('ldap_name', rtLdap.name)
     currentLdap.put('ldap_protocol', ldapConnection.getHost().getProtocol())
     currentLdap.put('ldap_hostname', ldapConnection.getHost().getHostName())
     currentLdap.put('ldap_port', ldapConnection.getHost().getPort())
