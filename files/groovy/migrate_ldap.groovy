@@ -19,8 +19,10 @@ ldapConfigMgr.listLdapServerConfigurations().each { rtLdap ->
     currentLdap.put('ldap_port', ldapConnection.getHost().getPort())
     currentLdap.put('ldap_use_trust_store', ldapConnection.getUseTrustStore())
     currentLdap.put('ldap_auth', ldapConnection.getAuthScheme())
-    currentLdap.put('ldap_auth_username', ldapConnection.getSystemUsername())
-    currentLdap.put('ldap_auth_password', ldapConnection.getSystemPassword())
+    if (ldapConnection.getAuthScheme() == 'simple') {
+        currentLdap.put('ldap_auth_username', ldapConnection.getSystemUsername())
+        currentLdap.put('ldap_auth_password', ldapConnection.getSystemPassword())
+    }
     currentLdap.put('ldap_search_base', ldapConnection.getSearchBase())
 
     def ldapMapping = rtLdap.getMapping()
@@ -31,13 +33,14 @@ ldapConfigMgr.listLdapServerConfigurations().each { rtLdap ->
     currentLdap.put('ldap_user_real_name_attribute', ldapMapping.getUserRealNameAttribute())
     currentLdap.put('ldap_user_email_attribute', ldapMapping.getEmailAddressAttribute())
     currentLdap.put('ldap_map_groups_as_roles', ldapMapping.isLdapGroupsAsRoles())
-    // currentLdap.put('ldap_map_groups_as_roles_type', ldapMapping.isLdapGroupsAsRoles())
-    currentLdap.put('ldap_user_memberof_attribute', ldapMapping.getUserMemberOfAttribute())
-    currentLdap.put('ldap_group_base_dn', ldapMapping.getGroupBaseDn())
-    currentLdap.put('ldap_group_object_class', ldapMapping.getGroupObjectClass())
-    currentLdap.put('ldap_group_id_attribute', ldapMapping.getGroupIdAttribute())
-    currentLdap.put('ldap_group_member_attribute', ldapMapping.getGroupMemberAttribute())
-    currentLdap.put('ldap_group_member_format', ldapMapping.getGroupMemberFormat())
+    if (ldapMapping.isLdapGroupsAsRoles()) {
+        currentLdap.put('ldap_user_memberof_attribute', ldapMapping.getUserMemberOfAttribute())
+        currentLdap.put('ldap_group_base_dn', ldapMapping.getGroupBaseDn())
+        currentLdap.put('ldap_group_object_class', ldapMapping.getGroupObjectClass())
+        currentLdap.put('ldap_group_id_attribute', ldapMapping.getGroupIdAttribute())
+        currentLdap.put('ldap_group_member_attribute', ldapMapping.getGroupMemberAttribute())
+        currentLdap.put('ldap_group_member_format', ldapMapping.getGroupMemberFormat())
+    }
     currentLdap.put('ldap_user_subtree', ldapMapping.isUserSubtree())
     currentLdap.put('ldap_group_subtree', ldapMapping.isGroupSubtree())
 
