@@ -76,7 +76,6 @@
       args:
         warn: false
         executable: /bin/bash
-      check_mode: no
   rescue:
     - name: Fail with information on rsync error
       fail:
