@@ -263,7 +263,7 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
     }
 }
 
-parsed_args.each { currentRepo ->
+parsed_args.details.each { currentRepo ->
 
     Map<String, String> currentResult = [:]
     existingRepository = repositoryManager.get(currentRepo.name)
@@ -299,7 +299,7 @@ repositoryManager.browse().each { rtRepo ->
     def needToDelete = true
     Map<String, String> currentResult = [:]
 
-    parsed_args.any { repoDef ->
+    parsed_args.details.sany { repoDef ->
         if (rtRepo.getName() == repoDef.name) {
             needToDelete = false
             return true
