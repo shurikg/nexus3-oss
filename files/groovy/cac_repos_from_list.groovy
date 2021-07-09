@@ -299,7 +299,7 @@ repositoryManager.browse().each { rtRepo ->
     def needToDelete = true
     Map<String, String> currentResult = [:]
 
-    parsed_args.details.sany { repoDef ->
+    parsed_args.details.any { repoDef ->
         if (rtRepo.getName() == repoDef.name) {
             needToDelete = false
             return true
