@@ -7,13 +7,14 @@ List<Map<String, String>> actionDetails = []
 Map scriptResults = [changed: false, error: false]
 scriptResults.put('action_details', actionDetails)
 
+def blobManager = blobStore.getBlobStoreManager()
 parsed_args.details.each { blobstoreDef ->
     Map<String, String> currentResult = [:]
     def gitChangeMessage = []
     def runtimeChangeMessage = []
     def blobDefType = 'File'
 
-    existingBlobStore = blobStore.getBlobStoreManager().get(blobstoreDef.name)
+    existingBlobStore = blobManager.get(blobstoreDef.name)
     if (existingBlobStore == null) {
         currentResult.put('change_in_git', "definition of new ${blobstoreDef.name} blobstore")
         currentResult.put('change_in_runtime', 'N/A')
@@ -23,8 +24,7 @@ parsed_args.details.each { blobstoreDef ->
         currentResult.put('downtime', false)
         scriptResults['action_details'].add(currentResult)
     } else {
-        if (blobstoreDef.type == 'S3')
-        {
+        if (blobstoreDef.type == 'S3') {
             blobDefType = 'S3'
         }
         if (blobDefType != existingBlobStore.getBlobStoreConfiguration().getType()) {
@@ -51,11 +51,10 @@ parsed_args.details.each { blobstoreDef ->
     }
 }
 
-blobStore.getBlobStoreManager().browse().each { rtBlob ->
+blobManager.browse().each { rtBlob ->
     def needToDelete = true
     Map<String, String> currentResult = [:]
     def rtBlobName = rtBlob.getBlobStoreConfiguration().getName()
-    def atr = rtBlob.getBlobStoreConfiguration().getAttributes()
 
     parsed_args.details.any { blobDef ->
         if (rtBlobName == blobDef.name) {
@@ -74,7 +73,7 @@ blobStore.getBlobStoreManager().browse().each { rtBlob ->
         scriptResults['action_details'].add(currentResult)
 
         if (! parsed_args.dry_run) {
-            rtBlob.remove()
+            blobManager.delete(rtBlobName)
         }
     }
 }
