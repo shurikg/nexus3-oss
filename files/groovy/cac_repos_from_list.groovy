@@ -316,7 +316,7 @@ repositoryManager.browse().each { rtRepo ->
         scriptResults['action_details'].add(currentResult)
 
         if (! parsed_args.dry_run) {
-            rtRepo.delete()
+            repositoryManager.delete(rtRepo.getName())
         }
     }
 }
