@@ -72,7 +72,7 @@ parsed_args.details.each { privilegeDef ->
         }
         if (privilege.getPrivilegeProperty('actions') != privilegeDef.actions.join(',')) {
                 gitChangeMessage.add("property actions = ${privilegeDef.actions.join(',')}")
-                runtimeChangeMessage.add("property action = ${privilege.getPrivilegeProperty('actions')}")
+                runtimeChangeMessage.add("property actions = ${privilege.getPrivilegeProperty('actions')}")
         }
 
         if (gitChangeMessage) {
