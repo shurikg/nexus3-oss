@@ -72,15 +72,15 @@ parsed_args.details.each { privilegeDef ->
         }
         if (privilege.getPrivilegeProperty('actions') != privilegeDef.actions.join(',')) {
                 gitChangeMessage.add("property actions = ${privilegeDef.actions.join(',')}")
-                runtimeChangeMessage.add("property format = ${privilege.getPrivilegeProperty('actions')}")
+                runtimeChangeMessage.add("property action = ${privilege.getPrivilegeProperty('actions')}")
         }
 
         if (gitChangeMessage) {
             currentResult.put('change_in_git', gitChangeMessage.join('\n'))
             currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
             currentResult.put('change_type', 'change')
-            currentResult.put('description', "the privilege configuration will be update")
-            currentResult.put('resource', 'privilelege')
+            currentResult.put('description', "the ${privilegeDef.name} privilege configuration will be update")
+            currentResult.put('resource', 'privilege')
             currentResult.put('downtime', false)
             scriptResults['action_details'].add(currentResult)
         }
