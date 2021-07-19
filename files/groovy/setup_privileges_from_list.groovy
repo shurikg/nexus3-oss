@@ -51,7 +51,7 @@ parsed_args.each { privilegeDef ->
         if (update) {
             definedProperties = privilege.getProperties().sort().toString()
             currentProperties = authManager.getPrivilege(privilegeDef.name).getProperties().sort().toString()
-            if (definedProperties != currentProperties) {
+            if (definedProperties != currentProperties || privilege.getDescription() != privilegeDef.description) {
                 authManager.updatePrivilege(privilege)
                 currentResult.status = 'updated'
                 scriptResults.changed = true
