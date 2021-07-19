@@ -187,4 +187,4 @@
     path: "{{ playbook_dir }}/migration_output"
     owner: "{{ perm_details.stat.pw_name }}"
     group: "{{ perm_details.stat.gr_name }}"
-   recurse: yes
+    recurse: yes
