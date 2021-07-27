@@ -14,8 +14,8 @@ def getValue(value) {
 def httpClientManager = container.lookup(HttpClientManagerImpl.class.getName())
 def httpConfiguration = httpClientManager.getConfiguration()
 ProxyConfiguration proxyConfiguration = httpConfiguration.getProxy()
-ProxyServerConfiguration rtHttpProxy = proxyConfiguration.getHttp()
-ProxyServerConfiguration rtHttpsProxy = proxyConfiguration.getHttps()
+ProxyServerConfiguration rtHttpProxy = proxyConfiguration?.getHttp()
+ProxyServerConfiguration rtHttpsProxy = proxyConfiguration?.getHttps()
 
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
