@@ -94,10 +94,10 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
     currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
     currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
     if (repoAttributes['docker']['httpPort'] != null && repoAttributes['docker']['httpPort'] != '' ) {
-        currentRepository.put('http_port', repoAttributes['docker']['httpPort'])
+        currentRepository.put('http_port', repoAttributes['docker']['httpPort'].toInteger())
     }
     if (repoAttributes['docker']['httpsPort'] != null && repoAttributes['docker']['httpsPort'] != '') {
-        currentRepository.put('https_port', repoAttributes['docker']['httpsPort'])
+        currentRepository.put('https_port', repoAttributes['docker']['httpsPort'].toInteger())
     }
     if (repoAttributes['docker']['v1Enabled'] != null )
     {
