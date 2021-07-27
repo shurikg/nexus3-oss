@@ -42,7 +42,7 @@ if (rtHttpsProxy?.isEnabled()) {
 else {
     content.put('nexus_with_https_proxy', false)
 }
-content.put('nexus_proxy_exclude_hosts', proxyConfiguration.getNonProxyHosts())
+content.put('nexus_proxy_exclude_hosts', proxyConfiguration?.getNonProxyHosts())
 
 scriptResults['action_details'].put('http.yml', content)
 return JsonOutput.toJson(scriptResults)
