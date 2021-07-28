@@ -112,7 +112,7 @@ if (update) {
         runtimeChangeMessage.add("map groups as roles = ${ldapMapping.isLdapGroupsAsRoles()}")
     }
     if (parsed_args.map_groups_as_roles) {
-        if ( ldapMapping.getUserMemberOfAttribute() != parsed_args.user_memberof_attribute) {
+        if ( parsed_args.map_groups_as_roles_type == "dynamic" && ldapMapping.getUserMemberOfAttribute() != parsed_args.user_memberof_attribute) {
             gitChangeMessage.add("user memberof attribute = ${parsed_args.user_memberof_attribute}")
             runtimeChangeMessage.add("user memberof attribute = ${ldapMapping.getUserMemberOfAttribute()}")
         }
