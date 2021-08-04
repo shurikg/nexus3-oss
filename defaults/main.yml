@@ -324,7 +324,7 @@ nexus_repos_maven_hosted:
   #   version_policy: release
   #   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
 
-nexus_repos_maven_group:
+nexus_repos_maven_group: []
   # - name: public
   #   member_repos:
   #     - central
@@ -431,7 +431,7 @@ _nexus_repos_raw_defaults:
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
 
-nexus_repos_raw_proxy:
+nexus_repos_raw_proxy: []
   # - name: ubuntu-archive
   #   remote_url: 'http://archive.ubuntu.com/ubuntu/'
   #   # maximum_component_age: 1440
@@ -439,12 +439,12 @@ nexus_repos_raw_proxy:
     # negative_cache_enabled: true
     # negative_cache_ttl: 1440
 
-nexus_repos_raw_hosted:
+nexus_repos_raw_hosted: []
   # - name: raw-internal
   #   version_policy: release
   #   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
 
-nexus_repos_raw_group:
+nexus_repos_raw_group: []
   # - name: raw-all
   #   member_repos:
   #     - raw-internal
@@ -466,12 +466,12 @@ _nexus_repos_docker_defaults:
   cache_foreign_layers: false  # Nexus gui default. For proxies only
   foreign_layer_url_whitelist: []  # Nexus gui default. For proxies only
 
-nexus_repos_docker_hosted:
+nexus_repos_docker_hosted: []
   # - name: docker-hosted
   #   http_port: "{{ nexus_docker_hosted_port }}"
   #   v1_enabled: True
 
-nexus_repos_docker_proxy:
+nexus_repos_docker_proxy: []
   # - name: docker-proxy
   #   http_port: "{{ nexus_docker_proxy_port }}"
   #   v1_enabled: True
@@ -487,7 +487,7 @@ nexus_repos_docker_proxy:
     # negative_cache_enabled: true
     # negative_cache_ttl: 1440
 
-nexus_repos_docker_group:
+nexus_repos_docker_group: []
   # - name: docker-group
   #   http_port: "{{ nexus_docker_group_port }}"
   #   v1_enabled: True
