@@ -33,10 +33,6 @@ def migrateGenericConfigurationFile(details) {
     content.put('nexus_os_user', details['nexus-properties']['user.name'])
     content.put('nexus_os_user_home_dir', details['nexus-properties']['user.home'])
 
-compareMinHeapSize(parsed_args['current']['nexus_min_heap_size'],parsed_args['require']['nexus_min_heap_size'])
-compareMaxHeapSize(parsed_args['current']['nexus_max_heap_size'],parsed_args['require']['nexus_max_heap_size'])
-compareMaxDirectSize(parsed_args['current']['nexus_max_direct_memory'],parsed_args['require']['nexus_max_direct_memory'])
-
     scriptResults['action_details'].put('generic_configuration.yml', content)
 // nexus_os_group: kube
 // # nexus_os_user: kube
