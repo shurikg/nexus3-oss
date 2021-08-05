@@ -182,12 +182,12 @@
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
 
 - name: get max memory definition
-  shell: grep "^-Xms" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
+  shell: grep "^-Xmx" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
   register: max_memory
   check_mode: no
 
 - name: get min memory definition
-  shell: grep "^-Xmx" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
+  shell: grep "^-Xms" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
   register: min_memory
   check_mode: no
 
