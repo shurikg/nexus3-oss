@@ -1,5 +1,7 @@
 import groovy.json.JsonOutput
 import org.sonatype.nexus.security.realm.RealmManager
+import org.sonatype.nexus.security.anonymous.AnonymousConfiguration
+import org.sonatype.nexus.security.anonymous.AnonymousManager
 
 def fileName = "chi/security.yml"
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
