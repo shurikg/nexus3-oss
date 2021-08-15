@@ -150,9 +150,12 @@ def migrateMavenRepository(rtRepository, migrationRepositories) {
     repoAttributes = rtRepository.getConfiguration().getAttributes()
 
     currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
-    currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
-
-    currentRepository.put('dummy', repoAttributes)
+    if (repoAttributes['storage']['strictContentTypeValidation'] == null ) {
+        currentRepository.put('strict_content_validation', true)
+    }
+    else {
+        currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+    }
 
     if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
