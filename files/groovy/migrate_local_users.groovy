@@ -2,16 +2,21 @@ import groovy.json.JsonOutput
 import org.sonatype.nexus.security.role.RoleIdentifier
 import org.sonatype.nexus.security.user.UserManager
 import org.sonatype.nexus.security.user.User
+import org.sonatype.nexus.security.user.UserSearchCriteria
 
 def fileName = "users.yml"
 def migrationUsers = ['nexus_local_users': []]
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
-authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
+// authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
+
+def searchCriteria = UserSearchCriteria()
+searchCriteria.setSource(UserManager.DEFAULT_SOURCE)
 
 def excludeUsers = ['admin', 'anonymous']
 
-security.securitySystem.listUsers().each { rtUser ->
+// security.securitySystem.listUsers().each { rtUser ->
+security.securitySystem.searchUsers(searchCriteria).each { rtUser ->
     if (! (rtUser.getUserId() in excludeUsers) ) {
         Map<String, String> currentUser = [:]
 
