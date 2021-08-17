@@ -90,6 +90,12 @@
     state: absent
   when: nexus_clean_script_folder | default(false)
 
+- name: Clean groovy-raw-scripts folder 2
+  file:
+    path: "{{ nexus_data_dir }}"
+    mode: 0777
+  when: nexus_clean_script_folder | default(false)
+
 - name: define cac_changes
   set_fact:
     cac_changes: []
