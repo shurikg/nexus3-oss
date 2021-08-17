@@ -10,7 +10,7 @@ Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
 // authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAULT_SOURCE)
 
-def searchCriteria = UserSearchCriteria()
+def searchCriteria = new UserSearchCriteria()
 searchCriteria.setSource(UserManager.DEFAULT_SOURCE)
 
 def excludeUsers = ['admin', 'anonymous']
