@@ -84,6 +84,12 @@
   include_tasks: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
 
+- name: Clean groovy-raw-scripts folder
+  file:
+    path: "{{ nexus_data_dir }}/groovy-raw-scripts"
+    state: absent
+  when: nexus_clean_script_folder | default(false)
+
 - name: define cac_changes
   set_fact:
     cac_changes: []
