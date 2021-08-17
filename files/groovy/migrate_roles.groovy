@@ -29,7 +29,7 @@ authManager.listRoles().each { rtRole ->
 
         def existingRolesInRole = rtRole.getRoles()
         existingRolesInRole.each { role ->
-            roleToAdd.add(role.getRoleId())
+            roleToAdd.add(role)
         }
 
         currentResult.put('privileges', privilageToAdd)
