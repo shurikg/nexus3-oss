@@ -107,20 +107,21 @@ parsed_args.each { currentRepo ->
 
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
-            authentication = currentRepo.remote_username == null ? null : [
-                    type    : 'username',
-                    username: currentRepo.remote_username,
-                    password: currentRepo.remote_password
-            ]
-
             configuration.attributes['httpclient'] = [
-                    authentication: authentication,
                     blocked       : false,
                     autoBlock     : true,
                     connection    : [
                             useTrustStore: false
                     ]
             ]
+
+            if (currentRepo.remote_username) {
+                configuration.attributes['httpclient']['authentication'] = [
+                    type    : 'username',
+                    username: currentRepo.remote_username,
+                    password: currentRepo.remote_password
+                ]
+            }
 
             configuration.attributes['proxy'] = [
                     remoteUrl     : currentRepo.remote_url,
