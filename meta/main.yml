@@ -17,7 +17,7 @@ galaxy_info:
         - 8
     - name: Ubuntu
       versions:
-        - xenial
+        - xenialcrlf ->
         - bionic
     - name: Debian
       versions:
