@@ -179,12 +179,6 @@
     - chi
     - repositories
 
-- debug:
-    msg: "{{ cac_changes }}"
-
-- debug:
-    msg: "{{ cac_changes.action_details | dict2items }}"
-
 - name: Add several users
   copy:
     content: "{{ item.value | to_nice_yaml }}"

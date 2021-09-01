@@ -184,18 +184,27 @@
   register: max_memory
   check_mode: no
   changed_when: False
+  tags:
+    # shut-off ansible-lint error on this one: this is the desired way of doing it
+    - skip_ansible_lint
 
 - name: get min memory definition
   shell: grep "^-Xms" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
   register: min_memory
   check_mode: no
   changed_when: False
+  tags:
+    # shut-off ansible-lint error on this one: this is the desired way of doing it
+    - skip_ansible_lint
 
 - name: get max_direct memory definition
   shell: grep "^-XX:MaxDirectMemorySize=" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -d= -f2
   register: max_direct_memory
   check_mode: no
   changed_when: False
+  tags:
+    # shut-off ansible-lint error on this one: this is the desired way of doing it
+    - skip_ansible_lint
 
 - name: define generic facts
   set_fact:
