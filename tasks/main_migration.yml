@@ -186,7 +186,9 @@
     msg: "{{ cac_changes.action_details | dict2items }}"
 
 - name: Add several users
-  copy: content="{{ item.value | to_nice_yaml}}" dest="{{ playbook_dir }}/migration_output/group_vars/nexus/{{ item.key }}"
+  copy:
+    content: "{{ item.value | to_nice_yaml }}"
+    dest: "{{ playbook_dir }}/migration_output/group_vars/nexus/{{ item.key }}"
   loop: "{{ cac_changes.action_details | dict2items }}"
 
 - name: Find the relevant permission

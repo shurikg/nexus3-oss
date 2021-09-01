@@ -27,6 +27,7 @@
     current_nexus_admin_password: "{{ nexus_admin_password }}"
   when: nexus_api_head_with_defined_password.status == 200
   no_log: true
+
 - name: Force (re-)registration of groovy scripts (purge reference dir)
   file:
     path: "{{ nexus_data_dir }}/groovy-raw-scripts"
@@ -153,9 +154,6 @@
       {%- endfor -%}
       {{ result }}
 
-- debug:
-    msg: "{{ nexus_privileges | type_debug }}"
-
 - name: CasC privilege
   include_tasks: call_cac_script.yml
   vars:
@@ -185,18 +183,22 @@
   shell: grep "^-Xmx" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
   register: max_memory
   check_mode: no
+  changed_when: False
 
 - name: get min memory definition
   shell: grep "^-Xms" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -c5-
   register: min_memory
   check_mode: no
+  changed_when: False
 
 - name: get max_direct memory definition
   shell: grep "^-XX:MaxDirectMemorySize=" "{{ nexus_installation_dir }}/nexus-latest/bin/nexus.vmoptions" | cut -d= -f2
   register: max_direct_memory
   check_mode: no
+  changed_when: False
 
-- set_fact:
+- name: define generic facts
+  set_fact:
     generic_configuration:
       require:
         nexus_download_url: "{{ nexus_download_url }}"
@@ -256,9 +258,6 @@
     script_name: cac_blobstores
     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
     when: nexus_blobstores | length > 0
-
-- debug:
-    msg: "{{ cac_changes }}"
 
 - name: create final cac report
   set_fact:
