@@ -175,6 +175,7 @@
   file:
     path: "{{ playbook_dir }}/migration_output/group_vars/nexus/{{ item }}"
     state: directory
+    mode: 0755
   loop:
     - chi
     - repositories
@@ -183,6 +184,7 @@
   copy:
     content: "{{ item.value | to_nice_yaml }}"
     dest: "{{ playbook_dir }}/migration_output/group_vars/nexus/{{ item.key }}"
+    mode: 0644
   loop: "{{ cac_changes.action_details | dict2items }}"
 
 - name: Find the relevant permission

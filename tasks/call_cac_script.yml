@@ -28,7 +28,8 @@
 
     - name: append changes
       set_fact:
-        cac_changes: "{{ cac_changes | combine(script_run.json.result | from_json,list_merge='append',recursive=True) }}"
+        cac_changes: "{{ cac_changes | combine(script_run.json.result | from_json, \
+          list_merge='append', recursive=True) }}"
 
     - name: Details about cac script if verbose mode is on
       debug:
