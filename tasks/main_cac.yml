@@ -279,6 +279,8 @@
   check_mode: no
 
 - name: save the cac report
-  copy: content="{{ __final_cac_report }}" dest="{{ nexus_cac_report_file }}"
-  mode: 0644
+  copy:
+    content: "{{ __final_cac_report }}"
+    dest: "{{ nexus_cac_report_file }}"
+    mode: 0644
   check_mode: no
