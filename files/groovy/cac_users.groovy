@@ -6,6 +6,7 @@ import org.sonatype.nexus.security.user.InvalidCredentialsException
 import org.sonatype.nexus.security.user.UserManager
 import org.sonatype.nexus.security.user.UserNotFoundException
 import org.sonatype.nexus.security.user.User
+import org.sonatype.nexus.security.user.UserSearchCriteria
 
 List<Map<String, String>> actionDetails = []
 @Field Map scriptResults = [changed: false, error: false]
@@ -133,7 +134,10 @@ parsed_args.details.each { userDef ->
 // Runtime -> GIT
 def excludeUsers = ['admin']
 
-security.securitySystem.listUsers().each { rtUser ->
+def searchCriteria = new UserSearchCriteria()
+searchCriteria.setSource(UserManager.DEFAULT_SOURCE)
+
+security.securitySystem.searchUsers(searchCriteria).each { rtUser ->
     if (! (rtUser.getUserId() in excludeUsers) ) {
         Map<String, String> currentResult = [:]
         def needToDelete = true
