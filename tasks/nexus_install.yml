@@ -125,6 +125,15 @@
   notify:
     - nexus-service-stop
 
+- name: Update sonatype-work permission
+  file:
+    path: "{{ nexus_installation_dir }}/sonatype-work"
+    recurse: yes
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+  notify:
+    - nexus-service-stop
+
 - name: flush handlers
   meta: flush_handlers
 
