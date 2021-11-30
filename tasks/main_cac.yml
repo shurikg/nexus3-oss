@@ -135,6 +135,12 @@
       rut_auth_realm: "{{ nexus_rut_auth_realm }}"
       ldap_realm: "{{ nexus_ldap_realm }}"
       docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
+      crowd_realm: "{{ nexus_crowd_realm }}"
+      default_role_realm: "{{ nexus_default_role_realm }}"
+      local_authenticating_realm: "{{ nexus_local_authenticating_realm }}"
+      local_authorizing_realm: "{{ nexus_local_authorizing_realm }}"
+      saml_realm: "{{ nexus_saml_realm }}"
+      user_token_realm: "{{ nexus_user_token_realm }}"
 
 - name: CasC anonymous access
   include_tasks: call_cac_script.yml

@@ -33,6 +33,30 @@ if (realmManager.isRealmEnabled("DockerToken") != parsed_args.docker_bearer_toke
     gitChangeMessage.add("DockerToken = ${parsed_args.docker_bearer_token_realm}")
     runtimeChangeMessage.add("DockerToken = ${realmManager.isRealmEnabled("DockerToken")}")
 }
+if (realmManager.isRealmEnabled("Crowd") != parsed_args.crowd_realm) {
+    gitChangeMessage.add("Crowd = ${parsed_args.crowd_realm}")
+    runtimeChangeMessage.add("Crowd = ${realmManager.isRealmEnabled("Crowd")}")
+}
+if (realmManager.isRealmEnabled("DefaultRole") != parsed_args.default_role_realm) {
+    gitChangeMessage.add("DefaultRole = ${parsed_args.default_role_realm}")
+    runtimeChangeMessage.add("DefaultRole = ${realmManager.isRealmEnabled("DefaultRole")}")
+}
+if (realmManager.isRealmEnabled("NexusAuthenticatingRealm") != parsed_args.local_authenticating_realm) {
+    gitChangeMessage.add("NexusAuthenticatingRealm = ${parsed_args.local_authenticating_realm}")
+    runtimeChangeMessage.add("NexusAuthenticatingRealm = ${realmManager.isRealmEnabled("NexusAuthenticatingRealm")}")
+}
+if (realmManager.isRealmEnabled("NexusAuthorizingRealm") != parsed_args.local_authorizing_realm) {
+    gitChangeMessage.add("NexusAuthorizingRealm = ${parsed_args.local_authorizing_realm}")
+    runtimeChangeMessage.add("NexusAuthorizingRealm = ${realmManager.isRealmEnabled("NexusAuthorizingRealm")}")
+}
+if (realmManager.isRealmEnabled("SamlRealm") != parsed_args.saml_realm) {
+    gitChangeMessage.add("SamlRealm = ${parsed_args.saml_realm}")
+    runtimeChangeMessage.add("SamlRealm = ${realmManager.isRealmEnabled("SamlRealm")}")
+}
+if (realmManager.isRealmEnabled("User-Token-Realm") != parsed_args.user_token_realm) {
+    gitChangeMessage.add("User-Token-Realm = ${parsed_args.user_token_realm}")
+    runtimeChangeMessage.add("User-Token-Realm = ${realmManager.isRealmEnabled("User-Token-Realm")}")
+}
 
 if (gitChangeMessage) {
     currentResult.put('change_in_git', gitChangeMessage.join('\n'))

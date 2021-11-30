@@ -19,3 +19,22 @@ realmManager.enableRealm("LdapRealm", parsed_args.ldap_realm)
 
 // enable/disable the Docker Bearer Token Realm
 realmManager.enableRealm("DockerToken", parsed_args.docker_bearer_token_realm)
+
+// enable/disable the Crowd Realm
+realmManager.enableRealm("Crowd", parsed_args.crowd_realm)
+
+// enable/disable the Default Role Realm
+realmManager.enableRealm("DefaultRole", parsed_args.default_role_realm)
+
+// enable/disable the Local Authenticating Realm
+realmManager.enableRealm("NexusAuthenticatingRealm", parsed_args.local_authenticating_realm)
+
+// enable/disable the Local Authorizing Realm
+realmManager.enableRealm("NexusAuthorizingRealm", parsed_args.local_authorizing_realm)
+
+// enable/disable the SAML Realm
+realmManager.enableRealm("SamlRealm", parsed_args.saml_realm)
+
+// enable/disable the User Token Realm
+realmManager.enableRealm("User-Token-Realm", parsed_args.user_token_realm)
+

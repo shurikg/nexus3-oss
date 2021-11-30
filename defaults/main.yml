@@ -93,6 +93,13 @@ nexus_rut_auth_realm: false
 nexus_ldap_realm: false
 nexus_docker_bearer_token_realm: false
 
+nexus_crowd_realm: false
+nexus_default_role_realm: false
+nexus_local_authenticating_realm: false
+nexus_local_authorizing_realm: false
+nexus_saml_realm: false
+nexus_user_token_realm: false
+
 # Enable/disable audit capability
 nexus_audit_enabled: false
 
