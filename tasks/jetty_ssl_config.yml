@@ -8,7 +8,7 @@
      nexus_etc_dir: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc"
 
 - name: Copy keystore file
-  template:
+  ansible.builtin.copy:
     src: "{{ keystore_file }}"
     dest: "{{ nexus_etc_dir }}/ssl/keystore.jks"
     mode: 0644
