@@ -35,6 +35,9 @@ def migrateGenericConfigurationFile(details) {
 
     def jettySslEnable = details['nexus-properties']['nexus-args'].contains('jetty-https.xml')
     content.put('jetty_https_setup_enable', jettySslEnable)
+    if (jettySslEnable ) {
+        content.put('nexus_default_ssl_port', details['nexus-properties']['application-port-ssl'].toInteger())
+    }
 
     scriptResults['action_details'].put('generic_configuration.yml', content)
 }

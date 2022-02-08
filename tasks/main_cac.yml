@@ -280,6 +280,7 @@
         jetty_keymanager_password: "{{ key_manager_password }}"
         jetty_truststore_password: "{{ trust_store_password }}"
         keystore_checksum: "{{ keystore_checksum_local.stat.checksum }}"
+        nexus_default_ssl_port: "{{ nexus_default_ssl_port }}"
       current:
         nexus_min_heap_size: "{{ min_memory.stdout }}"
         nexus_max_heap_size: "{{ max_memory.stdout }}"

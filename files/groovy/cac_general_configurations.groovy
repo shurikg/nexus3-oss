@@ -159,6 +159,7 @@ if ( isJettyCompareRequire ) {
     compareJettyKeyManagerPassword(parsed_args['current']['jetty_keymanager_password'], parsed_args['require']['jetty_keymanager_password'])
     compareJettyTrustStorePassword(parsed_args['current']['jetty_truststore_password'], parsed_args['require']['jetty_truststore_password'])
     compareJettyKeyStoreFile(parsed_args['current']['keystore_checksum'], parsed_args['require']['keystore_checksum'])
+    compareNexusPort(currentDetails['nexus-properties']['application-port-ssl'], parsed_args['require']['nexus_default_ssl_port'])
 }
 
 return JsonOutput.toJson(scriptResults)
