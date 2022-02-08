@@ -20,7 +20,7 @@
 - name: Set the KeyStore password
   lineinfile:
     dest: "{{ nexus_etc_dir }}/jetty/jetty-https.xml"
-    regexp: "<Set name=\"KeyStorePassword\">*</Set>"
+    regexp: "<Set name=\"KeyStorePassword\">.*</Set>"
     line: "<Set name=\"KeyStorePassword\">{{ key_store_password }}</Set>"
   notify:
     - nexus-service-restart
@@ -30,7 +30,7 @@
 - name: Set the KeyManager password
   lineinfile:
     dest: "{{ nexus_etc_dir }}/jetty/jetty-https.xml"
-    regexp: "<Set name=\"KeyManagerPassword\">*</Set>"
+    regexp: "<Set name=\"KeyManagerPassword\">.*</Set>"
     line: "<Set name=\"KeyManagerPassword\">{{ key_manager_password }}</Set>"
   notify:
     - nexus-service-restart
@@ -40,7 +40,7 @@
 - name: Set the TrustStore password
   lineinfile:
     dest: "{{ nexus_etc_dir }}/jetty/jetty-https.xml"
-    regexp: "<Set name=\"TrustStorePassword\">*</Set>"
+    regexp: "<Set name=\"TrustStorePassword\">.*</Set>"
     line: "<Set name=\"TrustStorePassword\">{{ trust_store_password }}</Set>"
   notify:
     - nexus-service-restart
