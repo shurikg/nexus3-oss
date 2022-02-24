@@ -33,11 +33,30 @@
   listen: nexus-service-stop
   when: nexus_sysv_service_file.stat.exists
 
-- name: wait-for-nexus
+- name: Create tempfile for log tailing
+  tempfile:
+    state: file
+  register: tempfile
+  listen: wait-for-nexus
+
+- name: Asynchronous tail log to temp file {{ tempfile.path }}
+  shell: tail -n 0 -f "{{ nexus_data_dir }}/log/nexus.log" > {{ tempfile.path }}
+  async: 1800ß
+  poll: 0
+  listen: wait-for-nexus
+
+- name: Wait for regex in log
   wait_for:
-    path: "{{ nexus_data_dir }}/log/nexus.log"
+    path: "{{ tempfile.path }}"
     search_regex: "Started Sonatype Nexus .*"
     timeout: 1800
+  listen: wait-for-nexus
+
+- name: Remove tempfile
+  file:
+    path: "{{ tempfile.path }}"
+    state: absent
+  listen: wait-for-nexus
 
 - name: wait-for-nexus-port
   wait_for:
