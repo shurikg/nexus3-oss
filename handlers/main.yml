@@ -36,25 +36,34 @@
 - name: Create tempfile for log tailing
   tempfile:
     state: file
-  register: tempfile
+  register: tempfile_log
   listen: wait-for-nexus
 
-- name: Asynchronous tail log to temp file {{ tempfile.path }}
-  shell: tail -n 0 -f "{{ nexus_data_dir }}/log/nexus.log" > {{ tempfile.path }}
-  async: 1800ß
+- name: Wait until the file nexus.log is present before continuing
+  wait_for:
+    path: "{{ nexus_data_dir }}/log/nexus.log"
+
+- name: Asynchronous tail log to temp file
+  shell: tail -n 0 -f "{{ nexus_data_dir }}/log/nexus.log" > {{ tempfile_log.path }}
+  async: 1800
   poll: 0
+  listen: wait-for-nexus
+
+- name: debug message for temporary file
+  debug:
+    msg: "temporary file is {{ tempfile_log.path }}"
   listen: wait-for-nexus
 
 - name: Wait for regex in log
   wait_for:
-    path: "{{ tempfile.path }}"
+    path: "{{ tempfile_log.path }}"
     search_regex: "Started Sonatype Nexus .*"
     timeout: 1800
   listen: wait-for-nexus
 
-- name: Remove tempfile
+- name: Remove
   file:
-    path: "{{ tempfile.path }}"
+    path: "{{ tempfile_log.path }}"
     state: absent
   listen: wait-for-nexus
 
