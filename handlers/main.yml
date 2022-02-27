@@ -75,6 +75,28 @@
   retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
   register: wait_for_result
   until: wait_for_result is success
+  listen: wait-for-nexus-port
+
+- name: find which schema to use
+  lineinfile:
+    path: "{{ nexus_default_settings_file }}"
+    regexp: '^nexus-args=.*jetty-https.xml.*'
+    state: absent
+  check_mode: yes
+  register: search_https_schema
+  listen: wait-for-nexus-port
+
+- name: set nexus_api_scheme to https
+  set_fact:
+    nexus_api_scheme: https
+  when: search_https_schema.changed | bool
+  listen: wait-for-nexus-port
+
+- name: set nexus_api_scheme to http
+  set_fact:
+    nexus_api_scheme: https
+  when: not search_https_schema.changed | bool
+  listen: wait-for-nexus-port
 
 - name: httpd-service-reload
   systemd:
