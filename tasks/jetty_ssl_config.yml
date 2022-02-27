@@ -75,7 +75,9 @@
     regexp: "^application-port-ssl=.*"
     line: "application-port-ssl={{ nexus_default_ssl_port }}"
   notify:
-    - nexus-service-stop
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
 
 - name: flush handlers
   meta: flush_handlers

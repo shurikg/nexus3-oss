@@ -42,6 +42,7 @@
 - name: Wait until the file nexus.log is present before continuing
   wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
+  listen: wait-for-nexus
 
 - name: Asynchronous tail log to temp file
   shell: tail -n 0 -f "{{ nexus_data_dir }}/log/nexus.log" > {{ tempfile_log.path }}
