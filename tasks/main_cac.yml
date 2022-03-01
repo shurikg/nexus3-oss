@@ -245,6 +245,12 @@
     checksum_algorithm: sha1
   delegate_to: localhost
   register: keystore_checksum_local
+  when: jetty_https_setup_enable
+
+ - name: get the keystore checksum from local server as zero
+   set_fact:
+    keystore_checksum_local: "0"
+  when: not jetty_https_setup_enable
 
 - name: get the keystore checksum from remote server
   stat:
