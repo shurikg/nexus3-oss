@@ -94,7 +94,7 @@
 
 - name: set nexus_api_scheme to http
   set_fact:
-    nexus_api_scheme: https
+    nexus_api_scheme: http
   when: not search_https_schema.changed | bool
   listen: wait-for-nexus-port
 
