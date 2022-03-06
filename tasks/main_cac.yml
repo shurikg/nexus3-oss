@@ -247,9 +247,11 @@
   register: keystore_checksum_local
   when: jetty_https_setup_enable
 
- - name: get the keystore checksum from local server as zero
-   set_fact:
-    keystore_checksum_local: "0"
+- name: get the keystore checksum from local server as zero
+  set_fact:
+    keystore_checksum_local:
+      stat:
+        checksum: "0"
   when: not jetty_https_setup_enable
 
 - name: get the keystore checksum from remote server
@@ -257,6 +259,14 @@
     path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/ssl/keystore.jks"
     checksum_algorithm: sha1
   register: keystore_checksum_remote
+
+
+- name: get the keystore checksum from remote server as zero
+  set_fact:
+    keystore_checksum_remote:
+      stat:
+        checksum: "0"
+  when: not keystore_checksum_remote.stat.exists
 
 - name: define generic facts
   set_fact:
@@ -282,6 +292,7 @@
         nexus_application_host: "{{ nexus_application_host }}"
         nexus_os_max_filedescriptors: "{{ nexus_os_max_filedescriptors }}"
         anonymous_access: "{{ nexus_anonymous_access }}"
+        jetty_https_enable: "{{ jetty_https_setup_enable }}"
         jetty_keystore_password: "{{ key_store_password }}"
         jetty_keymanager_password: "{{ key_manager_password }}"
         jetty_truststore_password: "{{ trust_store_password }}"
