@@ -9,6 +9,34 @@
     nexus_rest_api_endpoint: "service/rest/v1/script"
   when: nexus_version is version_compare('3.8.0', '>=')
 
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
+  when: nexus_version is version_compare('3.1.0', '<')
+
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
+  when: nexus_version is version_compare('3.1.0', '>=')
+
+- name: find which schema to use
+  lineinfile:
+    path: "{{ nexus_default_settings_file }}"
+    regexp: '^nexus-args=.*jetty-https.xml.*'
+    state: absent
+  check_mode: yes
+  register: search_https_schema
+
+- name: set nexus_api_scheme to https
+  set_fact:
+    nexus_api_scheme: https
+  when: search_https_schema.changed | bool
+
+- name: set nexus_api_scheme to http
+  set_fact:
+    nexus_api_scheme: http
+  when: not search_https_schema.changed | bool
+
 - name: Access scripts API endpoint with defined admin password
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\

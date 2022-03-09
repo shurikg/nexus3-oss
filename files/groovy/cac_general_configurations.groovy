@@ -126,8 +126,8 @@ def compareJettyTrustStorePassword(currentPassword, requirePassword) {
 }
 
 def compareJettyKeyStoreFile(currentCheckSum, requireCheckSum) {
-    if (currentPassword != requirePassword) {
-        addChange(requirePassword, currentPassword, 'keystore file will be change')
+    if (currentCheckSum != requireCheckSum) {
+        addChange(requireCheckSum, currentCheckSum, 'keystore file will be change')
     }
 }
 

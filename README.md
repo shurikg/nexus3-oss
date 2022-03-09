@@ -188,7 +188,7 @@ Allow to change the nexus user default home directory
 
 Nexus directories.
 * `nexus_installation_dir` contains the installed executable(s)
-* `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Custom blobstores paths outside 
+* `nexus_data_dir` contains all configuration, repositories and uploaded artifacts. Custom blobstores paths outside
 of `nexus_data_dir` can be configured, see `nexus_blobstores` below.
 * `nexus_tmp_dir` contains all temporary files. Default path for redhat has been moved out of `/tmp` to overcome
 potential problems with automatic cleaning procedures. See #168.
@@ -298,6 +298,24 @@ If you want to use existing certificates on the server, set `httpd_copy_ssl_file
 ```
 
 `httpd_ssl_cert_chain_file_location` is optional and must be left unset if you do not want to configure a chain file
+
+### Serving SSL Directly
+
+```yaml
+  jetty_https_setup_enable: false
+  nexus_default_ssl_port: 8443
+  keystore_file:
+  key_store_password:
+  key_manager_password: "{{ key_store_password }}"
+  trust_store_password: "{{ key_store_password }}"
+```
+
+Setup an [Inbound SSL - Serving SSL Directly](https://help.sonatype.com/repomanager3/nexus-repository-administration/configuring-ssl?_ga=2.231044636.285404029.1646667877-162232369.1623436724#ConfiguringSSL-ServingSSLDirectly).
+It will configure only https connection. The jetty-http.xml file will be removed from the nexus arguments.
+The `keystore_file` can be the full path or relative to the playbook file and should point to the keystore.jks file.
+The `key_manager_password` and `trust_store_password` equal to the `key_store_password` value.
+
+### Admin email configuration
 
 ```yaml
     httpd_default_admin_email: "admin@example.com"
@@ -1013,8 +1031,8 @@ Feel free to use them or implement your own install scenario at your convenience
 
 
   roles:
-    
-    
+
+
     - { role: geerlingguy.java, vars: See role doc for your distribution/version }
     # Debian/Ubuntu only
     # - { role: geerlingguy.apache, apache_create_vhosts: no, apache_mods_enabled: ["proxy.load", "proxy_http.load", "headers.load"], apache_remove_default_vhost: true, tags: ["geerlingguy.apache"] }
