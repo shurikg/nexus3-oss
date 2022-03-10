@@ -29,8 +29,17 @@
 
 - import_tasks: nexus_install.yml
 
-- include_tasks: httpd_reverse_proxy_config.yml
+- name: httpd reverse proxy configuration
+  include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable | bool
+
+- name: jetty ssl configuration
+  include_tasks: jetty_ssl_config.yml
+  when: jetty_https_setup_enable | bool
+
+- name: jetty disable ssl configuration
+  include_tasks: jetty_ssl_disable_config.yml
+  when: not jetty_https_setup_enable | bool
 
 - name: Configure nexus http proxy
   include_tasks: call_script.yml

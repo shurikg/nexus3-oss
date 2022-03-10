@@ -1,0 +1,71 @@
+---
+
+- fail: msg="The variable 'keystore_file' is not defined or empty"
+  when: (keystore_file is not defined) or (keystore_file|length == 0)
+
+- name: Define the nexus etc dir
+  set_fact:
+     nexus_etc_dir: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc"
+
+- name: Copy keystore file
+  ansible.builtin.copy:
+    src: "{{ keystore_file }}"
+    dest: "{{ nexus_etc_dir }}/ssl/keystore.jks"
+    mode: 0644
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
+
+- name: Set the KeyStore password
+  lineinfile:
+    dest: "{{ nexus_etc_dir }}/jetty/jetty-https.xml"
+    regexp: "<Set name=\"KeyStorePassword\">.*</Set>"
+    line: "<Set name=\"KeyStorePassword\">{{ key_store_password }}</Set>"
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
+
+- name: Set the KeyManager password
+  lineinfile:
+    dest: "{{ nexus_etc_dir }}/jetty/jetty-https.xml"
+    regexp: "<Set name=\"KeyManagerPassword\">.*</Set>"
+    line: "<Set name=\"KeyManagerPassword\">{{ key_manager_password }}</Set>"
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
+
+- name: Set the TrustStore password
+  lineinfile:
+    dest: "{{ nexus_etc_dir }}/jetty/jetty-https.xml"
+    regexp: "<Set name=\"TrustStorePassword\">.*</Set>"
+    line: "<Set name=\"TrustStorePassword\">{{ trust_store_password }}</Set>"
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
+
+- name: Add jetty-https.xml to nexus arguments
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^nexus-args=.*"
+    line: "nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml"
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
+
+- name: Set nexus ssl port
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^application-port-ssl=.*"
+    line: "application-port-ssl={{ nexus_default_ssl_port }}"
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
+
+- name: flush handlers
+  meta: flush_handlers

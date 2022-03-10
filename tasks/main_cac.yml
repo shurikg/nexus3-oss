@@ -9,6 +9,34 @@
     nexus_rest_api_endpoint: "service/rest/v1/script"
   when: nexus_version is version_compare('3.8.0', '>=')
 
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/org.sonatype.nexus.cfg"
+  when: nexus_version is version_compare('3.1.0', '<')
+
+- name: Get path to default settings
+  set_fact:
+    nexus_default_settings_file: "{{ nexus_installation_dir }}/nexus-latest/etc/nexus-default.properties"
+  when: nexus_version is version_compare('3.1.0', '>=')
+
+- name: find which schema to use
+  lineinfile:
+    path: "{{ nexus_default_settings_file }}"
+    regexp: '^nexus-args=.*jetty-https.xml.*'
+    state: absent
+  check_mode: yes
+  register: search_https_schema
+
+- name: set nexus_api_scheme to https
+  set_fact:
+    nexus_api_scheme: https
+  when: search_https_schema.changed | bool
+
+- name: set nexus_api_scheme to http
+  set_fact:
+    nexus_api_scheme: http
+  when: not search_https_schema.changed | bool
+
 - name: Access scripts API endpoint with defined admin password
   uri:
     url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
@@ -212,6 +240,62 @@
     # shut-off ansible-lint error on this one: this is the desired way of doing it
     - skip_ansible_lint
 
+- name: get jetty key store password
+  shell: grep '<Set name="KeyStorePassword">' "{{ nexus_installation_dir }}/nexus-latest/etc/jetty/jetty-https.xml" | tr "><" "\n" | tail -n 3 | head -n 1
+  register: jetty_keystore_password
+  check_mode: no
+  changed_when: False
+  tags:
+    # shut-off ansible-lint error on this one: this is the desired way of doing it
+    - skip_ansible_lin
+
+- name: get jetty key manager password
+  shell: grep '<Set name="KeyManagerPassword">' "{{ nexus_installation_dir }}/nexus-latest/etc/jetty/jetty-https.xml" | tr "><" "\n" | tail -n 3 | head -n 1
+  register: jetty_keymanager_password
+  check_mode: no
+  changed_when: False
+  tags:
+    # shut-off ansible-lint error on this one: this is the desired way of doing it
+    - skip_ansible_lin
+
+- name: get jetty trust store password
+  shell: grep '<Set name="TrustStorePassword">' "{{ nexus_installation_dir }}/nexus-latest/etc/jetty/jetty-https.xml" | tr "><" "\n" | tail -n 3 | head -n 1
+  register: jetty_truststore_password
+  check_mode: no
+  changed_when: False
+  tags:
+    # shut-off ansible-lint error on this one: this is the desired way of doing it
+    - skip_ansible_lin
+
+- name: get the keystore checksum from local server
+  stat:
+    path: "{{ keystore_file }}"
+    checksum_algorithm: sha1
+  delegate_to: localhost
+  register: keystore_checksum_local
+  when: jetty_https_setup_enable
+
+- name: get the keystore checksum from local server as zero
+  set_fact:
+    keystore_checksum_local:
+      stat:
+        checksum: "0"
+  when: not jetty_https_setup_enable
+
+- name: get the keystore checksum from remote server
+  stat:
+    path: "{{ nexus_installation_dir }}/nexus-{{ nexus_version }}/etc/ssl/keystore.jks"
+    checksum_algorithm: sha1
+  register: keystore_checksum_remote
+
+
+- name: get the keystore checksum from remote server as zero
+  set_fact:
+    keystore_checksum_remote:
+      stat:
+        checksum: "0"
+  when: not keystore_checksum_remote.stat.exists
+
 - name: define generic facts
   set_fact:
     generic_configuration:
@@ -236,10 +320,20 @@
         nexus_application_host: "{{ nexus_application_host }}"
         nexus_os_max_filedescriptors: "{{ nexus_os_max_filedescriptors }}"
         anonymous_access: "{{ nexus_anonymous_access }}"
+        jetty_https_enable: "{{ jetty_https_setup_enable }}"
+        jetty_keystore_password: "{{ key_store_password }}"
+        jetty_keymanager_password: "{{ key_manager_password }}"
+        jetty_truststore_password: "{{ trust_store_password }}"
+        keystore_checksum: "{{ keystore_checksum_local.stat.checksum }}"
+        nexus_default_ssl_port: "{{ nexus_default_ssl_port }}"
       current:
         nexus_min_heap_size: "{{ min_memory.stdout }}"
         nexus_max_heap_size: "{{ max_memory.stdout }}"
         nexus_max_direct_memory: "{{ max_direct_memory.stdout }}"
+        jetty_keystore_password: "{{ jetty_keystore_password.stdout }}"
+        jetty_keymanager_password: "{{ jetty_keymanager_password.stdout }}"
+        jetty_truststore_password: "{{ jetty_truststore_password.stdout }}"
+        keystore_checksum: "{{ keystore_checksum_remote.stat.checksum }}"
   check_mode: no
 
 - name: CasC general

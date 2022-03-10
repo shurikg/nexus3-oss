@@ -33,58 +33,17 @@ def migrateGenericConfigurationFile(details) {
     content.put('nexus_os_user', details['nexus-properties']['user.name'])
     content.put('nexus_os_user_home_dir', details['nexus-properties']['user.home'])
 
-    scriptResults['action_details'].put('generic_configuration.yml', content)
-// nexus_os_group: kube
-// # nexus_os_user: kube
+    def jettySslEnable = details['nexus-properties']['nexus-args'].contains('jetty-https.xml')
+    content.put('jetty_https_setup_enable', jettySslEnable)
+    if (jettySslEnable ) {
+        content.put('nexus_default_ssl_port', details['nexus-properties']['application-port-ssl'].toInteger())
+    }
 
-// nexus_installation_dir: /users/kube/certification_nexus
-// nexus_data_dir: /users/kube/certification_nexus_data
+    scriptResults['action_details'].put('generic_configuration.yml', content)
 }
 
-// def compareContextPath(currentContextPath, requireContextPath) {
-//     if (currentContextPath != requireContextPath) {
-//         addChange(requireContextPath, currentContextPath, "nexus context path will be change")
-//     }
-// }
-
-// def compareTimezone(currentTimezone, requireTimezone) {
-//     if (currentTimezone != requireTimezone) {
-//         addChange(requireTimezone, currentTimezone, "nexus timezone will be change")
-//     }
-// }
-
-// def compareInstallationDir(currentDir, requireDir) {
-//     if (currentDir != requireDir) {
-//         addChange(requireDir, currentDir, "nexus installation dir will be change")
-//     }
-// }
-
-// def compareTempDir(currentDir, requireDir) {
-//     if (currentDir != requireDir) {
-//         addChange(requireDir, currentDir, "nexus temp dir will be change")
-//     }
-// }
-
-// def compareUserName(currentUserName, requireUserName) {
-//     if (currentUserName != requireUserName) {
-//         addChange(requireUserName, currentUserName, "nexus user name will be change")
-//     }
-// }
-
-// def compareUserHome(currentUserHome, requireUserHome) {
-//     if (currentUserHome != requireUserHome) {
-//         addChange(requireUserHome, currentUserHome, "nexus user home will be change")
-//     }
-// }
 //  ----- M A I N -------
 migratePmxFile(currentDetails['nexus-status']['version'])
 migrateGenericConfigurationFile(currentDetails)
-// compareContextPath(currentDetails['nexus-properties']['nexus-context-path'], parsed_args['require']['nexus_default_context_path'])
-// compareTimezone(currentDetails['nexus-properties']['user.timezone'], parsed_args['require']['nexus_timezone'])
-// compareInstallationDir(currentDetails['nexus-configuration']['installDirectory'], parsed_args['require']['nexus_installation_dir'])
-// compareTempDir(currentDetails['nexus-configuration']['temporaryDirectory'], parsed_args['require']['nexus_tmp_dir'])
-// compareUserName(currentDetails['nexus-properties']['user.name'], parsed_args['require']['nexus_os_user'])
-// compareUserHome(currentDetails['nexus-properties']['user.home'], parsed_args['require']['nexus_os_user_home_dir'])
-
 
 return JsonOutput.toJson(scriptResults)

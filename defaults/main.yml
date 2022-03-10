@@ -118,7 +118,7 @@ nexus_email_ssl_check_server_identity_enabled: false
 nexus_email_trust_store_enabled: false
 
 nexus_branding_header: ""
-nexus_branding_footer: "Last provisionned {{ ansible_date_time.iso8601 }}"
+nexus_branding_footer: "Last provisioned {{ ansible_date_time.iso8601 }}"
 
 httpd_setup_enable: false
 httpd_server_name: "{{ nexus_public_hostname }}"
@@ -129,12 +129,19 @@ httpd_ssl_certificate_key_file: 'files/nexus.vm.key'
 # If httpd_copy_ssl_files is false you need to provide the following variables:
 # - httpd_ssl_cert_file_location
 # - httpd_ssl_cert_key_location
-# - httpd_ssl_cert_chain_file_location <= optionnal. Leave unset if none
+# - httpd_ssl_cert_chain_file_location <= optional. Leave unset if none
 httpd_copy_ssl_files: true
 # These specifies to the vhost file where to find on the remote file system the certificates files.
 httpd_ssl_cert_file_location: "/etc/pki/tls/certs/nexus.vm.crt"
 httpd_ssl_cert_key_location: "/etc/pki/tls/private/nexus.vm.key"
 # httpd_ssl_cert_chain_file_location: "{{ httpd_ssl_cert_file_location }}"
+
+jetty_https_setup_enable: false
+nexus_default_ssl_port: "{{ nexus_default_port }}"
+keystore_file:
+key_store_password:
+key_manager_password: "{{ key_store_password }}"
+trust_store_password: "{{ key_store_password }}"
 
 ldap_connections: []
 # example ldap config :
@@ -301,7 +308,7 @@ nexus_repos_cleanup_policies: []
 
 
 # also see _nexus_repos_maven_defaults below
-nexus_repos_maven_proxy:
+nexus_repos_maven_proxy: []
 #  - name: central
 #    remote_url: 'https://repo1.maven.org/maven2/'
 #    layout_policy: permissive
@@ -325,7 +332,7 @@ nexus_repos_maven_proxy:
 #    # negative_cache_enabled: true
 #    # negative_cache_ttl: 1440
 
-nexus_repos_maven_hosted:
+nexus_repos_maven_hosted: []
 # - name: private-release
 #   version_policy: release
 #   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
