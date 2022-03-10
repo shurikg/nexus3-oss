@@ -303,17 +303,21 @@ If you want to use existing certificates on the server, set `httpd_copy_ssl_file
 
 ```yaml
   jetty_https_setup_enable: false
-  nexus_default_ssl_port: 8443
+  nexus_default_ssl_port: "{{ nexus_default_port }}"
   keystore_file:
   key_store_password:
   key_manager_password: "{{ key_store_password }}"
   trust_store_password: "{{ key_store_password }}"
+  nexus_public_scheme: https
+  nexus_api_scheme: https
 ```
 
 Setup an [Inbound SSL - Serving SSL Directly](https://help.sonatype.com/repomanager3/nexus-repository-administration/configuring-ssl?_ga=2.231044636.285404029.1646667877-162232369.1623436724#ConfiguringSSL-ServingSSLDirectly).
 It will configure only https connection. The jetty-http.xml file will be removed from the nexus arguments.
 The `keystore_file` can be the full path or relative to the playbook file and should point to the keystore.jks file.
 The `key_manager_password` and `trust_store_password` equal to the `key_store_password` value.
+The value of `nexus_default_ssl_port` need to be the same as `nexus_default_port` value.
+The schemas value should be https
 
 ### Admin email configuration
 

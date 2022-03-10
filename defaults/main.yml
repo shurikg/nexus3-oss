@@ -137,7 +137,7 @@ httpd_ssl_cert_key_location: "/etc/pki/tls/private/nexus.vm.key"
 # httpd_ssl_cert_chain_file_location: "{{ httpd_ssl_cert_file_location }}"
 
 jetty_https_setup_enable: false
-nexus_default_ssl_port: 8443
+nexus_default_ssl_port: "{{ nexus_default_port }}"
 keystore_file:
 key_store_password:
 key_manager_password: "{{ key_store_password }}"
