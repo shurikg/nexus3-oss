@@ -166,6 +166,12 @@
     script_name: migrate_blobstores
     args: "{}"
 
+- name: migrate tasks
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: migrate_tasks
+    args: "{}"
+
 - name: Clean migration directory
   file:
     path: "{{ playbook_dir }}/migration_output"
