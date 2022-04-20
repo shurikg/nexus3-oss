@@ -1,4 +1,5 @@
 import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 import org.sonatype.nexus.scheduling.TaskConfiguration
 import org.sonatype.nexus.scheduling.TaskInfo
 import org.sonatype.nexus.scheduling.TaskScheduler
@@ -19,7 +20,7 @@ def compareSchedualer(gitTask, rtTask, gitChangeMessage, runtimeChangeMessage) {
 
     type = gitTask.get('schedule_type', 'cron')
 
-    Schedule currentTaskSchedule = rtTaks.getSchedule()
+    Schedule currentTaskSchedule = rtTask.getSchedule()
     scheduleType = currentTaskSchedule.getType()
 
     if (type != scheduleType) {
@@ -70,6 +71,7 @@ def compareSchedualer(gitTask, rtTask, gitChangeMessage, runtimeChangeMessage) {
                 runtimeChangeMessage.add("cron = ${currentTaskSchedule.getCronExpression().toString()}")
             }
             break
+    }
 }
 
 TaskInfo existingTask
@@ -78,21 +80,25 @@ parsed_args.details.each { taskDef ->
     existingTask = taskScheduler.listsTasks().find { TaskInfo taskInfo ->
         taskInfo.name == taskDef.name
     }
+
+    Map<String, String> currentResult = [:]
+
     if (existingTask) {
 
         def gitChangeMessage = []
         def runtimeChangeMessage = []
 
-        if (existingTask.getId() != taskDef.typeId) {
+        if (existingTask.getTypeId() != taskDef.typeId) {
             gitChangeMessage.add("task id = ${taskDef.typeId}")
-            runtimeChangeMessage.add("task id = ${existingTask.getId()}")
-        }
-        if (existingTask.getAlertEmail() != taskDef.get('task_alert_email', '')) {
-            gitChangeMessage.add("alert email = ${taskDef.typeId}")
-            runtimeChangeMessage.add("alert email = ${existingTask.getAlertEmail()}")
+            runtimeChangeMessage.add("task id = ${existingTask.getTypeId()}")
         }
 
         TaskConfiguration currentTaskConfiguration = existingTask.getConfiguration()
+
+        if (currentTaskConfiguration.getAlertEmail() != taskDef.get('task_alert_email', '')) {
+            gitChangeMessage.add("alert email = ${taskDef.get('task_alert_email', '')}")
+            runtimeChangeMessage.add("alert email = ${currentTaskConfiguration.getAlertEmail()}")
+        }
 
         switch (taskDef.typeId) {
             case 'epository.docker.upload-purge':
@@ -187,24 +193,24 @@ parsed_args.details.each { taskDef ->
                     runtimeChangeMessage.add("location = ${currentTaskConfiguration.getString('location')}")
                 }
                 break
-            case 'rebuild.asset.uploadMetadata':
-                if (currentTaskConfiguration.getString('dryRun') != taskDef.taskProperties.dryRun) {
-                    gitChangeMessage.add("dryRun = ${taskDef.taskProperties.dryRun}")
-                    runtimeChangeMessage.add("dryRun = ${currentTaskConfiguration.getString('dryRun')}")
-                }
-                if (currentTaskConfiguration.getString('restoreBlobMetadata') != taskDef.taskProperties.restoreBlobMetadata) {
-                    gitChangeMessage.add("restore blob metadata = ${taskDef.taskProperties.restoreBlobMetadata}")
-                    runtimeChangeMessage.add("restore blob metadata = ${currentTaskConfiguration.getString('restoreBlobMetadata')}")
-                }
-                if (currentTaskConfiguration.getString('unDeleteReferencedBlobs') != taskDef.taskProperties.unDeleteReferencedBlobs) {
-                    gitChangeMessage.add("undelete referenced blobs = ${taskDef.taskProperties.unDeleteReferencedBlobs}")
-                    runtimeChangeMessage.add("undelete referenced blobs = ${currentTaskConfiguration.getString('unDeleteReferencedBlobs')}")
-                }
-                if (currentTaskConfiguration.getString('integrityCheck') != taskDef.taskProperties.integrityCheck) {
-                    gitChangeMessage.add("integrity check = ${taskDef.taskProperties.integrityCheck}")
-                    runtimeChangeMessage.add("integrity check = ${currentTaskConfiguration.getString('integrityCheck')}")
-                }
-                break
+            // case 'rebuild.asset.uploadMetadata':
+            //     if (currentTaskConfiguration.getString('dryRun') != taskDef.taskProperties.dryRun) {
+            //         gitChangeMessage.add("dryRun = ${taskDef.taskProperties.dryRun}")
+            //         runtimeChangeMessage.add("dryRun = ${currentTaskConfiguration.getString('dryRun')}")
+            //     }
+            //     if (currentTaskConfiguration.getString('restoreBlobMetadata') != taskDef.taskProperties.restoreBlobMetadata) {
+            //         gitChangeMessage.add("restore blob metadata = ${taskDef.taskProperties.restoreBlobMetadata}")
+            //         runtimeChangeMessage.add("restore blob metadata = ${currentTaskConfiguration.getString('restoreBlobMetadata')}")
+            //     }
+            //     if (currentTaskConfiguration.getString('unDeleteReferencedBlobs') != taskDef.taskProperties.unDeleteReferencedBlobs) {
+            //         gitChangeMessage.add("undelete referenced blobs = ${taskDef.taskProperties.unDeleteReferencedBlobs}")
+            //         runtimeChangeMessage.add("undelete referenced blobs = ${currentTaskConfiguration.getString('unDeleteReferencedBlobs')}")
+            //     }
+            //     if (currentTaskConfiguration.getString('integrityCheck') != taskDef.taskProperties.integrityCheck) {
+            //         gitChangeMessage.add("integrity check = ${taskDef.taskProperties.integrityCheck}")
+            //         runtimeChangeMessage.add("integrity check = ${currentTaskConfiguration.getString('integrityCheck')}")
+            //     }
+            //     break
         }
 
         compareSchedualer(taskDef, existingTask, gitChangeMessage, runtimeChangeMessage)
@@ -221,10 +227,10 @@ parsed_args.details.each { taskDef ->
         }
     }
     else {
-        currentResult.put('change_in_git', "definition of new ${rtTaks.name} task")
+        currentResult.put('change_in_git', "definition of new ${taskDef.name} task")
         currentResult.put('change_in_runtime', 'N/A')
         currentResult.put('change_type', 'add')
-        currentResult.put('description', "the ${rtTaks.name} task with ${rtTaks.typeId} type will be added")
+        currentResult.put('description', "the ${taskDef.name} task with ${taskDef.typeId} type will be added")
         currentResult.put('resource', 'tasks')
         currentResult.put('downtime', false)
 
@@ -234,10 +240,12 @@ parsed_args.details.each { taskDef ->
 
 // Runtime comparison vs git -> Delete task if needed
 
-existingTask.each { rtTaks ->
+existingTask.each { rtTask ->
+    Map<String, String> currentResult = [:]
+
     def needToDelete = true
 
-    TaskConfiguration currentTaskConfiguration = rtTaks.getConfiguration()
+    TaskConfiguration currentTaskConfiguration = rtTask.getConfiguration()
 
     parsed_args.details.any { taskDef ->
         if (currentTaskConfiguration.getTypeId() == taskDef.typeId && currentTaskConfiguration.getName() == taskDef.name) {
@@ -257,7 +265,7 @@ existingTask.each { rtTaks ->
         scriptResults['action_details'].add(currentResult)
 
         if (! parsed_args.dry_run) {
-            rtTaks.remove()
+            rtTask.remove()
         }
     }
 }
