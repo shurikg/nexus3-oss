@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 import org.sonatype.nexus.scheduling.TaskConfiguration
+import org.sonatype.nexus.scheduling.TaskNotificationCondition
 import org.sonatype.nexus.scheduling.TaskInfo
 import org.sonatype.nexus.scheduling.TaskScheduler
 import org.sonatype.nexus.scheduling.schedule.Monthly
@@ -22,6 +23,10 @@ if (existingTask && existingTask.getCurrentState().getRunState() != null) {
 
 TaskConfiguration taskConfiguration = taskScheduler.createTaskConfigurationInstance(parsed_args.typeId)
 if (existingTask) {
+    if (existingTask.getTypeId() != parsed_args.typeId) {
+        log.info("Could not change the task type id : " + parsed_args.typeId)
+        return
+    }
     taskConfiguration.setId(existingTask.getId())
 }
 
@@ -30,6 +35,8 @@ taskConfiguration.setName(parsed_args.name)
 taskConfiguration.setAlertEmail(parsed_args.get('task_alert_email', '') as String)
 
 taskConfiguration.setEnabled(Boolean.valueOf(parsed_args.get('enabled', 'true') as String))
+
+taskConfiguration.setNotificationCondition(parsed_args.get('notificationCondition', 'FAILURE').toUpperCase() as TaskNotificationCondition)
 
 parsed_args.taskProperties.each { key, value ->
     taskConfiguration.setString(key, value)

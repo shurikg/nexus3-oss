@@ -60,7 +60,7 @@ existingTask.each { rtTaks ->
     currentTask.put('notificationCondition', currentTaskConfiguration.getNotificationCondition())
 
     switch (tasksTypeId) {
-        case 'epository.docker.upload-purge':
+        case 'repository.docker.upload-purge':
             taskProperty.put('age', currentTaskConfiguration.getString('age'))
             break
         case 'repository.maven.remove-snapshots':
