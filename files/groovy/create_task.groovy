@@ -13,7 +13,7 @@ parsed_args = new JsonSlurper().parseText(args)
 TaskScheduler taskScheduler = container.lookup(TaskScheduler.class.getName())
 
 TaskInfo existingTask = taskScheduler.listsTasks().find { TaskInfo taskInfo ->
-    taskInfo.name == parsed_args.name
+    taskInfo.name == parsed_args.name && taskInfo.getTypeId() == parsed_args.typeId
 }
 
 if (existingTask && existingTask.getCurrentState().getRunState() != null) {
@@ -23,10 +23,6 @@ if (existingTask && existingTask.getCurrentState().getRunState() != null) {
 
 TaskConfiguration taskConfiguration = taskScheduler.createTaskConfigurationInstance(parsed_args.typeId)
 if (existingTask) {
-    if (existingTask.getTypeId() != parsed_args.typeId) {
-        log.info("Could not change the task type id : " + parsed_args.typeId)
-        return
-    }
     taskConfiguration.setId(existingTask.getId())
 }
 

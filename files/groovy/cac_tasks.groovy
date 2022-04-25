@@ -82,7 +82,7 @@ TaskInfo existingTask
 
 parsed_args.details.each { taskDef ->
     existingTask = taskScheduler.listsTasks().find { TaskInfo taskInfo ->
-        taskInfo.name == taskDef.name
+        taskInfo.name == taskDef.name && taskInfo.getTypeId() == taskDef.typeId
     }
 
     Map<String, String> currentResult = [:]
@@ -91,19 +91,6 @@ parsed_args.details.each { taskDef ->
         def gitChangeMessage = []
         def runtimeChangeMessage = []
         def taskIdChanged = false
-
-        if (existingTask.getTypeId() != taskDef.typeId) {
-            taskIdChanged = true
-            currentResult.put('change_in_git', "task id = ${taskDef.typeId}")
-            currentResult.put('change_in_runtime', "task id = ${existingTask.getTypeId()}")
-            currentResult.put('change_type', 'change')
-            currentResult.put('description', "the task type changes for ${taskDef.name} task - NOT SUPPORTED")
-            currentResult.put('resource', 'tasks')
-            currentResult.put('downtime', false)
-
-            scriptResults['action_details'].add(currentResult)
-            return
-        }
 
         TaskConfiguration currentTaskConfiguration = existingTask.getConfiguration()
 
