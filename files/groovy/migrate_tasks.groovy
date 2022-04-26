@@ -21,15 +21,16 @@ existingTask.each { rtTaks ->
 
     scheduleType = currentTaskScheduleType.getType()
     switch (scheduleType) {
-         case ['daily', 'hourly', 'once']:
+        case ['daily', 'hourly', 'once']:
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
             currentTask.put('schedule_type', scheduleType)
-            currentTask.put('schedule_startAt', currentTaskScheduleType.getStartAt())
+            currentTask.put('start_date_time', dateFormat.format(currentTaskScheduleType.getStartAt()))
             break
-         case 'weekly':
+        case 'weekly':
             currentTask.put('schedule_type', scheduleType)
             currentTask.put('weekly_days', currentTaskScheduleType.getDaysToRun())
             break
-         case 'monthly':
+        case 'monthly':
             currentTask.put('schedule_type', scheduleType)
             monthly_days = currentTaskScheduleType.getDaysToRun()
             def mDay = []
@@ -38,11 +39,11 @@ existingTask.each { rtTaks ->
             }
             currentTask.put('monthly_days', mDay)
             break
-         case 'cron':
+        case 'cron':
             schedule_cronExpression = currentTaskScheduleType.getCronExpression()
             currentTask.put('cron', schedule_cronExpression.toString())
             break
-         case ['manual', 'now']:
+        case ['manual', 'now']:
             currentTask.put('schedule_type', scheduleType)
             break
     }
@@ -58,6 +59,7 @@ existingTask.each { rtTaks ->
     currentTask.put('typeId', tasksTypeId)
     currentTask.put('task_alert_email', currentTaskConfiguration.getAlertEmail())
     currentTask.put('notificationCondition', currentTaskConfiguration.getNotificationCondition())
+    currentTask.put('enabled', currentTaskConfiguration.isEnabled().toString())
 
     switch (tasksTypeId) {
         case 'repository.docker.upload-purge':
@@ -70,11 +72,11 @@ existingTask.each { rtTaks ->
             boolProperty.put('removeIfReleased', currentTaskConfiguration.getString('removeIfReleased'))
             taskProperty.put('repositoryName', currentTaskConfiguration.getString('repositoryName'))
             break
-        case ['blobstore.compact', 'security.purge-api-keys', 'blobstore.rebuildComponentDB']:
+        case ['blobstore.compact', 'blobstore.rebuildComponentDB']:
             taskProperty.put('blobstoreName', currentTaskConfiguration.getString('blobstoreName'))
             break
         case ['repository.maven.purge-unused-snapshots', 'repository.purge-unused']:
-            taskProperty.put('blobstoreName', currentTaskConfiguration.getString('lastUsed'))
+            taskProperty.put('lastUsed', currentTaskConfiguration.getString('lastUsed'))
             taskProperty.put('repositoryName', currentTaskConfiguration.getString('repositoryName'))
             break
         case 'script':
@@ -100,6 +102,9 @@ existingTask.each { rtTaks ->
             boolProperty.put('restoreBlobMetadata', currentTaskConfiguration.getString('restoreBlobMetadata'))
             boolProperty.put('unDeleteReferencedBlobs', currentTaskConfiguration.getString('unDeleteReferencedBlobs'))
             boolProperty.put('integrityCheck', currentTaskConfiguration.getString('integrityCheck'))
+            break
+        case ['create.browse.nodes', 'repository.maven.publish-dotindex', 'repository.docker.gc', 'repository.maven.unpublish-dotindex']:
+            taskProperty.put('repositoryName', currentTaskConfiguration.getString('repositoryName'))
             break
     }
 
