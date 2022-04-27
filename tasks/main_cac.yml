@@ -137,6 +137,13 @@
     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_roles } ) }}"
   when: nexus_roles | length > 0
 
+- name: CasC tasks
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_tasks
+    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_scheduled_tasks } ) }}"
+  when: nexus_scheduled_tasks | length > 0
+
 - name: CasC email
   include_tasks: call_cac_script.yml
   vars:
