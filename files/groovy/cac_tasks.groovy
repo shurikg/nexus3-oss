@@ -99,8 +99,8 @@ parsed_args.details.each { taskDef ->
             runtimeChangeMessage.add("alert email = ${currentTaskConfiguration.getAlertEmail()}")
         }
 
-        if (currentTaskConfiguration.getNotificationCondition().toString() != taskDef.get('notificationCondition', '')) {
-            gitChangeMessage.add("notification condition = ${taskDef.get('notificationCondition', '')}")
+        if (currentTaskConfiguration.getNotificationCondition().toString() != taskDef.get('notificationCondition', 'FAILURE')) {
+            gitChangeMessage.add("notification condition = ${taskDef.get('notificationCondition', 'FAILURE')}")
             runtimeChangeMessage.add("notification condition = ${currentTaskConfiguration.getNotificationCondition().toString()}")
         }
 
