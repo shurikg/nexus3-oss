@@ -21,7 +21,12 @@ def migratePmxFile(currentVersion) {
 def migrateGenericConfigurationFile(details) {
     def content = [:]
 
-    content.put('nexus_default_port', details['nexus-properties']['application-port'].toInteger())
+    def jettyHttpEnable = details['nexus-properties']['nexus-args'].contains('jetty-http.xml')
+
+    if (jettyHttpEnable) {
+        content.put('nexus_default_port', details['nexus-properties']['application-port'].toInteger())
+        content.put('nexus_public_scheme', 'http')
+    }
     content.put('nexus_delete_default_repos', true)
     content.put('nexus_delete_default_blobstore', true)
 
@@ -37,8 +42,14 @@ def migrateGenericConfigurationFile(details) {
     content.put('jetty_https_setup_enable', jettySslEnable)
     if (jettySslEnable ) {
         content.put('nexus_default_ssl_port', details['nexus-properties']['application-port-ssl'].toInteger())
+        content.put('nexus_public_scheme', 'https')
+
+        if(! jettyHttpEnable) {
+            content.put('nexus_default_port', details['nexus-properties']['application-port-ssl'].toInteger())
+        }
     }
 
+    content.put('nexus_public_hostname', details['system-environment']['HOSTNAME'])
     scriptResults['action_details'].put('generic_configuration.yml', content)
 }
 

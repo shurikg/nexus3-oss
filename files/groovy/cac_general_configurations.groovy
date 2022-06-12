@@ -97,11 +97,11 @@ def compareMaxDirectSize(currentSize, requireSize) {
 }
 
 def compareJettyHttpsEnable(currentJetty, requireJetty) {
-    def currentJettyEnable = currentJetty.contains('jetty-https.xml')
-    if (currentJettyEnable != Boolean.valueOf(requireJetty)) {
-        addChange(requireJetty, currentJettyEnable, 'jetty https configuration will be change')
-    }
-    if (currentJettyEnable && Boolean.valueOf(requireJetty)) {
+    def currentJettyHttpsEnable = currentJetty.contains('jetty-https.xml')
+    // if (currentJettyHttpsEnable != Boolean.valueOf(requireJetty)) {
+    //     addChange(requireJetty, currentJettyHttpsEnable, 'jetty https configuration will be change')
+    // }
+    if (currentJettyHttpsEnable && Boolean.valueOf(requireJetty)) {
         return true
     }
     return false
@@ -131,14 +131,38 @@ def compareJettyKeyStoreFile(currentCheckSum, requireCheckSum) {
     }
 }
 
-// def compareAnonymousAccess(requireAccess) {
+def compareSwitchHttpToHttps(currentJetty, requireJettyHttps, requireHttpPort, requireHttpsPort) {
+    def currentJettyHttpsEnable = currentJetty.contains('jetty-https.xml')
 
-//     security.setAnonymousAccess(Boolean.valueOf(parsed_args.anonymous_access))
+    if ( ! currentJettyHttpsEnable && requireJettyHttps && requireHttpPort == requireHttpsPort ) {
+        addChange('jetty https', 'jetty http', 'switch between http to https in jetty configuration')
+    }
+}
 
-//     if (currentSize != requireSize) {
-//         addChange(requireSize, currentSize, "nexus max direct memory size will be change")
-//     }
-// }
+def compareSwitchHttpsToHttp(currentJetty, requireJettyHttps, requireHttpPort, requireHttpsPort) {
+    def currentJettyHttpsEnable = currentJetty.contains('jetty-https.xml')
+
+    if ( currentJettyHttpsEnable && ! requireJettyHttps && requireHttpPort == requireHttpsPort ) {
+        addChange('jetty http', 'jetty https', 'switch between https to http in jetty configuration')
+    }
+}
+
+def compareAddHttps(currentJetty, requireJettyHttps, requireHttpPort, requireHttpsPort) {
+    addChange('jetty https', 'jetty http', "[${currentJetty}][${requireJettyHttps}][${requireHttpPort}][${requireHttpsPort}]")
+    def currentJettyHttpsEnable = currentJetty.contains('jetty-https.xml')
+
+    if ( ! currentJettyHttpsEnable && requireJettyHttps && requireHttpPort != requireHttpsPort ) {
+        addChange('jetty https', 'jetty http', 'add jetty https access option')
+    }
+}
+
+def compareAddHttp(currentJetty, requireJettyHttps, requireHttpPort, requireHttpsPort) {
+    def currentJettyHttpsEnable = currentJetty.contains('jetty-https.xml')
+
+    if ( currentJettyHttpsEnable && requireJettyHttps && requireHttpPort != requireHttpsPort ) {
+        addChange('jetty http', 'jetty https', 'add jetty http access option')
+    }
+}
 
 //  ----- M A I N -------
 compareNexusVersion(currentDetails['nexus-status']['version'], parsed_args['require']['nexus_version'])
@@ -153,6 +177,11 @@ compareMinHeapSize(parsed_args['current']['nexus_min_heap_size'], parsed_args['r
 compareMaxHeapSize(parsed_args['current']['nexus_max_heap_size'], parsed_args['require']['nexus_max_heap_size'])
 compareMaxDirectSize(parsed_args['current']['nexus_max_direct_memory'], parsed_args['require']['nexus_max_direct_memory'])
 
+compareSwitchHttpToHttps(currentDetails['nexus-properties']['nexus-args'], parsed_args['require']['jetty_https_enable'], parsed_args['require']['nexus_default_port'], parsed_args['require']['nexus_default_ssl_port'])
+compareSwitchHttpsToHttp(currentDetails['nexus-properties']['nexus-args'], parsed_args['require']['jetty_https_enable'], parsed_args['require']['nexus_default_port'], parsed_args['require']['nexus_default_ssl_port'])
+compareAddHttps(currentDetails['nexus-properties']['nexus-args'], parsed_args['require']['jetty_https_enable'], parsed_args['require']['nexus_default_port'], parsed_args['require']['nexus_default_ssl_port'])
+compareAddHttp(currentDetails['nexus-properties']['nexus-args'], parsed_args['require']['jetty_https_enable'], parsed_args['require']['nexus_default_port'], parsed_args['require']['nexus_default_ssl_port'])
+
 def isJettyCompareRequire = compareJettyHttpsEnable(currentDetails['nexus-properties']['nexus-args'], parsed_args['require']['jetty_https_enable'])
 if ( isJettyCompareRequire ) {
     compareJettyKeyStorePassword(parsed_args['current']['jetty_keystore_password'], parsed_args['require']['jetty_keystore_password'])
@@ -163,42 +192,3 @@ if ( isJettyCompareRequire ) {
 }
 
 return JsonOutput.toJson(scriptResults)
-
-//   "nexus-configuration" : {
-//     "workingDirectory" : "/users/kube/certification_nexus_data",
-//   }
-// nexus_installation_dir: /users/kube/certification_nexus
-// nexus_data_dir: /users/kube/certification_nexus_data
-
-// --- httpd ----
-// httpd_config_dir
-// certificate_file_dest
-// httpd_copy_ssl_files
-// httpd_ssl_certificate_file
-// httpd_ssl_certificate_chain_file
-// httpd_ssl_certificate_key_file
-// certificate_key_dest
-// httpd_server_name
-// httpd_default_admin_email
-// httpd_ssl_cert_file_location
-// httpd_ssl_cert_key_location
-// httpd_ssl_cert_chain_file_location is defined
-// httpd_package_name
-// nexus_public_hostname
-// nexus_config_npm
-
-// ----------------------------
-// nexus_download_url
-// nexus_package
-// nexus_download_dir
-// nexus_os_group
-// nexus_data_dir
-// nexus_default_settings_file
-// nexus_application_host
-// nexus_os_max_filedescriptors
-
-// - include_tasks: call_script.yml
-//   vars:
-//     script_name: setup_base_url
-//     args:
-//       base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"

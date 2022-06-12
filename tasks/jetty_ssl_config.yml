@@ -47,7 +47,7 @@
     - wait-for-nexus
     - wait-for-nexus-port
 
-- name: Add jetty-https.xml to nexus arguments
+- name: Define only jetty-https.xml to nexus arguments
   lineinfile:
     dest: "{{ nexus_default_settings_file }}"
     regexp: "^nexus-args=.*"
@@ -56,6 +56,18 @@
     - nexus-service-restart
     - wait-for-nexus
     - wait-for-nexus-port
+  when: nexus_default_port == nexus_default_ssl_port
+
+- name: Add jetty-https.xml to nexus arguments
+  lineinfile:
+    dest: "{{ nexus_default_settings_file }}"
+    regexp: "^nexus-args=.*"
+    line: "nexus-args=${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml"
+  notify:
+    - nexus-service-restart
+    - wait-for-nexus
+    - wait-for-nexus-port
+  when: nexus_default_port != nexus_default_ssl_port
 
 - name: Set nexus ssl port
   lineinfile:
