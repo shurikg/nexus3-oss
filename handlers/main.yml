@@ -68,6 +68,34 @@
     state: absent
   listen: wait-for-nexus
 
+
+- name: find which schema to use
+  lineinfile:
+    path: "{{ nexus_default_settings_file }}"
+    regexp: '^nexus-args=.*jetty-http.xml.*'
+    state: absent
+  check_mode: yes
+  register: search_http_schema
+  listen: wait-for-nexus-port
+
+- name: set nexus_api_scheme to http
+  set_fact:
+    nexus_api_scheme: http
+  when: search_http_schema.changed | bool
+  listen: wait-for-nexus-port
+
+- name: set nexus_api_scheme to https
+  set_fact:
+    nexus_api_scheme: https
+  when: not search_http_schema.changed | bool
+  listen: wait-for-nexus-port
+
+- name: set nexus_default_port to default ssl port
+  set_fact:
+    nexus_default_port: "{{ nexus_default_ssl_port }}"
+  when: not search_http_schema.changed | bool
+  listen: wait-for-nexus-port
+
 - name: wait-for-nexus-port
   wait_for:
     port: "{{ nexus_default_port }}"
@@ -75,27 +103,6 @@
   retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
   register: wait_for_result
   until: wait_for_result is success
-  listen: wait-for-nexus-port
-
-- name: find which schema to use
-  lineinfile:
-    path: "{{ nexus_default_settings_file }}"
-    regexp: '^nexus-args=.*jetty-https.xml.*'
-    state: absent
-  check_mode: yes
-  register: search_https_schema
-  listen: wait-for-nexus-port
-
-- name: set nexus_api_scheme to https
-  set_fact:
-    nexus_api_scheme: https
-  when: search_https_schema.changed | bool
-  listen: wait-for-nexus-port
-
-- name: set nexus_api_scheme to http
-  set_fact:
-    nexus_api_scheme: http
-  when: not search_https_schema.changed | bool
   listen: wait-for-nexus-port
 
 - name: httpd-service-reload

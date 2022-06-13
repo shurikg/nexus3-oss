@@ -22,20 +22,30 @@
 - name: find which schema to use
   lineinfile:
     path: "{{ nexus_default_settings_file }}"
-    regexp: '^nexus-args=.*jetty-https.xml.*'
+    regexp: '^nexus-args=.*jetty-http.xml.*'
     state: absent
   check_mode: yes
-  register: search_https_schema
+  register: search_http_schema
 
 - name: set nexus_api_scheme to https
   set_fact:
     nexus_api_scheme: https
-  when: search_https_schema.changed | bool
+  when: not search_http_schema.changed | bool
 
 - name: set nexus_api_scheme to http
   set_fact:
     nexus_api_scheme: http
-  when: not search_https_schema.changed | bool
+  when: search_http_schema.changed | bool
+
+- name: set nexus_api_port to default ssl port
+  set_fact:
+    nexus_api_port: "{{ nexus_default_ssl_port }}"
+  when: not search_http_schema.changed | bool
+
+- name: set nexus_api_port to default http port
+  set_fact:
+    nexus_api_port: "{{ nexus_default_port }}"
+  when: search_http_schema.changed | bool
 
 - name: Access scripts API endpoint with defined admin password
   uri:
