@@ -273,14 +273,14 @@ taskScheduler.listsTasks().each { rtTask ->
     // if (rtTask.getTypeId() == 'tasklog.cleanup' ) {
     //     needToDelete = false
     // }
-    else {
+    // else {
         parsed_args.details.any { taskDef ->
             if (rtTask.getTypeId() == taskDef.typeId && rtTask.getName() == taskDef.name) {
                 needToDelete = false
                 return true
             }
         }
-    }
+    // }
 
     if (needToDelete) {
         currentResult.put('change_in_git', 'N/A')
