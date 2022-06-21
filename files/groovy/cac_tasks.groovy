@@ -270,17 +270,17 @@ taskScheduler.listsTasks().each { rtTask ->
 
     TaskConfiguration currentTaskConfiguration = rtTask.getConfiguration()
 
-    // if (rtTask.getTypeId() == 'tasklog.cleanup' ) {
-    //     needToDelete = false
-    // }
-    // else {
+    if (rtTask.getTypeId() == 'tasklog.cleanup' || rtTask.getTypeId() == 'repository.cleanup' || rtTask.getTypeId() == 'repository.storage-facet-cleanup') {
+        needToDelete = false
+    }
+    else {
         parsed_args.details.any { taskDef ->
             if (rtTask.getTypeId() == taskDef.typeId && rtTask.getName() == taskDef.name) {
                 needToDelete = false
                 return true
             }
         }
-    // }
+    }
 
     if (needToDelete) {
         currentResult.put('change_in_git', 'N/A')
