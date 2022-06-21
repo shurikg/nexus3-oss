@@ -270,10 +270,15 @@ taskScheduler.listsTasks().each { rtTask ->
 
     TaskConfiguration currentTaskConfiguration = rtTask.getConfiguration()
 
-    parsed_args.details.any { taskDef ->
-        if (rtTask.getTypeId() == taskDef.typeId && rtTask.getName() == taskDef.name) {
-            needToDelete = false
-            return true
+    if (rtTask.getTypeId() == 'tasklog.cleanup' ) {
+        needToDelete = false
+    }
+    else {
+        parsed_args.details.any { taskDef ->
+            if (rtTask.getTypeId() == taskDef.typeId && rtTask.getName() == taskDef.name) {
+                needToDelete = false
+                return true
+            }
         }
     }
 
