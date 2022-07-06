@@ -13,7 +13,8 @@ Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 def searchCriteria = new UserSearchCriteria()
 searchCriteria.setSource(UserManager.DEFAULT_SOURCE)
 
-def excludeUsers = ['admin', 'anonymous']
+// def excludeUsers = ['admin', 'anonymous']
+def excludeUsers = ['admin']
 
 // security.securitySystem.listUsers().each { rtUser ->
 security.securitySystem.searchUsers(searchCriteria).each { rtUser ->
