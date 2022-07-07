@@ -46,7 +46,7 @@ def updateUser(userDef, currentResult) {
         security.securitySystem.changePassword(userDef.username, userDef.password, userDef.password)
     } catch (InvalidCredentialsException ignored) {
         log.info("Got exception for update password for user user {}, try other method", userDef.username)
-        security.securitySystem.changePassword(userDef.username, userDef.password)
+        security.securitySystem.changePassword(userDef.username, userDef.password, true)
         currentResult.put('status', 'updated')
         scriptResults['changed'] = true
     }
