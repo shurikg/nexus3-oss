@@ -127,8 +127,6 @@
 - name: Declare new or changed groovy scripts in nexus
   include_tasks: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
-- debug:
-    msg: "{{ kuku }}"
 
 - name: define cac_changes
   set_fact:
