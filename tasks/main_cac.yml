@@ -127,6 +127,8 @@
 - name: Declare new or changed groovy scripts in nexus
   include_tasks: declare_script_each.yml
   with_items: "{{ nexus_groovy_files_changed.stdout_lines }}"
+- debug:
+    msg: "{{ kuku }}"
 
 - name: define cac_changes
   set_fact:
@@ -370,6 +372,10 @@
   vars:
     script_name: cac_ldap_delete
     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': ldap_connections } ) }}"
+
+- name: test wa
+  set_fact:
+    nexus_repos_maven_proxy: "{{ nexus_repos_maven_proxy}}"
 
 - name: Apply defaults to repositories configurations and process a single list
   include_tasks: process_repos_list.yml
