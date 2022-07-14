@@ -132,7 +132,8 @@ parsed_args.details.each { userDef ->
 }
 
 // Runtime -> GIT
-def excludeUsers = ['admin']
+def excludeUsers = ['admin', 'anonymous']
+// def excludeUsers = ['admin']
 
 def searchCriteria = new UserSearchCriteria()
 searchCriteria.setSource(UserManager.DEFAULT_SOURCE)
