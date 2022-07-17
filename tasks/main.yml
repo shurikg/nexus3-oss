@@ -140,6 +140,13 @@
         args: "{{ nexus_repos_cleanup_policies }}"
       when: nexus_repos_cleanup_policies | length > 0
 
+    - name: WA for decrypt vault strings
+      set_fact:
+        nexus_repos_maven_proxy: "{{ nexus_repos_maven_proxy }}"
+        nexus_repos_docker_proxy: "{{ nexus_repos_docker_proxy }}"
+        nexus_repos_raw_proxy: "{{ nexus_repos_raw_proxy }}"
+        nexus_repos_helm_proxy: "{{ nexus_repos_helm_proxy }}"
+
     - name: Apply defaults to repositories configurations and process a single list
       include_tasks: process_repos_list.yml
 
