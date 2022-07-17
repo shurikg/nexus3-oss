@@ -148,6 +148,7 @@
         nexus_repos_helm_proxy: "{{ nexus_repos_helm_proxy }}"
         nexus_repos_go_proxy: "{{ nexus_repos_go_proxy }}"
         nexus_repos_npm_proxy: "{{ nexus_repos_npm_proxy }}"
+        nexus_repos_yum_proxy: "{{ nexus_repos_yum_proxy }}"
 
     - name: Apply defaults to repositories configurations and process a single list
       include_tasks: process_repos_list.yml
