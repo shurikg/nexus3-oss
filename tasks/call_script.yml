@@ -2,7 +2,7 @@
 - block:
     - name: Debug for input parameters
       debug:
-        msg: "{{ args | regex_replace('''password[^,]*,', '''password:---'',') | to_json }}"
+        msg: "{{ args | regex_replace('''password[^,]*,', '''password:\*\*\*\*\*'',') | to_json }}"
     - name: Calling Groovy script {{ script_name }}
       uri:
         url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
