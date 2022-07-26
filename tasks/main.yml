@@ -57,18 +57,6 @@
       https_proxy_username: "{{ nexus_https_proxy_username }}"
       https_proxy_password: "{{ nexus_https_proxy_password }}"
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
-    args_debug:
-      with_http_proxy: "{{ nexus_with_http_proxy }}"
-      http_proxy_host: "{{ nexus_http_proxy_host }}"
-      http_proxy_port: "{{ nexus_http_proxy_port }}"
-      http_proxy_username: "{{ nexus_http_proxy_username }}"
-      http_proxy_password: "****"
-      with_https_proxy: "{{ nexus_with_https_proxy }}"
-      https_proxy_host: "{{ nexus_https_proxy_host }}"
-      https_proxy_port: "{{ nexus_https_proxy_port }}"
-      https_proxy_username: "{{ nexus_https_proxy_username }}"
-      https_proxy_password: "****"
-      proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
 
 - name: Deleting default repositories
   include_tasks: delete_repo_each.yml
@@ -103,7 +91,6 @@
       vars:
         script_name: create_content_selectors_from_list
         args: "{{ nexus_content_selectors }}"
-        args_debug: "{{ nexus_content_selectors }}"
       when: nexus_content_selectors | length > 0
 
     - name: apply defaults to privileges
@@ -136,7 +123,6 @@
           vars:
             script_name: create_blobstores_from_list
             args: "{{ nexus_blobstores }}"
-            args_debug: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
   when: nexus_run_provisionning | default(true) | bool
@@ -151,7 +137,6 @@
       vars:
         script_name: create_cleanup_policies_from_list
         args: "{{ nexus_repos_cleanup_policies }}"
-        args_debug: "{{ nexus_repos_cleanup_policies }}"
       when: nexus_repos_cleanup_policies | length > 0
 
     - name: WA for decrypt vault strings
@@ -172,14 +157,12 @@
       vars:
         script_name: create_repos_from_list
         args: "{{ _nexus_repos_global_list }}"
-        args_debug: "{{ _nexus_repos_global_list }}"
 
     - name: Create/check privileges
       include_tasks: call_script.yml
       vars:
         script_name: setup_privileges_from_list
         args: "{{ nexus_privileges }}"
-        args_debug: "{{ nexus_privileges }}"
       when: nexus_privileges | length > 0
 
     - name: Create/check roles
@@ -187,7 +170,6 @@
       vars:
         script_name: setup_roles_from_list
         args: "{{ nexus_roles }}"
-        args_debug: "{{ nexus_roles }}"
       when: nexus_roles | length > 0
 
     - name: Create/check local users
@@ -195,7 +177,6 @@
       vars:
         script_name: setup_users_from_list
         args: "{{ nexus_local_users }}"
-        args_debug: "{{ nexus_local_users }}"
       when: nexus_local_users | length > 0
 
     - name: Create/check ldap users
@@ -203,7 +184,6 @@
       vars:
         script_name: setup_ldap_users_from_list
         args: "{{ nexus_ldap_users }}"
-        args_debug: "{{ nexus_ldap_users }}"
       when: nexus_ldap_users | length > 0
 
   when: nexus_run_provisionning | default(true) | bool
@@ -213,15 +193,11 @@
     script_name: setup_anonymous_access
     args:
       anonymous_access: "{{ nexus_anonymous_access }}"
-    args_debug:
-      anonymous_access: "{{ nexus_anonymous_access }}"
 
 - include_tasks: call_script.yml
   vars:
     script_name: setup_base_url
     args:
-      base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"
-    args_debug:
       base_url: "{{ nexus_public_scheme }}://{{ nexus_public_hostname }}/"
 
 - include_tasks: call_script.yml
@@ -239,29 +215,12 @@
       local_authorizing_realm: "{{ nexus_local_authorizing_realm }}"
       saml_realm: "{{ nexus_saml_realm }}"
       user_token_realm: "{{ nexus_user_token_realm }}"
-    args_debug:
-      nuget_api_key_realm: "{{ nexus_nuget_api_key_realm }}"
-      npm_bearer_token_realm: "{{ nexus_npm_bearer_token_realm }}"
-      rut_auth_realm: "{{ nexus_rut_auth_realm }}"
-      ldap_realm: "{{ nexus_ldap_realm }}"
-      docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
-      crowd_realm: "{{ nexus_crowd_realm }}"
-      default_role_realm: "{{ nexus_default_role_realm }}"
-      local_authenticating_realm: "{{ nexus_local_authenticating_realm }}"
-      local_authorizing_realm: "{{ nexus_local_authorizing_realm }}"
-      saml_realm: "{{ nexus_saml_realm }}"
-      user_token_realm: "{{ nexus_user_token_realm }}"
 
 - name: Configure RUT Auth header
   include_tasks: call_script.yml
   vars:
     script_name: setup_capability
     args:
-      capability_typeId: "rutauth"
-      capability_enabled: true
-      capability_properties:
-        httpHeader: "{{ nexus_rut_auth_header }}"
-    args_debug:
       capability_typeId: "rutauth"
       capability_enabled: true
       capability_properties:
@@ -284,19 +243,6 @@
       email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
       email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
       email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
-    args_debug:
-      email_server_enabled: "{{ nexus_email_server_enabled }}"
-      email_server_host: "{{ nexus_email_server_host }}"
-      email_server_port: "{{ nexus_email_server_port }}"
-      email_server_username: "{{ nexus_email_server_username }}"
-      email_server_password: "****"
-      email_from_address: "{{ nexus_email_from_address }}"
-      email_subject_prefix: "{{ nexus_email_subject_prefix }}"
-      email_tls_enabled: "{{ nexus_email_tls_enabled }}"
-      email_tls_required: "{{ nexus_email_tls_required }}"
-      email_ssl_on_connect_enabled: "{{ nexus_email_ssl_on_connect_enabled }}"
-      email_ssl_check_server_identity_enabled: "{{ nexus_email_ssl_check_server_identity_enabled }}"
-      email_trust_store_enabled: "{{ nexus_email_trust_store_enabled }}"
 
 - name: Configure branding capability
   include_tasks: call_script.yml
@@ -310,24 +256,12 @@
         headerHtml: "{{ nexus_branding_header }}"
         footerEnabled: "{{ nexus_branding_footer | length > 0 }}"
         headerEnabled: "{{ nexus_branding_header | length > 0 }}"
-    args_debug:
-      capability_typeId: "rapture.branding"
-      capability_enabled: "{{ (nexus_branding_footer | length > 0) and (nexus_branding_header | length > 0) }}"
-      capability_properties:
-        footerHtml: "{{ nexus_branding_footer }}"
-        headerHtml: "{{ nexus_branding_header }}"
-        footerEnabled: "{{ nexus_branding_footer | length > 0 }}"
-        headerEnabled: "{{ nexus_branding_header | length > 0 }}"
 
 - name: Configure audit capability
   include_tasks: call_script.yml
   vars:
     script_name: setup_capability
     args:
-      capability_typeId: "audit"
-      capability_enabled: "{{ nexus_audit_enabled | bool }}"
-      capability_properties: {}
-    args_debug:
       capability_typeId: "audit"
       capability_enabled: "{{ nexus_audit_enabled | bool }}"
       capability_properties: {}

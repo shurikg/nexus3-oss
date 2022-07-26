@@ -3,4 +3,3 @@
   vars:
     script_name: delete_blobstore
     args: "{{ item }}"
-    args_debug: "{{ item }}"
