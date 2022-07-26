@@ -3,3 +3,4 @@
   vars:
     script_name: create_task
     args: "{{ item }}"
+    args_debug: "{{ item }}"

@@ -4,3 +4,4 @@
     script_name: delete_repo
     args:
       name: "{{ item }}"
+      name_debug: "{{ item }}"

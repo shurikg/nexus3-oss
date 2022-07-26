@@ -105,72 +105,84 @@
   vars:
     script_name: migrate_roles
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate users
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_local_users
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate email
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_email
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate realm
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_realms
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate anonymous access
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_anonymous_access
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate http proxy
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_http_proxy
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate privileges
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_privileges
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate generic content
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_general_configurations
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate repositories
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_repositories
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate ldaps
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_ldap
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate blobs
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_blobstores
     args: "{}"
+    args_debug: "{}"
 
 - name: migrate tasks
   include_tasks: call_cac_script.yml
   vars:
     script_name: migrate_tasks
     args: "{}"
+    args_debug: "{}"
 
 - name: Clean migration directory
   file:
