@@ -6,6 +6,8 @@ import org.sonatype.nexus.repository.Repository
 def migrationRepositories = ['nexus_repos_docker_hosted': [], 'nexus_repos_docker_proxy': [], 'nexus_repos_docker_group': [],
                              'nexus_repos_raw_proxy': [], 'nexus_repos_raw_hosted': [], 'nexus_repos_raw_group': [],
                              'nexus_repos_maven_proxy': [], 'nexus_repos_maven_hosted': [], 'nexus_repos_maven_group': [],
+                             'nexus_repos_npm_proxy': [], 'nexus_repos_npm_hosted': [], 'nexus_repos_npm_group': [],
+                             'nexus_repos_yum_proxy': [], 'nexus_repos_yum_hosted': [], 'nexus_repos_yum_group': [],
                              'nexus_repos_helm_hosted': [], 'nexus_repos_helm_proxy': []]
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
@@ -194,6 +196,100 @@ def migrateMavenRepository(rtRepository, migrationRepositories) {
     }
 }
 
+def migrateNpmRepository(rtRepository, migrationRepositories) {
+    Map<String, String> currentRepository = [name: rtRepository.getName()]
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
+    if (repoAttributes['storage']['strictContentTypeValidation'] == null ) {
+        currentRepository.put('strict_content_validation', true)
+    }
+    else {
+        currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+    }
+
+    if (rtRepository.getType().getValue() == 'hosted') {
+        currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+    }
+
+    if (rtRepository.getType().getValue() == 'proxy') {
+        currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
+        currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
+        currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
+        currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
+    }
+
+    if (rtRepository.getType().getValue() == 'group') {
+        currentRepository.put('member_repos', repoAttributes['group']['memberNames'])
+    }
+
+    switch(rtRepository.getType().getValue()) {
+        case 'hosted':
+            migrationRepositories['nexus_repos_npm_hosted'].add(currentRepository)
+            break
+        case 'proxy':
+            migrationRepositories['nexus_repos_npm_proxy'].add(currentRepository)
+            break
+        case 'group':
+            migrationRepositories['nexus_repos_npm_group'].add(currentRepository)
+            break
+    }
+}
+
+def migrateYumRepository(rtRepository, migrationRepositories) {
+    Map<String, String> currentRepository = [name: rtRepository.getName()]
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
+    if (repoAttributes['storage']['strictContentTypeValidation'] == null ) {
+        currentRepository.put('strict_content_validation', true)
+    }
+    else {
+        currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+    }
+
+    if (rtRepository.getType().getValue() == 'hosted') {
+        currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+        currentRepository.put('layout_policy', repoAttributes['yum']['layoutPolicy'])
+        currentRepository.put('layout_policy', repoAttributes['yum']['repodataDepth'])
+    }
+
+    if (rtRepository.getType().getValue() == 'proxy') {
+        currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
+        currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
+        currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
+        currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
+    }
+
+    if (rtRepository.getType().getValue() == 'group') {
+        currentRepository.put('member_repos', repoAttributes['group']['memberNames'])
+    }
+
+    switch(rtRepository.getType().getValue()) {
+        case 'hosted':
+            migrationRepositories['nexus_repos_yum_hosted'].add(currentRepository)
+            break
+        case 'proxy':
+            migrationRepositories['nexus_repos_yum_proxy'].add(currentRepository)
+            break
+        case 'group':
+            migrationRepositories['nexus_repos_yum_group'].add(currentRepository)
+            break
+    }
+}
+
 repositoryManager.browse().each { rtRepo ->
     switch(rtRepo.getFormat().getValue()) {
         case 'docker':
@@ -207,6 +303,12 @@ repositoryManager.browse().each { rtRepo ->
             break
         case 'maven2':
             migrateMavenRepository(rtRepo, migrationRepositories)
+            break
+        case 'npm':
+            migrateNpmRepository(rtRepo, migrationRepositories)
+            break
+        case 'yum':
+            migrateYumRepository(rtRepo, migrationRepositories)
             break
     }
 }
@@ -251,6 +353,34 @@ if (migrationRepositories['nexus_repos_maven_proxy'].size() > 0 || migrationRepo
         result.put('nexus_repos_maven_group', migrationRepositories['nexus_repos_maven_group'])
     }
     scriptResults['action_details'].put('repositories/maven.yml', result)
+}
+
+if (migrationRepositories['nexus_repos_npm_proxy'].size() > 0 || migrationRepositories['nexus_repos_npm_hosted'].size() || migrationRepositories['nexus_repos_npm_group'].size()) {
+    result = ['nexus_config_npm': true]
+    if (migrationRepositories['nexus_repos_npm_proxy'].size() > 0) {
+        result.put('nexus_repos_npm_proxy', migrationRepositories['nexus_repos_npm_proxy'])
+    }
+    if (migrationRepositories['nexus_repos_npm_hosted'].size() > 0) {
+        result.put('nexus_repos_npm_hosted', migrationRepositories['nexus_repos_npm_hosted'])
+    }
+    if (migrationRepositories['nexus_repos_npm_group'].size() > 0) {
+        result.put('nexus_repos_npm_group', migrationRepositories['nexus_repos_npm_group'])
+    }
+    scriptResults['action_details'].put('repositories/npm.yml', result)
+}
+
+if (migrationRepositories['nexus_repos_yum_proxy'].size() > 0 || migrationRepositories['nexus_repos_yum_hosted'].size() || migrationRepositories['nexus_repos_yum_group'].size()) {
+    result = ['nexus_config_yum': true]
+    if (migrationRepositories['nexus_repos_yum_proxy'].size() > 0) {
+        result.put('nexus_repos_yum_proxy', migrationRepositories['nexus_repos_yum_proxy'])
+    }
+    if (migrationRepositories['nexus_repos_yum_hosted'].size() > 0) {
+        result.put('nexus_repos_yum_hosted', migrationRepositories['nexus_repos_yum_hosted'])
+    }
+    if (migrationRepositories['nexus_repos_yum_group'].size() > 0) {
+        result.put('nexus_repos_yum_group', migrationRepositories['nexus_repos_yum_group'])
+    }
+    scriptResults['action_details'].put('repositories/yum.yml', result)
 }
 
 if (migrationRepositories['nexus_repos_helm_hosted'].size() > 0 || migrationRepositories['nexus_repos_helm_proxy'].size()) {
