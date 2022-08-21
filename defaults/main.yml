@@ -578,25 +578,25 @@ _nexus_repos_npm_defaults:
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
 
-nexus_repos_npm_hosted:
-  - name: npm-internal
-    blob_store: "{{ nexus_blob_names.npm.blob }}"
+nexus_repos_npm_hosted: []
+#  - name: npm-internal
+#    blob_store: "{{ nexus_blob_names.npm.blob }}"
 
-nexus_repos_npm_group:
-  - name: npm-all
-    blob_store: "{{ nexus_blob_names.npm.blob }}"
-    member_repos:
-      - npm-internal
-      - npm-proxy
+nexus_repos_npm_group: []
+#  - name: npm-all
+#    blob_store: "{{ nexus_blob_names.npm.blob }}"
+#    member_repos:
+#      - npm-internal
+#      - npm-proxy
 
-nexus_repos_npm_proxy:
-  - name: npm-proxy
-    blob_store: "{{ nexus_blob_names.npm.blob }}"
-    remote_url: https://registry.npmjs.org
-    # maximum_component_age: 1440
-    # maximum_metadata_age: 1440
-    # negative_cache_enabled: true
-    # negative_cache_ttl: 1440
+nexus_repos_npm_proxy: []
+#  - name: npm-proxy
+#    blob_store: "{{ nexus_blob_names.npm.blob }}"
+#    remote_url: https://registry.npmjs.org
+#    # maximum_component_age: 1440
+#    # maximum_metadata_age: 1440
+#    # negative_cache_enabled: true
+#    # negative_cache_ttl: 1440
 
 _nexus_repos_nuget_defaults:
   blob_store: "{{ nexus_blob_names.nuget.blob }}"
