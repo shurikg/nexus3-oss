@@ -258,7 +258,7 @@ def migrateYumRepository(rtRepository, migrationRepositories) {
     if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
         currentRepository.put('layout_policy', repoAttributes['yum']['layoutPolicy'])
-        currentRepository.put('layout_policy', repoAttributes['yum']['repodataDepth'])
+        currentRepository.put('repodata_depth', repoAttributes['yum']['repodataDepth'])
     }
 
     if (rtRepository.getType().getValue() == 'proxy') {
