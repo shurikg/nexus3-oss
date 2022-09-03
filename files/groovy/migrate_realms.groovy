@@ -13,7 +13,7 @@ def content = [:]
 content.put('nexus_admin_password', "xxxx")
 
 content.put('nexus_nuget_api_key_realm', realmManager.isRealmEnabled("NuGetApiKey"))
-content.put('nexus_npm_bearer_token_realm', realmManager.isRealmEnabled("NuGetApiKey"))
+content.put('nexus_npm_bearer_token_realm', realmManager.isRealmEnabled("NpmToken"))
 content.put('nexus_rut_auth_realm', realmManager.isRealmEnabled("rutauth-realm"))
 content.put('nexus_ldap_realm', realmManager.isRealmEnabled("LdapRealm"))
 content.put('nexus_docker_bearer_token_realm', realmManager.isRealmEnabled("DockerToken"))
