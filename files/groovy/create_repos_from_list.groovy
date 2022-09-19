@@ -107,13 +107,24 @@ parsed_args.each { currentRepo ->
 
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
-            configuration.attributes['httpclient'] = [
-                    blocked       : false,
-                    autoBlock     : true,
-                    connection    : [
-                            useTrustStore: false
-                    ]
-            ]
+            if (currentRepo.use_nexus_truststore) {
+                configuration.attributes['httpclient'] = [
+                        blocked   : currentRepo.blocked,
+                        autoBlock : currentRepo.auto_blocking_enabled,
+                        connection: [
+                                useTrustStore: currentRepo.use_nexus_truststore
+                        ]
+                ]
+            }
+            else{
+                configuration.attributes['httpclient'] = [
+                        blocked   : currentRepo.blocked,
+                        autoBlock : currentRepo.auto_blocking_enabled,
+                        connection: [
+                                useTrustStore: false
+                        ]
+                ]
+            }
 
             if (currentRepo.remote_username) {
                 configuration.attributes['httpclient']['authentication'] = [

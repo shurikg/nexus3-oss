@@ -27,6 +27,11 @@ def migrateHelmRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
@@ -61,6 +66,11 @@ def migrateRawRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
@@ -113,6 +123,11 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue()  == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
@@ -167,6 +182,11 @@ def migrateMavenRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
@@ -215,6 +235,11 @@ def migrateNpmRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
@@ -263,6 +288,11 @@ def migrateYumRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'proxy') {
         currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
         currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
         currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
         currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
