@@ -8,7 +8,9 @@ def migrationRepositories = ['nexus_repos_docker_hosted': [], 'nexus_repos_docke
                              'nexus_repos_maven_proxy': [], 'nexus_repos_maven_hosted': [], 'nexus_repos_maven_group': [],
                              'nexus_repos_npm_proxy': [], 'nexus_repos_npm_hosted': [], 'nexus_repos_npm_group': [],
                              'nexus_repos_yum_proxy': [], 'nexus_repos_yum_hosted': [], 'nexus_repos_yum_group': [],
-                             'nexus_repos_helm_hosted': [], 'nexus_repos_helm_proxy': []]
+                             'nexus_repos_helm_hosted': [], 'nexus_repos_helm_proxy': [],
+                             'nexus_repos_go_proxy': [], 'nexus_repos_go_group': [],
+                             'nexus_repos_apt_hosted': [], 'nexus_repos_apt_proxy': []]
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
 
 repositoryManager = repository.repositoryManager
@@ -320,6 +322,99 @@ def migrateYumRepository(rtRepository, migrationRepositories) {
     }
 }
 
+def migrateGoRepository(rtRepository, migrationRepositories) {
+    Map<String, String> currentRepository = [name: rtRepository.getName()]
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
+    if (repoAttributes['storage']['strictContentTypeValidation'] == null ) {
+        currentRepository.put('strict_content_validation', true)
+    }
+    else {
+        currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+    }
+
+    if (rtRepository.getType().getValue() == 'proxy') {
+        currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
+        currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
+        currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
+        currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
+        currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
+    }
+
+    if (rtRepository.getType().getValue() == 'group') {
+        currentRepository.put('member_repos', repoAttributes['group']['memberNames'])
+    }
+
+    switch(rtRepository.getType().getValue()) {
+        case 'proxy':
+            migrationRepositories['nexus_repos_go_proxy'].add(currentRepository)
+            break
+        case 'group':
+            migrationRepositories['nexus_repos_go_group'].add(currentRepository)
+            break
+    }
+}
+
+def migrateAptRepository(rtRepository, migrationRepositories) {
+    Map<String, String> currentRepository = [name: rtRepository.getName()]
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    currentRepository.put('distribution', repoAttributes['apt']['distribution'])
+    currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
+
+    if (repoAttributes['storage']['strictContentTypeValidation'] == null ) {
+        currentRepository.put('strict_content_validation', true)
+    }
+    else {
+        currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+    }
+
+    if (rtRepository.getType().getValue() == 'hosted') {
+        currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+        currentRepository.put('keypair', repoAttributes['aptSigning']['keypair'])
+        currentRepository.put('passphrase', repoAttributes['aptSigning']['passphrase'])
+    }
+
+    if (rtRepository.getType().getValue() == 'proxy') {
+        currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
+        currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
+        currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
+        currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
+        currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
+        currentRepository.put('flat', repoAttributes['apt']['flat'])
+    }
+
+    switch(rtRepository.getType().getValue()) {
+        case 'hosted':
+            migrationRepositories['nexus_repos_apy_hosted'].add(currentRepository)
+            break
+        case 'proxy':
+            migrationRepositories['nexus_repos_apt_proxy'].add(currentRepository)
+            break
+    }
+}
+
 repositoryManager.browse().each { rtRepo ->
     switch(rtRepo.getFormat().getValue()) {
         case 'docker':
@@ -339,6 +434,12 @@ repositoryManager.browse().each { rtRepo ->
             break
         case 'yum':
             migrateYumRepository(rtRepo, migrationRepositories)
+            break
+        case 'go':
+            migrateGoRepository(rtRepo, migrationRepositories)
+            break
+        case 'apt':
+            migrateAptRepository(rtRepo, migrationRepositories)
             break
     }
 }
@@ -422,6 +523,28 @@ if (migrationRepositories['nexus_repos_helm_hosted'].size() > 0 || migrationRepo
         result.put('nexus_repos_helm_proxy', migrationRepositories['nexus_repos_helm_proxy'])
     }
     scriptResults['action_details'].put('repositories/helm.yml', result)
+}
+
+if (migrationRepositories['nexus_repos_go_proxy'].size() > 0 || migrationRepositories['nexus_repos_go_group'].size()) {
+    result = ['nexus_config_go': true]
+    if (migrationRepositories['nexus_repos_go_proxy'].size() > 0) {
+        result.put('nexus_repos_go_proxy', migrationRepositories['nexus_repos_go_proxy'])
+    }
+    if (migrationRepositories['nexus_repos_go_group'].size() > 0) {
+        result.put('nexus_repos_go_group', migrationRepositories['nexus_repos_go_group'])
+    }
+    scriptResults['action_details'].put('repositories/go.yml', result)
+}
+
+if (migrationRepositories['nexus_repos_apt_hosted'].size() > 0 || migrationRepositories['nexus_repos_apt_proxy'].size()) {
+    result = ['nexus_config_apt': true]
+    if (migrationRepositories['nexus_repos_apt_hosted'].size() > 0) {
+        result.put('nexus_repos_apt_hosted', migrationRepositories['nexus_repos_apt_hosted'])
+    }
+    if (migrationRepositories['nexus_repos_apt_proxy'].size() > 0) {
+        result.put('nexus_repos_apt_proxy', migrationRepositories['nexus_repos_apt_proxy'])
+    }
+    scriptResults['action_details'].put('repositories/apt.yml', result)
 }
 
 return JsonOutput.toJson(scriptResults)
