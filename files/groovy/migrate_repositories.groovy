@@ -407,7 +407,7 @@ def migrateAptRepository(rtRepository, migrationRepositories) {
 
     switch(rtRepository.getType().getValue()) {
         case 'hosted':
-            migrationRepositories['nexus_repos_apy_hosted'].add(currentRepository)
+            migrationRepositories['nexus_repos_apt_hosted'].add(currentRepository)
             break
         case 'proxy':
             migrationRepositories['nexus_repos_apt_proxy'].add(currentRepository)
