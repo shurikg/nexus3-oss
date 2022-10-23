@@ -227,7 +227,7 @@ parsed_args.details.each { taskDef ->
                         runtimeChangeMessage.add("repository name = ${currentTaskConfiguration.getString('repositoryName')}")
                     }
                     break
-                case ['repository.maven.publish-dotindex', 'repository.maven.unpublish-dotindex', 'repository.docker.gc']:
+                case ['repository.maven.publish-dotindex', 'repository.maven.unpublish-dotindex', 'repository.docker.gc', 'repository.rebuild-index', 'repository.npm.reindex']:
                     if (currentTaskConfiguration.getString('repositoryName') != taskDef.taskProperties.repositoryName) {
                         gitChangeMessage.add("repository name = ${taskDef.taskProperties.repositoryName}")
                         runtimeChangeMessage.add("repository name = ${currentTaskConfiguration.getString('repositoryName')}")
