@@ -398,6 +398,9 @@ _nexus_repos_maven_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 # pypi support ...
 _nexus_repos_pypi_defaults:
@@ -442,6 +445,9 @@ _nexus_repos_raw_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 
 nexus_repos_raw_proxy: []
@@ -478,6 +484,11 @@ _nexus_repos_docker_defaults:
   # More about Foreign Layers https://help.sonatype.com/repomanager3/formats/docker-registry/foreign-layers
   cache_foreign_layers: false  # Nexus gui default. For proxies only
   foreign_layer_url_whitelist: []  # Nexus gui default. For proxies only
+  index_type: Use 'REGISTRY' to use the proxy url for the index as well. Use 'HUB' to use the index from DockerHub.
+                                   Use 'CUSTOM' in conjunction with the 'indexUrl' param to specify a custom index location
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 nexus_repos_docker_hosted: []
 # - name: docker-hosted
@@ -577,6 +588,9 @@ _nexus_repos_npm_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 nexus_repos_npm_hosted: []
 #  - name: npm-internal
@@ -606,6 +620,9 @@ _nexus_repos_nuget_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 nexus_repos_nuget_hosted:
   - name: nuget-internal
@@ -659,6 +676,9 @@ _nexus_repos_yum_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 # apt support
 # More on how to work with apt repos https://help.sonatype.com/repomanager3/formats/apt-repositories
@@ -672,6 +692,9 @@ _nexus_repos_apt_defaults:
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
   flat: false  # Nexus gui default. For proxies only
+  use_nexus_truststore: false       # Nexus gui default. For proxies only
+  blocked: false                    # Nexus gui default. For proxies only
+  auto_blocking_enabled: true       # Nexus gui default. For proxies only
 
 nexus_repos_apt_hosted: []
 # - name: private_apt_centos_7
@@ -700,6 +723,9 @@ _nexus_repos_helm_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 nexus_repos_helm_hosted: []
 # - name: helm-hosted
@@ -771,6 +797,9 @@ _nexus_repos_go_defaults:
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
   negative_cache_enabled: true  # Nexus gui default. For proxies only
   negative_cache_ttl: 1440  # Nexus gui default. For proxies only
+  use_nexus_truststore: false  # Nexus gui default. For proxies only
+  blocked: false  # Nexus gui default. For proxies only
+  auto_blocking_enabled: true  # Nexus gui default. For proxies only
 
 nexus_repos_go_group: []
 nexus_repos_go_proxy: []
