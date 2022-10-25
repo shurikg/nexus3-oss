@@ -9,6 +9,7 @@ def migrationRepositories = ['nexus_repos_docker_hosted': [], 'nexus_repos_docke
                              'nexus_repos_npm_proxy': [], 'nexus_repos_npm_hosted': [], 'nexus_repos_npm_group': [],
                              'nexus_repos_yum_proxy': [], 'nexus_repos_yum_hosted': [], 'nexus_repos_yum_group': [],
                              'nexus_repos_helm_hosted': [], 'nexus_repos_helm_proxy': [],
+                             'nexus_repos_nuget_proxy': [], 'nexus_repos_nuget_hosted': [], 'nexus_repos_nuget_group': [],
                              'nexus_repos_go_proxy': [], 'nexus_repos_go_group': [],
                              'nexus_repos_apt_hosted': [], 'nexus_repos_apt_proxy': []]
 Map scriptResults = [changed: false, error: false, 'action_details': [:]]
@@ -322,6 +323,57 @@ def migrateYumRepository(rtRepository, migrationRepositories) {
     }
 }
 
+def migrateNugetRepository(rtRepository, migrationRepositories) {
+    Map<String, String> currentRepository = [name: rtRepository.getName()]
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
+    if (repoAttributes['storage']['strictContentTypeValidation'] == null ) {
+        currentRepository.put('strict_content_validation', true)
+    }
+    else {
+        currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+    }
+
+    if (rtRepository.getType().getValue() == 'hosted') {
+        currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+    }
+
+    if (rtRepository.getType().getValue() == 'proxy') {
+        currentRepository.put('remote_url', repoAttributes['proxy']['remoteUrl'])
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            currentRepository.put('use_nexus_truststore', repoAttributes?.httpclient?.connection?.useTrustStore)
+        }
+        currentRepository.put('blocked', repoAttributes?.httpclient?.blocked)
+        currentRepository.put('auto_blocking_enabled', repoAttributes?.httpclient?.autoBlock)
+        currentRepository.put('maximum_component_age', repoAttributes['proxy']['contentMaxAge'])
+        currentRepository.put('maximum_metadata_age', repoAttributes['proxy']['metadataMaxAge'])
+        currentRepository.put('negative_cache_enabled', repoAttributes['negativeCache']['enabled'])
+        currentRepository.put('negative_cache_ttl', repoAttributes['negativeCache']['timeToLive'])
+        if (repoAttributes?.httpclient?.authentication?.username != null) {
+            currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
+            currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
+        }
+    }
+
+    if (rtRepository.getType().getValue() == 'group') {
+        currentRepository.put('member_repos', repoAttributes['group']['memberNames'])
+    }
+
+    switch(rtRepository.getType().getValue()) {
+        case 'hosted':
+            migrationRepositories['nexus_repos_nuget_hosted'].add(currentRepository)
+            break
+        case 'proxy':
+            migrationRepositories['nexus_repos_nuget_proxy'].add(currentRepository)
+            break
+        case 'group':
+            migrationRepositories['nexus_repos_nuget_group'].add(currentRepository)
+            break
+    }
+}
+
 def migrateGoRepository(rtRepository, migrationRepositories) {
     Map<String, String> currentRepository = [name: rtRepository.getName()]
 
@@ -435,6 +487,9 @@ repositoryManager.browse().each { rtRepo ->
         case 'yum':
             migrateYumRepository(rtRepo, migrationRepositories)
             break
+        case 'nuget':
+            migrateNugetRepository(rtRepo, migrationRepositories)
+            break
         case 'go':
             migrateGoRepository(rtRepo, migrationRepositories)
             break
@@ -523,6 +578,20 @@ if (migrationRepositories['nexus_repos_helm_hosted'].size() > 0 || migrationRepo
         result.put('nexus_repos_helm_proxy', migrationRepositories['nexus_repos_helm_proxy'])
     }
     scriptResults['action_details'].put('repositories/helm.yml', result)
+}
+
+if (migrationRepositories['nexus_repos_nuget_proxy'].size() > 0 || migrationRepositories['nexus_repos_nuget_hosted'].size() || migrationRepositories['nexus_repos_nuget_group'].size()) {
+    result = ['nexus_config_nuget': true]
+    if (migrationRepositories['nexus_repos_nuget_proxy'].size() > 0) {
+        result.put('nexus_repos_nuget_proxy', migrationRepositories['nexus_repos_nuget_proxy'])
+    }
+    if (migrationRepositories['nexus_repos_nuget_hosted'].size() > 0) {
+        result.put('nexus_repos_nuget_hosted', migrationRepositories['nexus_repos_nuget_hosted'])
+    }
+    if (migrationRepositories['nexus_repos_nuget_group'].size() > 0) {
+        result.put('nexus_repos_nuget_group', migrationRepositories['nexus_repos_nuget_group'])
+    }
+    scriptResults['action_details'].put('repositories/nuget.yml', result)
 }
 
 if (migrationRepositories['nexus_repos_go_proxy'].size() > 0 || migrationRepositories['nexus_repos_go_group'].size()) {
