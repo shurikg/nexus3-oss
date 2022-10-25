@@ -39,7 +39,9 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -100,7 +102,9 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -164,7 +168,9 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -232,7 +238,9 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -296,7 +304,9 @@ def compareNpmRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -359,10 +369,10 @@ def compareYumRepository(requireRepository, rtRepository, scriptResults) {
     }
 
     if (requireRepository.type == 'proxy') {
-        compareValue(requireRepository.keypair, repoAttributes['aptSigning']['keypair'], "key pair", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.passphrase, repoAttributes['aptSigning']['passphrase'], "passphrase", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -424,7 +434,9 @@ def compareNugetRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -482,7 +494,9 @@ def compareGoRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
@@ -548,7 +562,9 @@ def compareAptRepository(requireRepository, rtRepository, scriptResults) {
     if (requireRepository.type == 'proxy') {
         compareValue(requireRepository.flat, repoAttributes['apt']['flat'], "flat", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        if (repoAttributes?.httpclient?.connection?.useTrustStore != null) {
+            compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage)
+        }
         compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
