@@ -275,6 +275,320 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
     }
 }
 
+def compareNpmRepository(requireRepository, rtRepository, scriptResults) {
+    Map<String, String> currentResult = [:]
+    def gitChangeMessage = []
+    def runtimeChangeMessage = []
+    def authType = null
+
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    compareValue(requireRepository.blob_store, repoAttributes['storage']['blobStoreName'], "blob store", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'],
+            "strict content type validation", gitChangeMessage, runtimeChangeMessage )
+
+    if (requireRepository.type == 'hosted') {
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'proxy') {
+        compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_metadata_age, repoAttributes['proxy']['metadataMaxAge'], "maximum metadata age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_enabled, repoAttributes['negativeCache']['enabled'], "negative cache enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
+        if (requireRepository.remote_username != null) {
+            authType = "username"
+        }
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'group') {
+        requireRepository.member_repos.each { currentMember ->
+            if ( ! (currentMember in repoAttributes['group']['memberNames'])) {
+                gitChangeMessage.add("new member group ${currentMember}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        repoAttributes['group']['memberNames'].each { currentMember ->
+            if ( ! (currentMember in requireRepository.member_repos)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete member group ${currentMember}")
+            }
+        }
+    }
+
+    if (gitChangeMessage) {
+        currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+        currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
+        currentResult.put('change_type', 'change')
+        currentResult.put('description', "the ${requireRepository.name} repository will be updated")
+        currentResult.put('resource', 'repository')
+        currentResult.put('downtime', false)
+        scriptResults['action_details'].add(currentResult)
+    }
+}
+
+def compareYumRepository(requireRepository, rtRepository, scriptResults) {
+    Map<String, String> currentResult = [:]
+    def gitChangeMessage = []
+    def runtimeChangeMessage = []
+    def authType = null
+
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    compareValue(requireRepository.blob_store, repoAttributes['storage']['blobStoreName'], "blob store", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'],
+            "strict content type validation", gitChangeMessage, runtimeChangeMessage )
+
+    if (requireRepository.type == 'hosted') {
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.layout_policy, repoAttributes['yum']['layoutPolicy'], "layout policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.repodata_depth, repoAttributes['yum']['repodataDepth'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'proxy') {
+        compareValue(requireRepository.keypair, repoAttributes['aptSigning']['keypair'], "key pair", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.passphrase, repoAttributes['aptSigning']['passphrase'], "passphrase", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_metadata_age, repoAttributes['proxy']['metadataMaxAge'], "maximum metadata age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_enabled, repoAttributes['negativeCache']['enabled'], "negative cache enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
+        if (requireRepository.remote_username != null) {
+            authType = "username"
+        }
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'group') {
+        requireRepository.member_repos.each { currentMember ->
+            if ( ! (currentMember in repoAttributes['group']['memberNames'])) {
+                gitChangeMessage.add("new member group ${currentMember}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        repoAttributes['group']['memberNames'].each { currentMember ->
+            if ( ! (currentMember in requireRepository.member_repos)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete member group ${currentMember}")
+            }
+        }
+    }
+
+    if (gitChangeMessage) {
+        currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+        currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
+        currentResult.put('change_type', 'change')
+        currentResult.put('description', "the ${requireRepository.name} repository will be updated")
+        currentResult.put('resource', 'repository')
+        currentResult.put('downtime', false)
+        scriptResults['action_details'].add(currentResult)
+    }
+}
+
+def compareNugetRepository(requireRepository, rtRepository, scriptResults) {
+    Map<String, String> currentResult = [:]
+    def gitChangeMessage = []
+    def runtimeChangeMessage = []
+    def authType = null
+
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    compareValue(requireRepository.blob_store, repoAttributes['storage']['blobStoreName'], "blob store", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'],
+            "strict content type validation", gitChangeMessage, runtimeChangeMessage )
+
+    if (requireRepository.type == 'hosted') {
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'proxy') {
+        compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_metadata_age, repoAttributes['proxy']['metadataMaxAge'], "maximum metadata age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_enabled, repoAttributes['negativeCache']['enabled'], "negative cache enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
+        if (requireRepository.remote_username != null) {
+            authType = "username"
+        }
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'group') {
+        requireRepository.member_repos.each { currentMember ->
+            if ( ! (currentMember in repoAttributes['group']['memberNames'])) {
+                gitChangeMessage.add("new member group ${currentMember}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        repoAttributes['group']['memberNames'].each { currentMember ->
+            if ( ! (currentMember in requireRepository.member_repos)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete member group ${currentMember}")
+            }
+        }
+    }
+
+    if (gitChangeMessage) {
+        currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+        currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
+        currentResult.put('change_type', 'change')
+        currentResult.put('description', "the ${requireRepository.name} repository will be updated")
+        currentResult.put('resource', 'repository')
+        currentResult.put('downtime', false)
+        scriptResults['action_details'].add(currentResult)
+    }
+}
+
+def compareGoRepository(requireRepository, rtRepository, scriptResults) {
+    Map<String, String> currentResult = [:]
+    def gitChangeMessage = []
+    def runtimeChangeMessage = []
+    def authType = null
+
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    compareValue(requireRepository.blob_store, repoAttributes['storage']['blobStoreName'], "blob store", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'],
+            "strict content type validation", gitChangeMessage, runtimeChangeMessage )
+
+    if (requireRepository.type == 'proxy') {
+        compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_metadata_age, repoAttributes['proxy']['metadataMaxAge'], "maximum metadata age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_enabled, repoAttributes['negativeCache']['enabled'], "negative cache enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
+        if (requireRepository.remote_username != null) {
+            authType = "username"
+        }
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'group') {
+        requireRepository.member_repos.each { currentMember ->
+            if ( ! (currentMember in repoAttributes['group']['memberNames'])) {
+                gitChangeMessage.add("new member group ${currentMember}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        repoAttributes['group']['memberNames'].each { currentMember ->
+            if ( ! (currentMember in requireRepository.member_repos)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete member group ${currentMember}")
+            }
+        }
+    }
+
+    if (gitChangeMessage) {
+        currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+        currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
+        currentResult.put('change_type', 'change')
+        currentResult.put('description', "the ${requireRepository.name} repository will be updated")
+        currentResult.put('resource', 'repository')
+        currentResult.put('downtime', false)
+        scriptResults['action_details'].add(currentResult)
+    }
+}
+
+def compareAptRepository(requireRepository, rtRepository, scriptResults) {
+    Map<String, String> currentResult = [:]
+    def gitChangeMessage = []
+    def runtimeChangeMessage = []
+    def authType = null
+
+    compareValue(requireRepository.format, rtRepository.getFormat().getValue(), "format", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.type, rtRepository.getType().getValue(), "type", gitChangeMessage, runtimeChangeMessage )
+
+    repoAttributes = rtRepository.getConfiguration().getAttributes()
+
+    compareValue(requireRepository.blob_store, repoAttributes['storage']['blobStoreName'], "blob store", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'],
+            "strict content type validation", gitChangeMessage, runtimeChangeMessage )
+    compareValue(requireRepository.distribution, repoAttributes['apt']['distribution'], "distribution", gitChangeMessage, runtimeChangeMessage )
+
+    if (requireRepository.type == 'hosted') {
+        compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.keypair, repoAttributes['aptSigning']['keypair'], "key pair", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.passphrase, repoAttributes['aptSigning']['passphrase'], "passphrase", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'proxy') {
+        compareValue(requireRepository.flat, repoAttributes['apt']['flat'], "flat", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_url, repoAttributes['proxy']['remoteUrl'], "remote url", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.use_nexus_truststore, repoAttributes?.httpclient?.connection?.useTrustStore, "use the nexus truststore", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.blocked, repoAttributes?.httpclient?.blocked, "blocked", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.auto_blocking_enabled, repoAttributes?.httpclient?.autoBlock, "auto blocking enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_component_age, repoAttributes['proxy']['contentMaxAge'], "maximum component age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.maximum_metadata_age, repoAttributes['proxy']['metadataMaxAge'], "maximum metadata age", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_enabled, repoAttributes['negativeCache']['enabled'], "negative cache enabled", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
+        compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
+        if (requireRepository.remote_username != null) {
+            authType = "username"
+        }
+        compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+    }
+
+    if (requireRepository.type == 'group') {
+        requireRepository.member_repos.each { currentMember ->
+            if ( ! (currentMember in repoAttributes['group']['memberNames'])) {
+                gitChangeMessage.add("new member group ${currentMember}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        repoAttributes['group']['memberNames'].each { currentMember ->
+            if ( ! (currentMember in requireRepository.member_repos)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete member group ${currentMember}")
+            }
+        }
+    }
+
+    if (gitChangeMessage) {
+        currentResult.put('change_in_git', gitChangeMessage.join('\n'))
+        currentResult.put('change_in_runtime', runtimeChangeMessage.join('\n'))
+        currentResult.put('change_type', 'change')
+        currentResult.put('description', "the ${requireRepository.name} repository will be updated")
+        currentResult.put('resource', 'repository')
+        currentResult.put('downtime', false)
+        scriptResults['action_details'].add(currentResult)
+    }
+}
+
 parsed_args.details.each { currentRepo ->
 
     Map<String, String> currentResult = [:]
@@ -302,6 +616,21 @@ parsed_args.details.each { currentRepo ->
                 break
             case 'maven2':
                 compareMavenRepository(currentRepo, existingRepository, scriptResults)
+                break
+            case 'npm':
+                compareNpmRepository(currentRepo, existingRepository, scriptResults)
+                break
+            case 'yum':
+                compareYumRepository(currentRepo, existingRepository, scriptResults)
+                break
+            case 'nuget':
+                compareNugetRepository(currentRepo, existingRepository, scriptResults)
+                break
+            case 'go':
+                compareGoRepository(currentRepo, existingRepository, scriptResults)
+                break
+            case 'apt':
+                compareAptRepository(currentRepo, existingRepository, scriptResults)
                 break
         }
     }
