@@ -78,7 +78,7 @@ existingTask.each { rtTaks ->
             boolProperty.put('integrityCheck', currentTaskConfiguration.getString('integrityCheck'))
             knownTask = true
             break
-        case ['create.browse.nodes', 'repository.maven.publish-dotindex', 'repository.docker.gc', 'repository.maven.unpublish-dotindex']:
+        case ['create.browse.nodes', 'repository.maven.publish-dotindex', 'repository.docker.gc', 'repository.maven.unpublish-dotindex', 'repository.rebuild-index', 'repository.npm.reindex']:
             taskProperty.put('repositoryName', currentTaskConfiguration.getString('repositoryName'))
             knownTask = true
             break
