@@ -291,8 +291,8 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'hosted') {
         compareValue(toUpperCaseWithPrint("maven hosted requireRepository.write_policy",requireRepository.write_policy), toUpperCaseWithPrint("maven hosted repoAttributes['storage']['writePolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(toUpperCaseWithPrint("maven hosted requireRepository.layout_policy",requireRepository.write_policy), toUpperCaseWithPrint("maven hosted repoAttributes['maven']['layoutPolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(toUpperCaseWithPrint("maven hosted requireRepository.version_policy",requireRepository.write_policy), toUpperCaseWithPrint("maven hosted repoAttributes['maven']['versionPolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(toUpperCaseWithPrint("maven hosted requireRepository.layout_policy",requireRepository.layout_policy), toUpperCaseWithPrint("maven hosted repoAttributes['maven']['layoutPolicy']", repoAttributes['storage']['layoutPolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(toUpperCaseWithPrint("maven hosted requireRepository.version_policy",requireRepository.version_policy), toUpperCaseWithPrint("maven hosted repoAttributes['maven']['versionPolicy']", repoAttributes['storage']['versionPolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
             if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
@@ -321,8 +321,8 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.maximum_metadata_age, repoAttributes['proxy']['metadataMaxAge'], "maximum metadata age", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.negative_cache_enabled, repoAttributes['negativeCache']['enabled'], "negative cache enabled", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.negative_cache_ttl, repoAttributes['negativeCache']['timeToLive'], "negative cache ttl", gitChangeMessage, runtimeChangeMessage )
-        compareValue(toUpperCaseWithPrint("maven proxy requireRepository.layout_policy",requireRepository.write_policy), toUpperCaseWithPrint("maven proxy repoAttributes['maven']['layoutPolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(toUpperCaseWithPrint("maven proxy requireRepository.version_policy",requireRepository.write_policy), toUpperCaseWithPrint("maven proxy repoAttributes['maven']['versionPolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(toUpperCaseWithPrint("maven proxy requireRepository.layout_policy",requireRepository.layout_policy), toUpperCaseWithPrint("maven proxy repoAttributes['maven']['layoutPolicy']", repoAttributes['storage']['layoutPolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(toUpperCaseWithPrint("maven proxy requireRepository.version_policy",requireRepository.version_policy), toUpperCaseWithPrint("maven proxy repoAttributes['maven']['versionPolicy']", repoAttributes['storage']['versionPolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_username, repoAttributes?.httpclient?.authentication?.username, "remote username", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.remote_password, repoAttributes?.httpclient?.authentication?.password, "remote password", gitChangeMessage, runtimeChangeMessage )
         if (requireRepository.remote_username != null) {
@@ -483,7 +483,7 @@ def compareYumRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'hosted') {
         compareValue(toUpperCaseWithPrint("yum hosted requireRepository.write_policy",requireRepository.write_policy), toUpperCaseWithPrint("yum hosted repoAttributes['storage']['writePolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(toUpperCaseWithPrint("yum hosted requireRepository.layoutPolicy",requireRepository.write_policy), toUpperCaseWithPrint("yum hosted repoAttributes['yum']['layoutPolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+        compareValue(toUpperCaseWithPrint("yum hosted requireRepository.layout_policy",requireRepository.layout_policy), toUpperCaseWithPrint("yum hosted repoAttributes['yum']['layoutPolicy']", repoAttributes['storage']['writePolicy']), "deployment policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.repodata_depth, repoAttributes['yum']['repodataDepth'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
