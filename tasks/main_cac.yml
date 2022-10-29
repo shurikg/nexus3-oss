@@ -399,6 +399,13 @@
     args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_blobstores } ) }}"
     when: nexus_blobstores | length > 0
 
+- name: CasC cleanup policies
+  include_tasks: call_cac_script.yml
+  vars:
+    script_name: cac_cleanup_policies
+    args: "{{ { 'dry_run': ansible_check_mode } | combine ( { 'details': nexus_repos_cleanup_policies } ) }}"
+    when: nexus_repos_cleanup_policies | length > 0
+
 - name: create final cac report
   set_fact:
     __final_cac_report:
