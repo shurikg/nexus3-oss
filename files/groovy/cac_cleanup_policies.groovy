@@ -110,6 +110,6 @@ def Integer asDays(secondsInt) {
     return secondsInt / TimeUnit.DAYS.toSeconds(1)
 }
 
-def String asIntDays(secondsStr) {
+def Integer asIntDays(secondsStr) {
     return asDays(Integer.valueOf(secondsStr))
 }
