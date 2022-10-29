@@ -23,6 +23,7 @@ def migrateHelmRepository(rtRepository, migrationRepositories) {
 
     currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
     currentRepository.put('strict_content_validation', repoAttributes['storage']['strictContentTypeValidation'])
+    currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
 
     if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
@@ -65,6 +66,7 @@ def migrateRawRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'proxy') {
@@ -82,6 +84,7 @@ def migrateRawRepository(rtRepository, migrationRepositories) {
             currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
             currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
         }
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -122,6 +125,7 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue()  == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue()  == 'proxy') {
@@ -145,6 +149,7 @@ def migrateDockerRepository(rtRepository, migrationRepositories) {
             currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
             currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
         }
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -181,6 +186,7 @@ def migrateMavenRepository(rtRepository, migrationRepositories) {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
         currentRepository.put('layout_policy', repoAttributes['maven']['layoutPolicy'])
         currentRepository.put('version_policy', repoAttributes['maven']['versionPolicy'])
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'proxy') {
@@ -200,6 +206,7 @@ def migrateMavenRepository(rtRepository, migrationRepositories) {
             currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
             currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
         }
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -234,6 +241,7 @@ def migrateNpmRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'proxy') {
@@ -251,6 +259,7 @@ def migrateNpmRepository(rtRepository, migrationRepositories) {
             currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
             currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
         }
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -287,6 +296,7 @@ def migrateYumRepository(rtRepository, migrationRepositories) {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
         currentRepository.put('layout_policy', repoAttributes['yum']['layoutPolicy'])
         currentRepository.put('repodata_depth', repoAttributes['yum']['repodataDepth'])
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'proxy') {
@@ -304,6 +314,7 @@ def migrateYumRepository(rtRepository, migrationRepositories) {
             currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
             currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
         }
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -338,6 +349,7 @@ def migrateNugetRepository(rtRepository, migrationRepositories) {
 
     if (rtRepository.getType().getValue() == 'hosted') {
         currentRepository.put('write_policy', repoAttributes['storage']['writePolicy'])
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'proxy') {
@@ -355,6 +367,7 @@ def migrateNugetRepository(rtRepository, migrationRepositories) {
             currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
             currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
         }
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -402,6 +415,7 @@ def migrateGoRepository(rtRepository, migrationRepositories) {
             currentRepository.put('remote_username', repoAttributes?.httpclient?.authentication?.username)
             currentRepository.put('remote_password', repoAttributes?.httpclient?.authentication?.password)
         }
+        currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
     }
 
     if (rtRepository.getType().getValue() == 'group') {
@@ -425,6 +439,7 @@ def migrateAptRepository(rtRepository, migrationRepositories) {
 
     currentRepository.put('distribution', repoAttributes['apt']['distribution'])
     currentRepository.put('blob_store', repoAttributes['storage']['blobStoreName'])
+    currentRepository.put('cleanup_policies', repoAttributes['cleanup']['policyName'])
 
     if (repoAttributes['storage']['strictContentTypeValidation'] == null ) {
         currentRepository.put('strict_content_validation', true)
