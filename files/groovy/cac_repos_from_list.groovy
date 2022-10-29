@@ -34,15 +34,17 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
                 "strict content type validation", gitChangeMessage, runtimeChangeMessage )
 
     requireRepository.cleanup_policies.each { currentPolicy ->
-        if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+        if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
             gitChangeMessage.add("new cleanup policy ${currentPolicy}")
             runtimeChangeMessage.add("N/A")
         }
     }
-    repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-        if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-            gitChangeMessage.add("N/A")
-            runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+    if (repoAttributes?.cleanup?.policyName != null) {
+        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+            if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+            }
         }
     }
 
@@ -68,22 +70,6 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
     }
-
-            // "cleanup": {
-            //     "policyName": [
-            //         "aaa"
-            //     ]
-            // },
-
-        // if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
-        //     def cleanupPolicies = currentRepo.cleanup_policies as Set
-        //     if (cleanupPolicies != null)
-        //     {
-        //         configuration.attributes['cleanup'] = [
-        //             policyName: cleanupPolicies
-        //         ]
-        //     }
-        // }
 
     if (gitChangeMessage) {
         currentResult.put('change_in_git', gitChangeMessage.join('\n'))
@@ -113,15 +99,17 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -145,15 +133,17 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -205,15 +195,17 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -242,15 +234,17 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -301,15 +295,17 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.version_policy.toUpperCase(), repoAttributes['maven']['versionPolicy'].toUpperCase(), "version policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -335,15 +331,17 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -393,15 +391,17 @@ def compareNpmRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -425,15 +425,17 @@ def compareNpmRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -485,15 +487,17 @@ def compareYumRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.repodata_depth, repoAttributes['yum']['repodataDepth'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -517,15 +521,17 @@ def compareYumRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -575,15 +581,17 @@ def compareNugetRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -607,15 +615,17 @@ def compareNugetRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -680,15 +690,17 @@ def compareGoRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
-            if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
                 gitChangeMessage.add("new cleanup policy ${currentPolicy}")
                 runtimeChangeMessage.add("N/A")
             }
         }
-        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-            if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-                gitChangeMessage.add("N/A")
-                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
             }
         }
     }
@@ -736,15 +748,17 @@ def compareAptRepository(requireRepository, rtRepository, scriptResults) {
     compareValue(requireRepository.distribution, repoAttributes['apt']['distribution'], "distribution", gitChangeMessage, runtimeChangeMessage )
 
     requireRepository.cleanup_policies.each { currentPolicy ->
-        if ( ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+        if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
             gitChangeMessage.add("new cleanup policy ${currentPolicy}")
             runtimeChangeMessage.add("N/A")
         }
     }
-    repoAttributes['cleanup']['policyName'].each { currentPolicy ->
-        if ( ! (currentPolicy in requireRepository.cleanup_policies)) {
-            gitChangeMessage.add("N/A")
-            runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+    if (repoAttributes?.cleanup?.policyName != null) {
+        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+            if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+            }
         }
     }
 
