@@ -70,7 +70,7 @@ parsed_args.each { currentPolicy ->
                 setName(currentPolicy.name)
                 setNotes(currentPolicy.notes)
                 setFormat(currentPolicy.format == "all" ? "ALL_FORMATS" : currentPolicy.format)
-                setMode('deletion')
+                setMode('delete')
                 setCriteria(criteriaMap)
             }
             cleanupPolicyStorage.add(cleanupPolicy)
