@@ -58,8 +58,10 @@ parsed_args.details.each { cleanupPolicyDef ->
             def rtVal = isNullOrEmpty(existingCleanupCriteria.get('lastDownloaded')) ? "" : asIntDays(existingCleanupCriteria.get('lastDownloaded'))
             runtimeChangeMessage.add("component usage = ${rtVal}")
         }
-        if (!isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) && String.valueOf(cleanupPolicyDef.criteria.preRelease == "PRERELEASES") != existingCleanupCriteria.get('isPrerelease') ||
-                isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) && !isNullOrEmpty(cleanupPolicyDef.criteria.preRelease)) {
+        if (!isNullOrEmpty(cleanupPolicyDef.criteria.preRelease) && isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) ||
+                isNullOrEmpty(cleanupPolicyDef.criteria.preRelease) && !isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) ||
+                !isNullOrEmpty(cleanupPolicyDef.criteria.preRelease) && !isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) &&
+                (existingCleanupCriteria.get('isPrerelease') == "true" && cleanupPolicyDef.criteria.preRelease == "RELEASES" || existingCleanupCriteria.get('isPrerelease') == "false" && cleanupPolicyDef.criteria.preRelease == "PRERELEASES")) {
             gitChangeMessage.add("release type = ${cleanupPolicyDef.criteria.preRelease}")
             runtimeChangeMessage.add("release type = " + !isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) ?
                     (existingCleanupCriteria.get('isPrerelease')=="true" ? "release type = PRERELEASES" : "release type = RELEASES")
