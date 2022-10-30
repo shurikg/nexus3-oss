@@ -44,29 +44,31 @@ parsed_args.details.each { cleanupPolicyDef ->
         }
 
         Map<String, String> existingCleanupCriteria = existingCleanupPolicy.getCriteria()
-        if (cleanupPolicyDef.criteria.lastBlobUpdated != null && existingCleanupCriteria.get('lastBlobUpdated') == null ||
-                cleanupPolicyDef.criteria.lastBlobUpdated == null && existingCleanupCriteria.get('lastBlobUpdated') != null ||
-                cleanupPolicyDef.criteria.lastBlobUpdated != asIntDays(existingCleanupCriteria.get('lastBlobUpdated'))) {
+        if (!isNullOrEmpty(cleanupPolicyDef.criteria.lastBlobUpdated) && isNullOrEmpty(existingCleanupCriteria.get('lastBlobUpdated')) ||
+                isNullOrEmpty(cleanupPolicyDef.criteria.lastBlobUpdated) && !isNullOrEmpty(existingCleanupCriteria.get('lastBlobUpdated')) ||
+                !isNullOrEmpty(cleanupPolicyDef.criteria.lastBlobUpdated) && !isNullOrEmpty(existingCleanupCriteria.get('lastBlobUpdated')) && cleanupPolicyDef.criteria.lastBlobUpdated != asIntDays(existingCleanupCriteria.get('lastBlobUpdated'))) {
             gitChangeMessage.add("component age = ${cleanupPolicyDef.criteria.lastBlobUpdated}")
-            runtimeChangeMessage.add("component age = ${asIntDays(existingCleanupCriteria.get('lastBlobUpdated'))}")
+            def rtVal = isNullOrEmpty(existingCleanupCriteria.get('lastBlobUpdated')) ? "" : asIntDays(existingCleanupCriteria.get('lastBlobUpdated'))
+            runtimeChangeMessage.add("component age = ${rtVal}")
         }
-        if (cleanupPolicyDef.criteria.lastDownloaded != null && existingCleanupCriteria.get('lastDownloaded') == null ||
-                cleanupPolicyDef.criteria.lastDownloaded == null && existingCleanupCriteria.get('lastDownloaded') != null ||
-                cleanupPolicyDef.criteria.lastDownloaded != asIntDays(existingCleanupCriteria.get('lastDownloaded'))) {
+        if (!isNullOrEmpty(cleanupPolicyDef.criteria.lastDownloaded) && isNullOrEmpty(existingCleanupCriteria.get('lastDownloaded')) ||
+                isNullOrEmpty(cleanupPolicyDef.criteria.lastDownloaded) && !isNullOrEmpty(existingCleanupCriteria.get('lastDownloaded')) ||
+                !isNullOrEmpty(cleanupPolicyDef.criteria.lastDownloaded) && !isNullOrEmpty(existingCleanupCriteria.get('lastDownloaded')) && cleanupPolicyDef.criteria.lastDownloaded != asIntDays(existingCleanupCriteria.get('lastDownloaded'))) {
             gitChangeMessage.add("component usage = ${cleanupPolicyDef.criteria.lastDownloaded}")
-            runtimeChangeMessage.add("component usage = ${asIntDays(existingCleanupCriteria.get('lastDownloaded'))}")
+            def rtVal = isNullOrEmpty(existingCleanupCriteria.get('lastDownloaded')) ? "" : asIntDays(existingCleanupCriteria.get('lastDownloaded'))
+            runtimeChangeMessage.add("component usage = ${rtVal}")
         }
-        if (existingCleanupCriteria.get('isPrerelease') != null && String.valueOf(cleanupPolicyDef.criteria.preRelease == "PRERELEASES") != existingCleanupCriteria.get('isPrerelease') ||
-                existingCleanupCriteria.get('isPrerelease') == null && cleanupPolicyDef.criteria.preRelease != "") {
+        if (!isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) && String.valueOf(cleanupPolicyDef.criteria.preRelease == "PRERELEASES") != existingCleanupCriteria.get('isPrerelease') ||
+                isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) && !isNullOrEmpty(cleanupPolicyDef.criteria.preRelease)) {
             gitChangeMessage.add("release type = ${cleanupPolicyDef.criteria.preRelease}")
-            runtimeChangeMessage.add("release type = " + existingCleanupCriteria.get('isPrerelease') != null ?
+            runtimeChangeMessage.add("release type = " + !isNullOrEmpty(existingCleanupCriteria.get('isPrerelease')) ?
                     (existingCleanupCriteria.get('isPrerelease')=="true" ? "release type = PRERELEASES" : "release type = RELEASES")
                     : "N/A")
         }
-        if (existingCleanupCriteria.get('regex') != null && cleanupPolicyDef.criteria.regexKey != existingCleanupCriteria.get('regex') ||
-                existingCleanupCriteria.get('regex') == null && cleanupPolicyDef.criteria.regexKey != null && cleanupPolicyDef.criteria.regexKey != "") {
+        if (!isNullOrEmpty(existingCleanupCriteria.get('regex')) && cleanupPolicyDef.criteria.regexKey != existingCleanupCriteria.get('regex') ||
+                isNullOrEmpty(existingCleanupCriteria.get('regex')) && !isNullOrEmpty(cleanupPolicyDef.criteria.regexKey)) {
             gitChangeMessage.add("asset name matcher = ${cleanupPolicyDef.criteria.regexKey}")
-            runtimeChangeMessage.add("asset name matcher = " + (existingCleanupCriteria.get('regex') != null ? existingCleanupCriteria.get('regex') : "N/A"))
+            runtimeChangeMessage.add("asset name matcher = " + (!isNullOrEmpty(existingCleanupCriteria.get('regex')) ? existingCleanupCriteria.get('regex') : "N/A"))
         }
 
         if (gitChangeMessage) {
@@ -116,4 +118,8 @@ def Integer asDays(secondsInt) {
 
 def Integer asIntDays(secondsStr) {
     return asDays(Integer.valueOf(secondsStr))
+}
+
+def boolean isNullOrEmpty(val){
+    return (val == null || String.valueOf(val) == "")
 }

@@ -18,13 +18,13 @@ cleanupPolicies.each { rtCleanupPolicy ->
     currentPolicy.put('notes', rtCleanupPolicy.getNotes())
     Map<String, String> rtCleanupCriteria = rtCleanupPolicy.getCriteria()
     def criteria = [:]
-    if (rtCleanupCriteria.get('lastBlobUpdated') != null) {
+    if (!isNullOrEmpty(rtCleanupCriteria.get('lastBlobUpdated'))) {
         criteria.put('lastBlobUpdated', asIntDays(rtCleanupCriteria.get('lastBlobUpdated')))
     }
-    if (rtCleanupCriteria.get('lastDownloaded') != null) {
+    if (!isNullOrEmpty(rtCleanupCriteria.get('lastDownloaded'))) {
         criteria.put('lastDownloaded', asIntDays(rtCleanupCriteria.get('lastDownloaded')))
     }
-    if (rtCleanupCriteria.get('isPrerelease') != null) {
+    if (!isNullOrEmpty(rtCleanupCriteria.get('isPrerelease'))) {
         if (rtCleanupCriteria.get('isPrerelease') == "true") {
             criteria.put('preRelease', 'PRERELEASES')
         }
@@ -52,4 +52,8 @@ def Integer asDays(secondsInt) {
 
 def Integer asIntDays(secondsStr) {
     return asDays(Integer.valueOf(secondsStr))
+}
+
+def boolean isNullOrEmpty(val){
+    return (val == null || String.valueOf(val) == "")
 }
