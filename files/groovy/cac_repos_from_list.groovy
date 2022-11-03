@@ -33,6 +33,21 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
     compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'],
                 "strict content type validation", gitChangeMessage, runtimeChangeMessage )
 
+    requireRepository.cleanup_policies.each { currentPolicy ->
+        if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+            runtimeChangeMessage.add("N/A")
+        }
+    }
+    if (repoAttributes?.cleanup?.policyName != null) {
+        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+            if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+            }
+        }
+    }
+
     if (requireRepository.type == 'hosted') {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
     }
@@ -55,22 +70,6 @@ def compareHelmRepository(requireRepository, rtRepository, scriptResults) {
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
     }
-
-            // "cleanup": {
-            //     "policyName": [
-            //         "aaa"
-            //     ]
-            // },
-
-        // if (currentRepo.type == 'proxy' || currentRepo.type == 'hosted') {
-        //     def cleanupPolicies = currentRepo.cleanup_policies as Set
-        //     if (cleanupPolicies != null)
-        //     {
-        //         configuration.attributes['cleanup'] = [
-        //             policyName: cleanupPolicies
-        //         ]
-        //     }
-        // }
 
     if (gitChangeMessage) {
         currentResult.put('change_in_git', gitChangeMessage.join('\n'))
@@ -98,6 +97,21 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'hosted') {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'proxy') {
@@ -117,6 +131,21 @@ def compareRawRepository(requireRepository, rtRepository, scriptResults) {
             authType = "username"
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'group') {
@@ -164,6 +193,21 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'hosted') {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'proxy') {
@@ -188,6 +232,21 @@ def compareDockerRepository(requireRepository, rtRepository, scriptResults) {
             authType = "username"
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
     if (requireRepository.type == 'group') {
         requireRepository.member_repos.each { currentMember ->
@@ -234,6 +293,21 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['maven']['layoutPolicy'].toUpperCase(), "layout policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.version_policy.toUpperCase(), repoAttributes['maven']['versionPolicy'].toUpperCase(), "version policy", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'proxy') {
@@ -255,6 +329,21 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
             authType = "username"
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'group') {
@@ -300,6 +389,21 @@ def compareNpmRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'hosted') {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'proxy') {
@@ -319,6 +423,21 @@ def compareNpmRepository(requireRepository, rtRepository, scriptResults) {
             authType = "username"
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'group') {
@@ -366,6 +485,21 @@ def compareYumRepository(requireRepository, rtRepository, scriptResults) {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['yum']['layoutPolicy'].toUpperCase(), "layout policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.repodata_depth, repoAttributes['yum']['repodataDepth'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'proxy') {
@@ -385,6 +519,21 @@ def compareYumRepository(requireRepository, rtRepository, scriptResults) {
             authType = "username"
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'group') {
@@ -430,6 +579,21 @@ def compareNugetRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'hosted') {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'proxy') {
@@ -449,6 +613,21 @@ def compareNugetRepository(requireRepository, rtRepository, scriptResults) {
             authType = "username"
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'group') {
@@ -509,6 +688,21 @@ def compareGoRepository(requireRepository, rtRepository, scriptResults) {
             authType = "username"
         }
         compareValue(authType, repoAttributes?.httpclient?.authentication?.type, "authentication type", gitChangeMessage, runtimeChangeMessage )
+
+        requireRepository.cleanup_policies.each { currentPolicy ->
+            if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+                gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+                runtimeChangeMessage.add("N/A")
+            }
+        }
+        if (repoAttributes?.cleanup?.policyName != null) {
+            repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+                if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                    gitChangeMessage.add("N/A")
+                    runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+                }
+            }
+        }
     }
 
     if (requireRepository.type == 'group') {
@@ -552,6 +746,21 @@ def compareAptRepository(requireRepository, rtRepository, scriptResults) {
     compareValue(requireRepository.strict_content_validation, repoAttributes['storage']['strictContentTypeValidation'],
             "strict content type validation", gitChangeMessage, runtimeChangeMessage )
     compareValue(requireRepository.distribution, repoAttributes['apt']['distribution'], "distribution", gitChangeMessage, runtimeChangeMessage )
+
+    requireRepository.cleanup_policies.each { currentPolicy ->
+        if (repoAttributes?.cleanup == null || repoAttributes?.cleanup?.policyName == null || ! (currentPolicy in repoAttributes['cleanup']['policyName'])) {
+            gitChangeMessage.add("new cleanup policy ${currentPolicy}")
+            runtimeChangeMessage.add("N/A")
+        }
+    }
+    if (repoAttributes?.cleanup?.policyName != null) {
+        repoAttributes['cleanup']['policyName'].each { currentPolicy ->
+            if (!(currentPolicy in requireRepository.cleanup_policies)) {
+                gitChangeMessage.add("N/A")
+                runtimeChangeMessage.add("delete cleanup policy ${currentPolicy}")
+            }
+        }
+    }
 
     if (requireRepository.type == 'hosted') {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )

@@ -48,6 +48,7 @@ parsed_args.each { currentPolicy ->
                             currentPolicy.criteria.lastDownloaded,
                             currentPolicy.criteria.preRelease,
                             currentPolicy.criteria.regexKey)
+                existingPolicy.setMode(currentPolicy.mode)
                 existingPolicy.setNotes(currentPolicy.notes)
                 existingPolicy.setCriteria(criteriaMap)
                 cleanupPolicyStorage.update(existingPolicy)
@@ -70,7 +71,7 @@ parsed_args.each { currentPolicy ->
                 setName(currentPolicy.name)
                 setNotes(currentPolicy.notes)
                 setFormat(currentPolicy.format == "all" ? "ALL_FORMATS" : currentPolicy.format)
-                setMode('deletion')
+                setMode('delete')
                 setCriteria(criteriaMap)
             }
             cleanupPolicyStorage.add(cleanupPolicy)
