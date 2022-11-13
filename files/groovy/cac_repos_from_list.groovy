@@ -300,7 +300,7 @@ def compareMavenRepository(requireRepository, rtRepository, scriptResults) {
                 runtimeChangeMessage.add("N/A")
             }
         }
-        if (repoAttributes?.cleanup?.policyName != null) {
+        if (repoAttributes?.cleanup?.policyName != null && !repoAttributes?.cleanup?.policyName.isEmpty()) {
             repoAttributes['cleanup']['policyName'].each { currentPolicy ->
                 if (!(currentPolicy in requireRepository.cleanup_policies)) {
                     gitChangeMessage.add("N/A")
