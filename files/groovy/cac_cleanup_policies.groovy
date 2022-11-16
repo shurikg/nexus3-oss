@@ -30,7 +30,7 @@ parsed_args.details.each { cleanupPolicyDef ->
         scriptResults['action_details'].add(currentResult)
     }
     else {
-        if (cleanupPolicyDef.format != existingCleanupPolicy.getFormat()) {
+        if (! (cleanupPolicyDef.format == existingCleanupPolicy.getFormat() || cleanupPolicyDef.format == 'all' && existingCleanupPolicy.getFormat() == 'ALL_FORMATS')) {
             gitChangeMessage.add("format = ${cleanupPolicyDef.format}")
             runtimeChangeMessage.add("format = ${existingCleanupPolicy.getFormat()}")
         }
