@@ -407,7 +407,6 @@ _nexus_repos_pypi_defaults:
   blob_store: "{{ nexus_blob_names.pypi.blob }}"
   strict_content_validation: true
   version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
@@ -439,7 +438,6 @@ _nexus_repos_raw_defaults:
   blob_store: "{{ nexus_blob_names.raw.blob }}"
   strict_content_validation: true
   version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
@@ -475,7 +473,6 @@ _nexus_repos_docker_defaults:
   force_basic_auth: true
   strict_content_validation: true
   version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
@@ -685,7 +682,6 @@ _nexus_repos_yum_defaults:
 _nexus_repos_apt_defaults:
   blob_store: "{{ nexus_blob_names.apt.blob }}"
   strict_content_validation: true
-  layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
@@ -717,7 +713,6 @@ nexus_repos_apt_proxy: []
 _nexus_repos_helm_defaults:
   blob_store: "{{ nexus_blob_names.helm.blob }}"
   strict_content_validation: true
-  layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
@@ -739,7 +734,6 @@ _nexus_repos_r_defaults:
   blob_store: "{{ nexus_blob_names.r.blob }}"
   strict_content_validation: true
   version_policy: release  # release, snapshot or mixed
-  layout_policy: strict  # strict or permissive
   write_policy: allow_once  # one of "allow", "allow_once" or "deny"
   maximum_component_age: 1440  # Nexus gui default. For proxies only
   maximum_metadata_age: 1440  # Nexus gui default. For proxies only
