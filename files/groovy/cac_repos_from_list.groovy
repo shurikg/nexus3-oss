@@ -483,7 +483,7 @@ def compareYumRepository(requireRepository, rtRepository, scriptResults) {
 
     if (requireRepository.type == 'hosted') {
         compareValue(requireRepository.write_policy.toUpperCase(), repoAttributes['storage']['writePolicy'].toUpperCase(), "deployment policy", gitChangeMessage, runtimeChangeMessage )
-        compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['yum']['layoutPolicy'].toUpperCase(), "layout policy", gitChangeMessage, runtimeChangeMessage )
+//        compareValue(requireRepository.layout_policy.toUpperCase(), repoAttributes['yum']['layoutPolicy'].toUpperCase(), "layout policy", gitChangeMessage, runtimeChangeMessage )
         compareValue(requireRepository.repodata_depth, repoAttributes['yum']['repodataDepth'], "deployment policy", gitChangeMessage, runtimeChangeMessage )
 
         requireRepository.cleanup_policies.each { currentPolicy ->
