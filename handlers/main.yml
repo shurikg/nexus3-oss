@@ -33,11 +33,68 @@
   listen: nexus-service-stop
   when: nexus_sysv_service_file.stat.exists
 
-- name: wait-for-nexus
+- name: Create tempfile for log tailing
+  tempfile:
+    state: file
+  register: tempfile_log
+  listen: wait-for-nexus
+
+- name: Wait until the file nexus.log is present before continuing
   wait_for:
     path: "{{ nexus_data_dir }}/log/nexus.log"
+  listen: wait-for-nexus
+
+- name: Asynchronous tail log to temp file
+  shell: tail -n 0 -f "{{ nexus_data_dir }}/log/nexus.log" > {{ tempfile_log.path }}
+  async: 1800
+  poll: 0
+  listen: wait-for-nexus
+
+- name: debug message for temporary file
+  debug:
+    msg: "temporary file is {{ tempfile_log.path }}"
+  listen: wait-for-nexus
+
+- name: Wait for regex in log
+  wait_for:
+    path: "{{ tempfile_log.path }}"
     search_regex: "Started Sonatype Nexus .*"
     timeout: 1800
+  listen: wait-for-nexus
+
+- name: Remove
+  file:
+    path: "{{ tempfile_log.path }}"
+    state: absent
+  listen: wait-for-nexus
+
+
+- name: find which schema to use
+  lineinfile:
+    path: "{{ nexus_default_settings_file }}"
+    regexp: '^nexus-args=.*jetty-http.xml.*'
+    state: absent
+  check_mode: yes
+  register: search_http_schema
+  listen: wait-for-nexus-port
+
+- name: set nexus_api_scheme to http
+  set_fact:
+    nexus_api_scheme: http
+  when: search_http_schema.changed | bool
+  listen: wait-for-nexus-port
+
+- name: set nexus_api_scheme to https
+  set_fact:
+    nexus_api_scheme: https
+  when: not search_http_schema.changed | bool
+  listen: wait-for-nexus-port
+
+- name: set nexus_default_port to default ssl port
+  set_fact:
+    nexus_default_port: "{{ nexus_default_ssl_port }}"
+  when: not search_http_schema.changed | bool
+  listen: wait-for-nexus-port
 
 - name: wait-for-nexus-port
   wait_for:
@@ -46,6 +103,7 @@
   retries: "{{ nexus_wait_for_port_retries | default(omit) }}"
   register: wait_for_result
   until: wait_for_result is success
+  listen: wait-for-nexus-port
 
 - name: httpd-service-reload
   systemd:

@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 import org.sonatype.nexus.scheduling.TaskConfiguration
+import org.sonatype.nexus.scheduling.TaskNotificationCondition
 import org.sonatype.nexus.scheduling.TaskInfo
 import org.sonatype.nexus.scheduling.TaskScheduler
 import org.sonatype.nexus.scheduling.schedule.Monthly
@@ -12,7 +13,7 @@ parsed_args = new JsonSlurper().parseText(args)
 TaskScheduler taskScheduler = container.lookup(TaskScheduler.class.getName())
 
 TaskInfo existingTask = taskScheduler.listsTasks().find { TaskInfo taskInfo ->
-    taskInfo.name == parsed_args.name
+    taskInfo.name == parsed_args.name && taskInfo.getTypeId() == parsed_args.typeId
 }
 
 if (existingTask && existingTask.getCurrentState().getRunState() != null) {
@@ -30,6 +31,8 @@ taskConfiguration.setName(parsed_args.name)
 taskConfiguration.setAlertEmail(parsed_args.get('task_alert_email', '') as String)
 
 taskConfiguration.setEnabled(Boolean.valueOf(parsed_args.get('enabled', 'true') as String))
+
+taskConfiguration.setNotificationCondition(parsed_args.get('notificationCondition', 'FAILURE').toUpperCase() as TaskNotificationCondition)
 
 parsed_args.taskProperties.each { key, value ->
     taskConfiguration.setString(key, value)

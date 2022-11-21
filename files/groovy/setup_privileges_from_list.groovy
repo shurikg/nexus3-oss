@@ -33,6 +33,9 @@ parsed_args.each { privilegeDef ->
             )
         }
 
+        def currentDescription = privilege.getDescription()
+        def currentType = privilege.getType()
+
         privilege.setDescription(privilegeDef.description)
         privilege.setType(privilegeDef.type)
         privilege.setProperties([
@@ -51,7 +54,7 @@ parsed_args.each { privilegeDef ->
         if (update) {
             definedProperties = privilege.getProperties().sort().toString()
             currentProperties = authManager.getPrivilege(privilegeDef.name).getProperties().sort().toString()
-            if (definedProperties != currentProperties) {
+            if (definedProperties != currentProperties || currentDescription != privilegeDef.description || currentType != privilegeDef.type) {
                 authManager.updatePrivilege(privilege)
                 currentResult.status = 'updated'
                 scriptResults.changed = true

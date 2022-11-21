@@ -15,11 +15,15 @@ authManager = security.securitySystem.getAuthorizationManager(UserManager.DEFAUL
 def updateUser(userDef, currentResult) {
     User user = security.securitySystem.getUser(userDef.username)
 
+    def isUserTheSame = true
+    if (userDef.first_name != user.getFirstName() || userDef.last_name != user.getLastName() || userDef.email != user.getEmailAddress()) {
+        isUserTheSame = false
+    }
     user.setFirstName(userDef.first_name)
     user.setLastName(userDef.last_name)
     user.setEmailAddress(userDef.email)
 
-    if (user != security.securitySystem.getUser(userDef.username)) {
+    if (user != security.securitySystem.getUser(userDef.username) || ! isUserTheSame ) {
         security.securitySystem.updateUser(user)
         currentResult.put('status', 'updated')
         scriptResults['changed'] = true
@@ -38,8 +42,10 @@ def updateUser(userDef, currentResult) {
     }
 
     try {
+        log.info("Update password for user user {}", userDef.username)
         security.securitySystem.changePassword(userDef.username, userDef.password, userDef.password)
     } catch (InvalidCredentialsException ignored) {
+        log.info("Got exception for update password for user user {}, try other method", userDef.username)
         security.securitySystem.changePassword(userDef.username, userDef.password)
         currentResult.put('status', 'updated')
         scriptResults['changed'] = true

@@ -36,7 +36,6 @@ private boolean configurationChanged(Configuration oldConfig, Configuration newC
     return oldConfig.properties != newConfig.properties
 }
 
-
 parsed_args.each { currentRepo ->
 
     Map<String, String> currentResult = [name: currentRepo.name, format: currentRepo.format, type: currentRepo.type]
@@ -67,6 +66,7 @@ parsed_args.each { currentRepo ->
 
         // Configs common to all repos
         configuration.attributes['storage']['strictContentTypeValidation'] = Boolean.valueOf(currentRepo.strict_content_validation)
+        configuration.attributes['storage']['blobStoreName'] = currentRepo.blob_store
 
         // Configs for all group repos
         if (currentRepo.type == 'group') {
@@ -108,10 +108,10 @@ parsed_args.each { currentRepo ->
         // Configs for all proxy repos
         if (currentRepo.type == 'proxy') {
             configuration.attributes['httpclient'] = [
-                    blocked       : false,
-                    autoBlock     : true,
-                    connection    : [
-                            useTrustStore: false
+                    blocked   : currentRepo.blocked,
+                    autoBlock : currentRepo.auto_blocking_enabled,
+                    connection: [
+                            useTrustStore: currentRepo.use_nexus_truststore
                     ]
             ]
 
@@ -169,8 +169,13 @@ parsed_args.each { currentRepo ->
             configuration.attributes['docker'] = [
                     forceBasicAuth: currentRepo.force_basic_auth,
                     v1Enabled     : currentRepo.v1_enabled,
-                    httpPort      : currentRepo.get('http_port', '')
             ]
+            if (currentRepo.get('http_port', '') != '') {
+                configuration.attributes['docker'].put('httpPort', currentRepo.get('http_port', ''))
+            }
+            if (currentRepo.get('https_port', '') != '') {
+                configuration.attributes['docker'].put('httpsPort', currentRepo.get('https_port', ''))
+            }
         }
 
         if (existingRepository == null) {

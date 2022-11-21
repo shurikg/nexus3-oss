@@ -125,7 +125,17 @@
   notify:
     - nexus-service-stop
 
-- meta: flush_handlers
+- name: Update sonatype-work permission
+  file:
+    path: "{{ nexus_installation_dir }}/sonatype-work"
+    recurse: yes
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
+  notify:
+    - nexus-service-stop
+
+- name: flush handlers
+  meta: flush_handlers
 
 - name: Delete unpacked data directory
   file:
@@ -376,7 +386,8 @@
     # hard to run as a handler for time being
     - skip_ansible_lint
 
-- meta: flush_handlers
+- name: flush handlers
+  meta: flush_handlers
 
 - name: Enable nexus systemd service and make sure it is started
   systemd:
@@ -399,7 +410,8 @@
     - wait-for-nexus-port
   when: "ansible_service_mgr != 'systemd'"
 
-- meta: flush_handlers
+- name: flush handlers
+  meta: flush_handlers
 
 - name: Chown configuration files from {{ nexus_installation_dir }}/nexus-latest/etc back to root
   file:
@@ -507,8 +519,8 @@
   file:
     path: "{{ item }}"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
     mode: 0755
   with_items:
     - "{{ nexus_data_dir }}/groovy-raw-scripts/current"
@@ -527,6 +539,8 @@
   unarchive:
     src: "/tmp/nexus-upload-groovy-scripts.tar.gz"
     dest: "{{ nexus_data_dir }}/groovy-raw-scripts/new/"
+    owner: "{{ nexus_os_user }}"
+    group: "{{ nexus_os_group }}"
     mode: 0644
 
 - block:

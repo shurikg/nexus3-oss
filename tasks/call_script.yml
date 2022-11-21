@@ -1,5 +1,8 @@
 ---
 - block:
+    - name: Debug for input parameters
+      debug:
+        msg: "{{ args | regex_replace('''password[^,]*,', '''password'': %%%%%%%%,') | to_json }}"
     - name: Calling Groovy script {{ script_name }}
       uri:
         url: "{{ nexus_api_scheme }}://{{ nexus_api_hostname }}:{{ nexus_api_port }}\
@@ -12,6 +15,7 @@
         force_basic_auth: yes
         validate_certs: "{{ nexus_api_validate_certs }}"
         body: "{{ args | to_json }}"
+        timeout: 300
       register: script_run
       failed_when: script_run | nexus_groovy_error | bool
       changed_when: script_run | nexus_groovy_changed | bool

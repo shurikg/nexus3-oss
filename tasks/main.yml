@@ -29,8 +29,17 @@
 
 - import_tasks: nexus_install.yml
 
-- include_tasks: httpd_reverse_proxy_config.yml
+- name: httpd reverse proxy configuration
+  include_tasks: httpd_reverse_proxy_config.yml
   when: httpd_setup_enable | bool
+
+- name: jetty ssl configuration
+  include_tasks: jetty_ssl_config.yml
+  when: jetty_https_setup_enable | bool
+
+- name: jetty disable ssl configuration
+  include_tasks: jetty_ssl_disable_config.yml
+  when: not jetty_https_setup_enable | bool
 
 - name: Configure nexus http proxy
   include_tasks: call_script.yml
@@ -48,7 +57,6 @@
       https_proxy_username: "{{ nexus_https_proxy_username }}"
       https_proxy_password: "{{ nexus_https_proxy_password }}"
       proxy_exclude_hosts: "{{ nexus_proxy_exclude_hosts }}"
-  when: nexus_with_http_proxy or nexus_with_https_proxy
 
 - name: Deleting default repositories
   include_tasks: delete_repo_each.yml
@@ -117,7 +125,6 @@
             args: "{{ nexus_blobstores }}"
           when: nexus_blobstores | length > 0
 
-
   when: nexus_run_provisionning | default(true) | bool
 
 - name: "Restore nexus backup"
@@ -131,6 +138,18 @@
         script_name: create_cleanup_policies_from_list
         args: "{{ nexus_repos_cleanup_policies }}"
       when: nexus_repos_cleanup_policies | length > 0
+
+    - name: WA for decrypt vault strings
+      set_fact:
+        nexus_repos_maven_proxy: "{{ nexus_repos_maven_proxy }}"
+        nexus_repos_docker_proxy: "{{ nexus_repos_docker_proxy }}"
+        nexus_repos_raw_proxy: "{{ nexus_repos_raw_proxy }}"
+        nexus_repos_helm_proxy: "{{ nexus_repos_helm_proxy }}"
+        nexus_repos_go_proxy: "{{ nexus_repos_go_proxy }}"
+        nexus_repos_npm_proxy: "{{ nexus_repos_npm_proxy }}"
+        nexus_repos_yum_proxy: "{{ nexus_repos_yum_proxy }}"
+        nexus_repos_nuget_proxy: "{{ nexus_repos_nuget_proxy }}"
+        nexus_repos_apt_proxy: "{{ nexus_repos_apt_proxy }}"
 
     - name: Apply defaults to repositories configurations and process a single list
       include_tasks: process_repos_list.yml
@@ -192,6 +211,12 @@
       rut_auth_realm: "{{ nexus_rut_auth_realm }}"
       ldap_realm: "{{ nexus_ldap_realm }}"
       docker_bearer_token_realm: "{{ nexus_docker_bearer_token_realm }}"
+      crowd_realm: "{{ nexus_crowd_realm }}"
+      default_role_realm: "{{ nexus_default_role_realm }}"
+      local_authenticating_realm: "{{ nexus_local_authenticating_realm }}"
+      local_authorizing_realm: "{{ nexus_local_authorizing_realm }}"
+      saml_realm: "{{ nexus_saml_realm }}"
+      user_token_realm: "{{ nexus_user_token_realm }}"
 
 - name: Configure RUT Auth header
   include_tasks: call_script.yml
